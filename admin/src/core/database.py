@@ -22,6 +22,6 @@ def config(app):
 def reset():
     """resetea la bd"""
     db.drop_all() #borra tdo
-    db.create_app() #vuelve a crear
+    db.create_all() #vuelve a crear
     print("se creo nuevamente") 
 
