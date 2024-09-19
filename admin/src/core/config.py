@@ -1,11 +1,13 @@
+from os import environ
+
 class Config(object):
     """configuracion de la bd."""
     TESTING= False
   
 
 class ProductionConfig(Config):
-     """Configuracion de la bd en produccion"""
-     SQLALCHEMY_DATABASE_URI = None
+    """Configuracion de la bd en produccion"""
+    SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
 
 class DevelopmentConfig(Config):
     """ development configuration"""
