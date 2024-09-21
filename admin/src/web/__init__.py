@@ -1,11 +1,10 @@
 from flask import Flask
-from flask import render_template
-from src.web.controllers.issues import bp as issues_bp
-from src.web.handlers import error
-from src.core import database
-from src.core import seeds
-from src.core.config import config
 
+from src.core import database
+from src.core.config import config
+from src.web import routes
+from src.web import blueprints
+from src.web import commands
 
 def create_app(env="development", static_folder="../../static"):
 
@@ -13,21 +12,13 @@ def create_app(env="development", static_folder="../../static"):
     app.config.from_object(config[env])
     database.init_app(app)
 
-    @app.route("/")
-    def home(): 
-        return render_template("home.html")
+    # Rutas
+    routes.register(app)
     
-
-    app.register_blueprint(issues_bp)
-
-    app.register_error_handler(404, error.not_found)
+    # Blueprints
+    blueprints.register(app)
     
-    @app.cli.command(name="reset-db") #refistro comando
-    def reset_db():
-       database.reset()
-
-    @app.cli.command(name="seeds-db")
-    def seeds_db():
-        seeds.run()
+    # Comandos
+    commands.register(app)
 
     return app
