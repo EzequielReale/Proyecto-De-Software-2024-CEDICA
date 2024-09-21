@@ -2,10 +2,6 @@ from os import environ
 from dotenv import load_dotenv
 
 
-# Carga variables de entorno
-load_dotenv()
-
-
 class Config(object):
     """Configuracion de la BD"""
     TESTING= False
@@ -18,6 +14,9 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     """Development configuration"""
+
+    load_dotenv() # Carga variables de entorno
+
     DB_USER = environ.get("DEV_DB_USER")
     DB_PASSWORD = environ.get("DEV_DB_PASSWORD")
     DB_HOST = environ.get("DEV_DB_HOST")
