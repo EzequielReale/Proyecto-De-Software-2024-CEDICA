@@ -1,13 +1,14 @@
 from src.core.database import db
 from src.core.board.issue import Issue
 
+
 def list_issues():
-    """devuelve todos los reg de la bd """
+    """Devuelve todos los registros de la BD"""
     issues = Issue.query.all()
     return issues 
 
 def create_issue(**kwargs):
-    """ crea un issue, lo guarda en la bd y lo devuelve"""
+    """Crea un issue, lo guarda en la BD y lo devuelve"""
     issue = Issue(**kwargs)
     db.session.add(issue)
     db.session.commit()

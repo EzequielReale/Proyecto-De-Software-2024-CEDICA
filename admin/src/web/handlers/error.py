@@ -1,6 +1,7 @@
 from flask import render_template
 from dataclasses import dataclass
 
+
 @dataclass
 class Error:
     code: int
