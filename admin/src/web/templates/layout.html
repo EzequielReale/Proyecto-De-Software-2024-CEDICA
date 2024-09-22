@@ -2,22 +2,20 @@
 <html lang="en">
 
 <head>
-    {% block head %}
+    {% block head %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <title>{% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
- 
-
-
-    {% endblock %}
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm">
+<body style="padding-top: 75px;">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm position-fixed w-100 top-0">
         <div class="container-fluid">
+            <!-- 
+            Navbar del Layout, con el logo de CEDICA y los enlaces a las secciones de la página.
+            -->
             <a class="navbar-brand" href="{{ url_for('home') }}"><img
                     src="{{ url_for('static', filename='logos/Imagotipo CEDICA.png')}}" width="175"
                     alt="Logo CEDICA" /></a>
@@ -41,9 +39,10 @@
                             href="{{ url_for('team') }}">Equipo</a>
                     </li>
                 </ul>
+                <!-- Dropdown con las opciones de la cuenta del usuario -->
                 <div class="dropdown">
                     <button class="btn dropdown-toggle d-flex justify-content-center align-items-center gap-2 ps-2"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Tu cuenta">
                         <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
                             viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
                             <g transform="translate(0,512) scale(0.1,-0.1)" fill="#404040" stroke="none">
@@ -69,15 +68,16 @@
                                 99 c296 564 903 914 1536 886 61 -3 161 -14 224 -24z" />
                             </g>
                         </svg>
-                        Tu cuenta
                     </button>
                     <ul class="dropdown-menu dropdown-menu-lg-end">
+                        <!-- Si el usuario está logueado, se muestra la opción de perfil y cerrar sesión. -->
                         {% if is_authenticated(session) %}
                         <li><a class="dropdown-item" href="#">Perfil</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+                        <!-- Sino, se muestra la opción de iniciar sesión. -->
                         {% else %}
                         <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
                         {% endif %}
@@ -86,43 +86,40 @@
             </div>
         </div>
     </nav>
-    <div>{% block navbar %}{% endblock %}</div>
-
-<!--para visualizar los mensajes-->
-{% with messages = get_flashed_messages(with_categories=True) %}
-{% if messages %}
-    <div class="container">
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }} flash-message alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <main id="container">
+        <aside>{% block aside %}{% endblock %}</aside>
+        <section>
+            <!--para visualizar los mensajes-->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <div class="container">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} flash-message alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-{% endif %}
-{% endwith %}
-
-
-
-
-
-    <div id="container">
-        {% block content %}
-        {% endblock %}
-    </div>
-    <div>{% block footer %}{% endblock %}</div>
+            {% endif %}
+            {% endwith %}
+            {% block content %}
+            {% endblock %}
+        </section>
+    </main>
+    {% block footer %}
+    {% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
-    
-       <!--lo agregue por los mensajes--> 
-     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!--lo agregue por los mensajes-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
 </body>
