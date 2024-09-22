@@ -1,4 +1,4 @@
-from src.core import board
+from src.core import board, auth
 
 
 def run():
@@ -9,3 +9,8 @@ def run():
     issue2= board.create_issue(
         email="yo@gmail.com"
     )
+    user1 = auth.create_user(
+        email="giuliana@gmail.com",
+        password="123"
+    )
+

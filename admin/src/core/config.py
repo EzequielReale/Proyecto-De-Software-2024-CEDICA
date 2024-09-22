@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 class Config(object):
     """Configuracion de la BD"""
     TESTING= False
+    SECRET_KEY="secret"
+    SESSION_TYPE= "filesystem"
   
 
 class ProductionConfig(Config):
