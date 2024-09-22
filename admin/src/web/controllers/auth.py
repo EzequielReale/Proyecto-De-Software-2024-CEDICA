@@ -13,7 +13,12 @@ def login():
 
 @bp.get("/logout")
 def logout():
-    pass
+    if session.get("user"):
+        del session["user"]
+        session.clear()
+    else:
+        flash("No se encontro ninguna sesion activa","error")
+    return redirect(url_for("auth.login"))
 
 @bp.post("/authenticate")
 def authenticate():

@@ -9,7 +9,7 @@ def run():
     issue2= board.create_issue(
         email="yo@gmail.com"
     )
-    user1 = auth.create_user(
+    user1 = auth.user_new(
         email="giuliana@gmail.com",
         password="123"
     )
