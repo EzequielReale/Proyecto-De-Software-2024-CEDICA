@@ -100,7 +100,7 @@
                         Tu cuenta
                     </button>
                     <ul class="dropdown-menu dropdown-menu-lg-end">
-                        {% if 'logged_in' in session and session['logged_in'] %}
+                        {% if is_authenticated(session) %}
                         <li><a class="dropdown-item" href="#">Perfil</a></li>
                         <li>
                             <hr class="dropdown-divider">
