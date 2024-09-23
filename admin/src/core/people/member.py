@@ -10,11 +10,11 @@ class Member(db.Model):
     end_date = db.Column(db.DateTime, nullable=False)
     health_insurance = db.Column(db.String(32), nullable=False)
     health_insurance_number = db.Column(db.String(32), nullable=False)
-    condition = db.Column(db.Enum('Voluntario', 'Personal Rentado'), nullable=False)
+    condition = db.Column(db.Enum('Voluntario', 'Personal Rentado', name='condition_types'), nullable=False)
     active = db.Column(db.Boolean, default=True)
 
     profession_id = db.Column(db.Integer, db.ForeignKey('professions.id'), nullable=False)
-    person_id = db.Column(db.Integer, db.ForeignKey('people.id'), nullable=False)
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
 
     def __repr__(self):
         return f'Member {self.id}'

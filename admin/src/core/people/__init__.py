@@ -30,7 +30,6 @@ def _person_new(**kwargs):
     person = Person(**person_data)
     db.session.add(person)
     db.session.commit()
-
     return person
 
 
@@ -56,5 +55,4 @@ def member_new(**kwargs):
     member = Member(**member_data)
     db.session.add(member)
     db.session.commit()
-
     return member

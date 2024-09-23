@@ -3,7 +3,7 @@ from src.core.database import db
 
 class Person(db.Model):
     """Modelo de persona generica"""
-    __tablename__ = 'people'
+    __tablename__ = 'persons'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
