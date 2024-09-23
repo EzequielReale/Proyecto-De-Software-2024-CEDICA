@@ -24,10 +24,17 @@ a:hover {
 }
 
 /* Layout styles */
-#container {
-    max-width: 1200px;
+main {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 25px;
+}
+
+/* No aside */
+main.no-aside {
+    max-width: 1200px;
+    grid-template-columns: 1fr;
 }
 
 header,
@@ -49,12 +56,6 @@ footer a:hover {
 }
 
 /* Content styles */
-main {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
 h1,
 h2,
@@ -72,4 +73,17 @@ footer {
 
 footer p {
     margin: 0;
+}
+
+.alert-error {
+    background-color: #F8D7DA !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    main {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
 }
