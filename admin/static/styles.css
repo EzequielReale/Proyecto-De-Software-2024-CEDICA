@@ -29,6 +29,7 @@ main {
     grid-template-columns: 1fr 4fr;
     margin: 0 auto;
     padding: 20px 25px;
+    gap: 50px;
 }
 
 /* No aside */
