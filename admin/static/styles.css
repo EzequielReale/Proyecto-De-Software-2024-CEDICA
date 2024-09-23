@@ -75,6 +75,11 @@ footer p {
     margin: 0;
 }
 
+.alert-error {
+    background-color: #F8D7DA !important;
+    border: 1px solid #f5c6cb !important;
+}
+
 /* Responsive styles */
 @media (max-width: 992px) {
     main {

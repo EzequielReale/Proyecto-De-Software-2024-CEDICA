@@ -101,11 +101,12 @@
                 <!--para visualizar los mensajes-->
                 {% with messages = get_flashed_messages(with_categories=True) %}
                 {% if messages %}
-                <div class="container">
+                <div class="container w-75">
                     {% for category, message in messages %}
                     <div class="alert alert-{{ category }} flash-message alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <button type="button" class="btn close position-absolute top-0 end-0 p-2 py-1"
+                            data-dismiss="alert" aria-label="Cerrar alerta">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -113,8 +114,6 @@
                 </div>
                 {% endif %}
                 {% endwith %}
-                {% block content %}
-                {% endblock %}
             </section>
 
             <!-- Sección para mostrar el contenido de la página -->
