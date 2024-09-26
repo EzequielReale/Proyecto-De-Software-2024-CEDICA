@@ -1,10 +1,15 @@
 from src.core.database import db
+from src.core.people.person import Person
 
-class Member(db.Model):
+class Member(Person):
     """Modelo de miembro del equipo"""
     __tablename__ = 'members'
+    
+    __mapper_args__ = {
+        'polymorphic_identity': 'member'  # Identificador de la subclase
+    }
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('persons.id'), primary_key=True)
     email = db.Column(db.String(64), nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
@@ -13,8 +18,8 @@ class Member(db.Model):
     condition = db.Column(db.Enum('Voluntario', 'Personal Rentado', name='condition_types'), nullable=False)
     active = db.Column(db.Boolean, default=True)
 
-    profession_id = db.Column(db.Integer, db.ForeignKey('professions.id'), nullable=False)
-    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'), nullable=False)
+    profession_id = db.Column(db.Integer, db.ForeignKey('professions.id'), nullable=True)
+    job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
 
     def __repr__(self):
         return f'Member {self.id}'

@@ -14,8 +14,12 @@ def run():
         password="123"
     )
     profession1 = professions.profession_new(
-        name="Enfermero",
-        description="Cuidado de pacientes"
+        name="Docente",
+        description="Enseñanza"
+    )
+    job1 = professions.job_new(
+        name="Docente de capacitación",
+        description="Enseñanza para nuevos miembros"
     )
     province1 = adressing.province_new(
         name="Buenos Aires"
@@ -31,8 +35,8 @@ def run():
             dni="12345678",
             phone="123456789",
             emergency_phone="987654321",
-            address="123 Main St",
-            province_id=1,
+            street="Calle Falsa",
+            number="123",
             locality_id=1,
             email="giuliana@gmail.com",
             start_date="2023-01-01",
@@ -42,5 +46,6 @@ def run():
             condition="Voluntario",
             active=True,
             profession_id=1,
+            job_id=1
     )
 
