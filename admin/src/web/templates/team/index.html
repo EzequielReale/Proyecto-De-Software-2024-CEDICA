@@ -9,6 +9,7 @@
 {% block content %}
   <h1>Equipo</h1>
   <p>Pagina de presentación del equipo</p>
+  <a href="{{ url_for('team.create') }}">Crear miembro nuevo</a>
   <table class="table table-striped">
     <thead>
       <tr>
@@ -34,20 +35,19 @@
         <td>{{ member.profession.name }}</td>
         <td>{{ member.job.name }}</td>
         <td>
-          {#<a href="{{ url_for('member_detail', member_id=member.id) }}">Ver</a>
-          <a href="{{ url_for('member_update', member_id=member.id) }}">Editar</a>
-          <a href="{{ url_for('member_delete', member_id=member.id) }}">Eliminar</a>#}
+          <a href="{{ url_for('team.show', id=member.id) }}">Ver</a>
+          <a href="{{ url_for('team.update', id=member.id) }}">Editar</a>
+          <a href="{{ url_for('team.destroy', id=member.id) }}">Eliminar</a>
         </td>
       </tr>
       {% endfor %}
       {% else %}
       <tr>
-        <td colspan="8">No hay miembros en el equipo.</td>
+        <td colspan="8">No hay miembros en el equipo</td>
       </tr>
       {% endif %}
     </tbody>
   </table>
-  {#<a href="{{ url_for('member_new') }}">Crear miembro nuevo</a>#}
 {% endblock %}
 
 {% block footer %}
