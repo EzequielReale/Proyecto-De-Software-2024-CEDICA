@@ -19,7 +19,9 @@ class Member(Person):
     active = db.Column(db.Boolean, default=True)
 
     profession_id = db.Column(db.Integer, db.ForeignKey('professions.id'), nullable=True)
+    profession = db.relationship('Profession', backref='members', lazy=True)    
     job_id = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=False)
+    job = db.relationship('Job', backref='members', lazy=True)
 
     def __repr__(self):
         return f'Member {self.id}'

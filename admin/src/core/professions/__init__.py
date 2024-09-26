@@ -4,15 +4,15 @@ from src.core.professions.job import Job
 
 
 """Módulo de profesiones"""
-def get_professions():
+def get_professions()->list:
     """Obtiene todas las profesiones"""
     return Profession.query.all()
 
-def get_profession_by_id(profession_id):
+def get_profession_by_id(profession_id:int)->Profession:
     """Obtiene una profesion por ID"""
     return Profession.query.filter_by(id=profession_id).first()
 
-def profession_new(**kwargs):
+def profession_new(**kwargs)->Profession:
     """Crea una profesion, la guarda en la BD y la devuelve"""
     profession = Profession(**kwargs)
     db.session.add(profession)
@@ -21,15 +21,15 @@ def profession_new(**kwargs):
 
 
 """Módulo de trabajos"""
-def jobs():
+def get_jobs()->list:
     """Obtiene todos los trabajos"""
     return Job.query.all()
 
-def get_job_by_id(job_id):
+def get_job_by_id(job_id:int)->Job:
     """Obtiene un trabajo por ID"""
     return Job.query.filter_by(id=job_id).first()
 
-def job_new(**kwargs):
+def job_new(**kwargs)->Job:
     """Crea un trabajo, lo guarda en la BD y lo devuelve"""
     job = Job(**kwargs)
     db.session.add(job)

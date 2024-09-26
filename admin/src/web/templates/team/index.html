@@ -7,6 +7,48 @@
 {% endblock %}
 
 {% block content %}
-<h1>Equipo</h1>
-<p>Pagina de presentación del equipo</p>
+  <h1>Equipo</h1>
+  <p>Pagina de presentación del equipo</p>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>DNI</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Profesión</th>
+        <th>Trabajo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if members %}
+      {% for member in members %}
+      <tr>
+        <td>{{ member.name }}</td>
+        <td>{{ member.last_name }}</td>
+        <td>{{ member.dni }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.phone }}</td>
+        <td>{{ member.profession.name }}</td>
+        <td>{{ member.job.name }}</td>
+        <td>
+          {#<a href="{{ url_for('member_detail', member_id=member.id) }}">Ver</a>
+          <a href="{{ url_for('member_update', member_id=member.id) }}">Editar</a>
+          <a href="{{ url_for('member_delete', member_id=member.id) }}">Eliminar</a>#}
+        </td>
+      </tr>
+      {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="8">No hay miembros en el equipo.</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  {#<a href="{{ url_for('member_new') }}">Crear miembro nuevo</a>#}
+{% endblock %}
+
+{% block footer %}
 {% endblock %}
