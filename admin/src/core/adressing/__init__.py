@@ -3,7 +3,7 @@ from src.core.adressing.province import Province
 from src.core.adressing.locality import Locality
 
 """Módulo de provincias"""
-def get_provinces()->list:
+def list_provinces()->list:
     """Obtiene todas las provincias"""
     return db.session.query(Province).all()
 
@@ -19,7 +19,7 @@ def province_new(**kwargs)->Province:
     return province
 
 """Módulo de localidades"""
-def get_localities()->list:
+def list_localities()->list:
     """Obtiene todas las localidades"""
     return db.session.query(Locality).all()
 

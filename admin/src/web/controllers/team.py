@@ -1,6 +1,6 @@
 from flask import render_template, Blueprint, request, redirect, url_for
 
-from src.core import people
+from src.core import people, adressing, professions
 
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
@@ -17,22 +17,34 @@ def show(id: int):
     member = people.get_member_by_id(id)
     return render_template('team/show.html', member=member)
 
-@bp.get("/nuevo")
+def _check_data(form_data: dict):
+    """Valida los datos del formulario"""
+    form_data['active'] = form_data.get('active', 'false').lower() == 'true'
+    if form_data.get('end_date') == '':
+        form_data['end_date'] = None
+    return form_data
+
+@bp.route("/nuevo" , methods=['GET', 'POST'])
 def create():
     """Formulario para crear un nuevo miembro del equipo"""
-    return render_template('team/create.html')
+    profession_list = professions.list_professions()
+    jobs = professions.list_jobs()
+    localities = adressing.list_localities()
+    if request.method == "POST":
+        # Aquí debes procesar los datos del formulario
+        form_data = _check_data(request.form.to_dict())
+        member = people.member_new(**form_data)
+        return redirect(url_for('team.show', id=member.id))
+    return render_template('team/create.html', professions=profession_list, jobs=jobs, localities=localities)
 
-@bp.get("/<int:id>/editar")
+@bp.post("/<int:id>/editar")
 def update(id: int):
     """Formulario para editar un miembro del equipo"""
     member = people.get_member_by_id(id)
-    return render_template('team/update.html', member=member)
-
-@bp.post("/")
-def store():
-    """Guardar un nuevo miembro del equipo"""
-    member = people.member_new(**request.form)
-    return redirect(url_for('team.show', id=member.id))
+    profession_list = professions.list_professions()
+    jobs = professions.list_jobs()
+    localities = adressing.list_localities()
+    return render_template('team/update.html', member=member, professions=profession_list, jobs=jobs, localities=localities)
 
 @bp.post("/<int:id>")
 def save(id: int):

@@ -4,7 +4,7 @@ from src.core.professions.job import Job
 
 
 """Módulo de profesiones"""
-def get_professions()->list:
+def list_professions()->list:
     """Obtiene todas las profesiones"""
     return Profession.query.all()
 
@@ -21,7 +21,7 @@ def profession_new(**kwargs)->Profession:
 
 
 """Módulo de trabajos"""
-def get_jobs()->list:
+def list_jobs()->list:
     """Obtiene todos los trabajos"""
     return Job.query.all()
 
