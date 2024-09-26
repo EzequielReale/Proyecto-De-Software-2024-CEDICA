@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}CEDICA - Editar miembro del equipo{% endblock %}
+{% block title %}CEDICA - Editar miembro{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -12,31 +12,31 @@
   <form method="post">
     <div class="form-group">
       <label for="name">Nombre:</label>
-      <input type="text" class="form-control" id="name" name="name" value="{{ member.name }}" required>
+      <input type="text" class="form-control" id="name" name="name" value="{{ member.name }}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre no debe contener números" minlength="1" maxlength="64">
     </div>
     <div class="form-group">
       <label for="last_name">Apellido:</label>
-      <input type="text" class="form-control" id="last_name" name="last_name" value="{{ member.last_name }}" required>
+      <input type="text" class="form-control" id="last_name" name="last_name" value="{{ member.last_name }}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El apellido no debe contener números" minlength="1" maxlength="64">
     </div>
     <div class="form-group">
       <label for="dni">DNI:</label>
-      <input type="text" class="form-control" id="dni" name="dni" value="{{ member.dni }}" required>
+      <input type="text" class="form-control" id="dni" name="dni" value="{{ member.dni }}" required pattern="\d+" title="El DNI no debe contener letras" minlength="7" maxlength="10">
     </div>
     <div class="form-group">
       <label for="phone">Teléfono:</label>
-      <input type="text" class="form-control" id="phone" name="phone" value="{{ member.phone }}" required>
+      <input type="text" class="form-control" id="phone" name="phone" value="{{ member.phone }}" required pattern="[0-9+\-\s]+" title="El teléfono no debe contener letras" minlength="7" maxlength="32">
     </div>
     <div class="form-group">
       <label for="emergency_phone">Teléfono de emergencia:</label>
-      <input type="text" class="form-control" id="emergency_phone" name="emergency_phone" value="{{ member.emergency_phone }}" required>
+      <input type="text" class="form-control" id="emergency_phone" name="emergency_phone" value="{{ member.emergency_phone }}" required pattern="[0-9+\-\s]+" title="El teléfono de emergencia no debe contener letras" minlength="7" maxlength="32">
     </div>
     <div class="form-group">
       <label for="street">Calle:</label>
-      <input type="text" class="form-control" id="street" name="street" value="{{ member.street }}" required>
+      <input type="text" class="form-control" id="street" name="street" value="{{ member.street }}" required minlength="1" maxlength="128">
     </div>
     <div class="form-group">
       <label for="number">Número:</label>
-      <input type="text" class="form-control" id="number" name="number" value="{{ member.number }}" required>
+      <input type="text" class="form-control" id="number" name="number" value="{{ member.number }}" required pattern="\d+" title="El número no debe contener letras" minlength="1" maxlength="8">
     </div>
     <div class="form-group">
       <label for="locality_id">Localidad:</label>
@@ -55,21 +55,21 @@
       <input type="date" class="form-control" id="start_date" name="start_date" value="{{ member.start_date.strftime('%Y-%m-%d') }}" required>
     </div>
     <div class="form-group">
-      <label for="end_date">Fecha de fin:</label>
+      <label for="end_date">Fecha de cese:</label>
       <input type="date" class="form-control" id="end_date" name="end_date" value="{% if member.end_date %}{{ member.end_date.strftime('%Y-%m-%d') }}{% endif %}">
     </div>
     <div class="form-group">
-      <label for="health_insurance">Seguro médico:</label>
-      <input type="text" class="form-control" id="health_insurance" name="health_insurance" value="{{ member.health_insurance }}" required>
+      <label for="health_insurance">Obra social:</label>
+      <input type="text" class="form-control" id="health_insurance" name="health_insurance" value="{{ member.health_insurance }}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre de la obra social no debe contener números" minlength="1" maxlength="32">
     </div>
     <div class="form-group">
-      <label for="health_insurance_number">Número de seguro médico:</label>
-      <input type="text" class="form-control" id="health_insurance_number" name="health_insurance_number" value="{{ member.health_insurance_number }}" required>
+      <label for="health_insurance_number ">Número de la obra social:</label>
+      <input type="text" class="form-control" id="health_insurance_number" name="health_insurance_number" value="{{ member.health_insurance_number }}" required pattern="\d+" title="El número de la obra social no debe contener letras" minlength="1" maxlength="32">
     </div>
     <div class="form-group">
       <label for="condition">Condición:</label>
       <select class="form-control" id="condition" name="condition" required>
-        <option value="Voluntario" {% if member.condition == 'V olutario' %}selected{% endif %}>Voluntario</option>
+        <option value="Voluntario" {% if member.condition == 'Voluntario' %}selected{% endif %}>Voluntario</option>
         <option value="Personal Rentado" {% if member.condition == 'Personal Rentado' %}selected{% endif %}>Personal Rentado</option>
       </select>
     </div>
