@@ -24,33 +24,39 @@ def _check_data(form_data: dict):
         form_data['end_date'] = None
     return form_data
 
+def _get_data_from_db():
+    """Obtiene los datos de la base de datos"""
+    profession_list = professions.list_professions()
+    jobs = professions.list_jobs()
+    localities = adressing.list_localities()
+    return profession_list, jobs, localities
+
 @bp.route("/nuevo" , methods=['GET', 'POST'])
 def create():
     """Formulario para crear un nuevo miembro del equipo"""
-    profession_list = professions.list_professions()
-    jobs = professions.list_jobs()
-    localities = adressing.list_localities()
+    profession_list, jobs, localities = _get_data_from_db()
+    
+    # Si se envia el formulario
     if request.method == "POST":
-        # Aquí debes procesar los datos del formulario
         form_data = _check_data(request.form.to_dict())
         member = people.member_new(**form_data)
         return redirect(url_for('team.show', id=member.id))
+    
     return render_template('team/create.html', professions=profession_list, jobs=jobs, localities=localities)
 
-@bp.post("/<int:id>/editar")
+@bp.route("/<int:id>/editar", methods=['GET', 'POST'])
 def update(id: int):
     """Formulario para editar un miembro del equipo"""
     member = people.get_member_by_id(id)
-    profession_list = professions.list_professions()
-    jobs = professions.list_jobs()
-    localities = adressing.list_localities()
+    profession_list, jobs, localities = _get_data_from_db()
+    
+    # Si se envia el formulario
+    if request.method == "POST":
+        form_data = _check_data(request.form.to_dict())
+        member = people.member_update(id, **form_data)
+        return redirect(url_for('team.show', id=member.id))
+    
     return render_template('team/update.html', member=member, professions=profession_list, jobs=jobs, localities=localities)
-
-@bp.post("/<int:id>")
-def save(id: int):
-    """Actualizar un miembro del equipo"""
-    member = people.member_update(id, **request.form)
-    return redirect(url_for('team.show', id=member.id))
 
 @bp.post("/<int:id>/eliminar")
 def destroy(id: int):

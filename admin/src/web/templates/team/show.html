@@ -21,10 +21,11 @@
         <strong>Profesión:</strong> {{ member.profession.name }}<br>
         <strong>Trabajo actual:</strong> {{ member.job.name }}<br>
         <strong>Fecha de inicio:</strong> {{ member.start_date.strftime('%d-%m-%Y') }}<br>
+        <strong>Fecha de cese:</strong> 
         {% if member.end_date %}
-            <strong>Fecha de fin:</strong> {{ member.end_date.strftime('%d-%m-%Y') }}<br>
+            {{ member.end_date.strftime('%d-%m-%Y') }}<br>
         {% else %}
-            <strong>Fecha de fin:</strong> Sin fecha de fin definida<br>
+            Sin fecha de cese definida<br>
         {% endif %}
         <strong>Obra social:</strong> {{ member.health_insurance }}<br>
         <strong>Número de obra social:</strong> {{ member.health_insurance_number }}<br>
