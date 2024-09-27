@@ -24,55 +24,43 @@ a:hover {
 }
 
 /* Layout styles */
-#container {
-    max-width: 1200px;
+main {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
     margin: 0 auto;
-    padding: 20px;
+    padding: 20px 25px;
+    gap: 50px;
 }
 
-header, footer {
+/* No aside */
+main.no-aside {
+    max-width: 1200px;
+    grid-template-columns: 1fr;
+}
+
+header,
+footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 1em 0;
 }
 
-header a, footer a {
+header a,
+footer a {
     color: #fff;
     text-decoration: none;
 }
 
-header a:hover, footer a:hover {
-    text-decoration: underline;
-}
-
-/* Navbar styles */
-nav {
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-    background-color: #444;
-}
-
-nav a {
-    margin: 0 15px;
-    color: #fff;
-    text-transform: uppercase;
-}
-
-nav a:hover {
+header a:hover,
+footer a:hover {
     text-decoration: underline;
 }
 
 /* Content styles */
-main {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: #333;
 }
 
@@ -86,4 +74,17 @@ footer {
 
 footer p {
     margin: 0;
+}
+
+.alert-error {
+    background-color: #F8D7DA !important;
+    border: 1px solid #f5c6cb !important;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    main {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
 }

@@ -1,17 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    {% block head %}
+    {% block head %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <title>{% block title %}{% endblock %}</title>
-    {% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        aside:empty,
+        section:empty {
+            display: none;
+            position: absolute;
+            /* Oculta los elementos aside y section si están vacíos. */
+        }
+    </style>
 </head>
-<body>
-   <div>{% block navbar %}{% endblock %}</div>
-   <div id="container">
-    {% block content %}
+
+<body style="padding-top: 75px;">
+    <nav class="navbar navbar-expand-lg bg-light shadow-sm fixed-top">
+        <div class="container-fluid">
+            <!-- Navbar del Layout, con el logo de CEDICA y los enlaces a las secciones de la página. -->
+            <a class="navbar-brand" href="{{ url_for('home') }}"><img
+                    src="{{ url_for('static', filename='logos/Imagotipo CEDICA.png')}}" width="175"
+                    alt="Logo CEDICA" /></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Alternar navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Enlaces a las secciones de la página -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'jya' %}active{% endif %}" aria-current="page"
+                            href="{{ url_for('jya') }}">J&A</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'ecuestre' %}active{% endif %}"
+                            href="{{ url_for('ecuestre') }}">Ecuestre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'team' %}active{% endif %}"
+                            href="{{ url_for('team') }}">Equipo</a>
+                    </li>
+                </ul>
+                <!-- Dropdown con las opciones de la cuenta del usuario -->
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle d-flex justify-content-center align-items-center gap-2 ps-2"
+                        type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Tu cuenta">
+                        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="30px" height="30px"
+                            viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+                            <g transform="translate(0,512) scale(0.1,-0.1)" fill="#404040" stroke="none">
+                                <path d="M2405 4924 c-369 -37 -620 -106 -906 -249 -218 -109 -392 -232 -570
+                                -403 -394 -378 -636 -849 -716 -1391 -20 -142 -23 -474 -4 -611 60 -448 251
+                                -888 529 -1220 382 -457 901 -746 1502 -837 158 -23 482 -23 640 0 429 65 823
+                                234 1155 495 90 71 306 287 377 377 261 332 430 726 495 1155 23 158 23 482 0
+                                640 -41 267 -113 497 -228 730 -151 303 -349 555 -609 772 -324 271 -754 462
+                                -1180 523 -104 15 -408 27 -485 19z m356 -285 c247 -25 476 -89 694 -193 155
+                                -75 238 -124 364 -219 258 -194 464 -443 612 -742 244 -491 284 -1055 113
+                                -1575 -24 -74 -69 -186 -99 -249 -52 -107 -149 -276 -165 -286 -4 -3 -31 34
+                                -59 81 -142 238 -350 454 -594 617 -109 73 -288 163 -402 203 -44 15 -82 29
+                                -84 31 -3 2 27 33 65 71 275 266 363 647 234 1005 -81 224 -250 408 -474 517
+                                -139 68 -248 93 -406 93 -158 0 -267 -25 -406 -93 -224 -109 -393 -293 -474
+                                -517 -129 -358 -41 -739 234 -1005 38 -38 68 -69 65 -71 -2 -2 -40 -16 -84
+                                -31 -395 -137 -764 -441 -997 -823 -28 -45 -54 -80 -59 -77 -17 10 -113 179
+                                -169 297 -371 780 -216 1710 390 2341 433 451 1080 689 1701 625z m-30 -944
+                                c273 -71 473 -319 486 -605 6 -123 -14 -219 -68 -330 -34 -69 -58 -101 -128
+                                -170 -136 -135 -269 -190 -461 -190 -192 0 -325 55 -461 190 -70 69 -94 101
+                                -128 170 -54 112 -74 208 -68 330 16 322 246 571 572 624 52 8 190 -2 256 -19z
+                                m118 -1606 c497 -83 937 -405 1181 -862 l53 -99 -54 -55 c-139 -141 -338 -282
+                                -544 -384 -734 -364 -1610 -265 -2250 256 -49 41 -114 98 -144 128 l-53 55 51
+                                99 c296 564 903 914 1536 886 61 -3 161 -14 224 -24z" />
+                            </g>
+                        </svg>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-lg-end">
+                        <!-- Si el usuario está logueado, se muestra la opción de perfil y cerrar sesión. -->
+                        {% if is_authenticated(session) %}
+                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+                        <!-- Sino, se muestra la opción de iniciar sesión. -->
+                        {% else %}
+                        <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Iniciar sesión</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main id="container">
+        <!-- Contenido principal de la página -->
+        <!-- Barra de navegación lateral -->
+        <aside class="nav nav-pills flex-column rounded shadow-sm rounded shadow-sm bg-light p-3">
+            {% block aside %}{% endblock %}
+        </aside>
+        <div class="d-flex flex-column gap-3">
+            <!-- Código para visualizar los mensajes -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <!-- Sección para mostrar mensajes de error, éxito, etc. -->
+            <section>
+                <div class="container w-75">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} flash-message alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn close position-absolute top-0 end-0 p-2 py-1"
+                            data-dismiss="alert" aria-label="Cerrar alerta">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+            {% endwith %}
+
+            <!-- Sección para mostrar el contenido de la página -->
+            <section>
+                {% block content %}
+                {% endblock %}
+            </section>
+        </div>
+    </main>
+    {% block footer %}
     {% endblock %}
-   </div>
-   <div>{% block footer %}{% endblock %}</div>
+    <script>
+        // Evento que se ejecuta cuando se termina de cargar el DOM y oculta el aside si está vacío.
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const mainElement = document.querySelector('main');
+            const asideElement = document.querySelector('aside');
+            if (!asideElement || !asideElement.innerHTML.trim()) {
+                asideElement.remove();
+                mainElement.classList.add('no-aside');
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+
+    <!--lo agregue por los mensajes-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 </body>
+
 </html>

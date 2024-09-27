@@ -1,10 +1,26 @@
 {% extends "layout.html" %}
 
-{% block title %}Home{% endblock %}
+{% block title %}CEDICA - Home{% endblock %}
 
 {% block head %}
 {{ super() }}
 {% endblock %}
+
+<!--
+    Ejemplo de un bloque aside para el layout.html
+
+    {% block aside %}
+    <li class="nav-item">
+        <a class="nav-link active" href="#">Link 1</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Link 2</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" aria-disabled="true">Link deshabilitado</a>
+    </li>
+    {% endblock %}
+-->
 
 {% block content %}
 <h1>Inicio</h1>
