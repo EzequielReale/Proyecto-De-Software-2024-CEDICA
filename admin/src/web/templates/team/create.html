@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Nuevo miembro{% endblock %}
+
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<h1>Crear miembro del equipo</h1>
+<p>Formulario para crear un nuevo miembro del equipo</p>
+<form method="post">
+    <div class="form-group">
+        <label for="name">Nombre:</label>
+        <input type="text" class="form-control" id="name" name="name" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre no debe contener números" minlength="1" maxlength="64">
+    </div>
+    <div class="form-group">
+        <label for="last_name">Apellido:</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El apellido no debe contener números" minlength="1" maxlength="64">
+    </div>
+    <div class="form-group">
+        <label for="dni">DNI:</label>
+        <input type="text" class="form-control" id="dni" name="dni" required pattern="\d+" title="El DNI no debe contener letras" minlength="7" maxlength="10">
+    </div>
+    <div class="form-group">
+        <label for="phone">Teléfono:</label>
+        <input type="text" class="form-control" id="phone" name="phone" required pattern="[0-9+\-\s]+" title="El teléfono no debe contener letras" minlength="7" maxlength="32">
+    </div>
+    <div class="form-group">
+        <label for="emergency_phone">Teléfono de emergencia:</label>
+        <input type="text" class="form-control" id="emergency_phone" name="emergency_phone" required pattern="[0-9+\-\s]+" title="El teléfono de emergencia no debe contener letras" minlength="7" maxlength="32">
+    </div>
+    <div class="form-group">
+        <label for="street">Calle:</label>
+        <input type="text" class="form-control" id="street" name="street" required minlength="1" maxlength="128">
+    </div>
+    <div class="form-group">
+        <label for="number">Número:</label>
+        <input type="text" class="form-control" id="number" name="number" required pattern="\d+" title="El número no debe contener letras" minlength="1" maxlength="8">
+    </div>
+    <div class="form-group">
+        <label for="locality_id">Localidad:</label>
+        <select class="form-control" id="locality_id" name="locality_id" required>
+            {% for locality in localities %}
+                <option value="{{ locality.id }}">{{ locality.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+        <label for="start_date">Fecha de inicio:</label>
+        <input type="date" class="form-control" id="start_date" name="start_date" required>
+    </div>
+    <div class="form-group">
+        <label for="end_date">Fecha de cese:</label>
+        <input type="date" class="form-control" id="end_date" name="end_date">
+    </div>
+    <div class="form-group">
+        <label for="health_insurance">Obra social:</label>
+        <input type="text" class="form-control" id="health_insurance" name="health_insurance" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre de la obra social no debe contener números" minlength="1" maxlength="32">
+    </div>
+    <div class="form-group">
+        <label for="health_insurance_number">Número de obra social:</label>
+        <input type="text" class="form-control" id="health_insurance_number" name="health_insurance_number" required pattern="\d+" title="El número de la obra social no debe contener letras" minlength="1" maxlength="32">
+    </div>
+    <div class="form-group">
+        <label for="condition">Condición:</label>
+        <select class="form-control" id="condition" name="condition" required>
+ <option value="Voluntario">Voluntario</option>
+            <option value="Personal Rentado">Personal Rentado</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="active">Activo:</label>
+        <select class="form-control" id="active" name="active" required>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="profession_id">Profesión:</label>
+        <select class="form-control" id="profession_id" name="profession_id" required>
+            {% for profession in professions %}
+                <option value="{{ profession.id }}">{{ profession.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="job_id">Trabajo:</label>
+        <select class="form-control" id="job_id" name="job_id" required>
+            {% for job in jobs %}
+                <option value="{{ job.id }}">{{ job.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Crear</button>
+</form>
+{% endblock %}
