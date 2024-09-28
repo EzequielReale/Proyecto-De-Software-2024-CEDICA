@@ -174,7 +174,19 @@ tr:last-child td {
  <!-- Buscador -->
  <div class="search-container">
     <form action="{{ url_for('registro_pagos.index') }}" method="GET">
-        <input type="text" name="search" placeholder="Buscar por beneficiario, tipo o monto">
+        
+        <!-- Rango de fechas -->
+        <input type="date" name="fecha_inicio" placeholder="Fecha inicio">
+        <input type="date" name="fecha_fin" placeholder="Fecha fin">
+        
+        <!-- Tipo de pago -->
+        <select name="tipo_pago">
+            <option value="">Todos los tipos</option>
+            <option value="Honorarios">Honorarios</option>
+            <option value="Proveedor">Proveedor</option>
+            <option value="Varios">Varios</option>
+        </select>
+        
         <button type="submit">Buscar</button>
     </form>
 </div>
@@ -184,7 +196,12 @@ tr:last-child td {
             <tr>
                 <th>Beneficiario</th>
                 <th>Monto</th>
-                <th>Fecha</th>
+                <th>
+                    <a href="#" onclick="ordenarPorFecha()">Fecha 
+                        <i id="orden-icon" class="fas fa-sort"></i> <!-- Icono que cambia al hacer clic -->
+                    </a>
+                </th>
+
                 <th>Tipo de pago</th>
                 <th>Descripcion</th>
                 <th>Acciones</th> <!-- Nueva columna para acciones -->
@@ -238,6 +255,44 @@ tr:last-child td {
         }
     }
 </script>
+
+
+
+<!--orden por fecha-->
+
+
+<script>
+    let ordenAscendente = true; // Variable que indica si el orden es ascendente
+
+    function ordenarPorFecha() {
+        const tabla = document.querySelector("table tbody");
+        const filas = Array.from(tabla.querySelectorAll("tr")).filter(fila => fila.id === ""); // Filtrar solo las filas principales, no las de detalles adicionales
+
+        // Ordenar las filas por fecha
+        filas.sort((a, b) => {
+            const fechaA = new Date(a.querySelector("td:nth-child(3)").innerText); // Obtener la fecha de la tercera columna
+            const fechaB = new Date(b.querySelector("td:nth-child(3)").innerText);
+
+            return ordenAscendente ? fechaA - fechaB : fechaB - fechaA; // Orden ascendente o descendente
+        });
+
+        // Actualizar el DOM con las filas ordenadas
+        filas.forEach(fila => tabla.appendChild(fila));
+
+        // Cambiar el icono de orden y alternar el orden
+        ordenAscendente = !ordenAscendente;
+        const icono = document.getElementById("orden-icon");
+        if (ordenAscendente) {
+            icono.classList.remove("fa-sort-down");
+            icono.classList.add("fa-sort-up");
+        } else {
+            icono.classList.remove("fa-sort-up");
+            icono.classList.add("fa-sort-down");
+        }
+    }
+</script>
+
+
 
 
 {% endblock %}

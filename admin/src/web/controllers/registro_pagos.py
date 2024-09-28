@@ -1,18 +1,14 @@
-from flask import Blueprint
-from flask import render_template
-from flask import request,redirect, flash,url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 
-from flask import session
-from src.core import registro_pagos
 from src.core import auth
-
+from src.core import registro_pagos
 
 bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 
 @bp.get("/")
 def index():
     """controlador listado, paso al template los pagos"""
-    pagos = registro_pagos.administracion_index()
+    pagos = registro_pagos.administracion_index(request)
     return render_template("registro_pagos/index.html",pagos=pagos)
 
 

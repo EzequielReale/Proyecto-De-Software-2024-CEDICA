@@ -1,6 +1,7 @@
-from src.core.database import db
-from src.core.registro_pagos.Pagos import Tipo_pago,Pago 
 from src.core.auth import User
+from src.core.database import db
+from src.core.registro_pagos.Pagos import Pago, Tipo_pago
+
 
 
 def tipo_new(**kwargs):
@@ -21,10 +22,30 @@ def pago_create(**kwargs):
 
 
 
-def administracion_index():
-     """devuelvo todos los registros de pagos"""
-     pagos = Pago.query.all()  
-     return pagos 
+def administracion_index(request):
+    """devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""   
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+    tipo_pago = request.args.get('tipo_pago')
+    
+    # consulta base
+    query = Pago.query
+    
+    # filtrar por rango de fechas
+    if fecha_inicio:
+        query = query.filter(Pago.fecha_pago >= fecha_inicio)
+    if fecha_fin:
+        query = query.filter(Pago.fecha_pago <= fecha_fin)
+    
+    # filtrar por tipo de pago
+    if tipo_pago and tipo_pago != "Todos los tipos":
+        print("tipo pago: ",tipo_pago)
+        query = query.join(Pago.tipo_pago).filter(Tipo_pago.tipo == tipo_pago)
+    
+    pagos = query.all()
+    return pagos 
+    
+    
 
 
 def administracion_destroy(id):
