@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+
+{% block title %}Actualizar Pago{% endblock %}
+
+{% block content %}
+<style>
+    /* Centrar el formulario y darle estilo */
+    .form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #007bff;
+    }
+
+    label {
+        display: block;
+        margin: 15px 0 5px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    a {
+        text-decoration: none;
+        color: #007bff;
+        text-align: center;
+        display: block;
+        margin-top: 10px;
+    }
+
+    a:hover {
+        color: #0056b3;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Actualizar Pago</h2>
+
+    <form action="{{ url_for('registro_pagos.update', id=pago.id) }}" method="POST">
+        <label for="monto">Monto:</label>
+        <input type="number" name="monto" id="monto" value="{{ pago.monto }}" required>
+
+        <label for="tipo_pago">Tipo de Pago:</label>
+        <select name="tipo_pago" id="tipo_pago" required>
+            {% for tipo in tipos %}
+                <option value="{{ tipo.id }}" {% if tipo.id == pago.tipo_pago.id %}selected{% endif %}>
+                    {{ tipo.tipo }}
+                </option>
+            {% endfor %}
+        </select>
+        
+        <label for="fecha_pago">Fecha de Pago:</label>
+        <input type="date" name="fecha_pago" id="fecha_pago" value="{{ pago.fecha_pago.strftime('%Y-%m-%d') }}" required>
+
+        
+        <label for="beneficiario">Beneficiario:</label>
+        <select name="beneficiario" id="beneficiario" required>
+            {% for user in users %}
+                <option value="{{ user.id }}" {% if user.id == pago.beneficiario_id %}selected{% endif %}>
+                    {{ user.email }}
+                </option>
+            {% endfor %}
+        </select>
+
+
+        <label for="descripcion">Descripción:</label>
+        <input type="text" name="descripcion" id="descripcion" value="{{ pago.descripcion }}" required>
+        
+        <button type="submit">Guardar Cambios</button>
+        <a href="{{ url_for('registro_pagos.index') }}">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}
