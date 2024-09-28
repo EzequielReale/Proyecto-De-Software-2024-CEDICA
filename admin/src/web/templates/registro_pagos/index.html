@@ -211,8 +211,9 @@ tr:last-child td {
             <tr>
                 <th>Beneficiario</th>
                 <th>Monto</th>
+
                 <th>
-                    <a href="#" onclick="ordenarPorFecha()"  style="color: #f8f9fa;">Fecha 
+                    <a href="#" onclick="ordenarPorFecha()" style="color: #f8f9fa;">Fecha 
                         <i id="orden-icon" class="fas fa-sort" style="color: #f8f9fa;"></i> 
                     </a>
                 </th>
@@ -224,7 +225,7 @@ tr:last-child td {
         </thead>
         <tbody>
             {% for pago in pagos %}
-                <tr>
+            <tr data-id="{{ pago.id }}">
                     <td>{{ pago.beneficiario.email }}</td>
                     <td>{{ pago.monto }}</td>
                     <td>{{ pago.fecha_pago.strftime('%Y-%m-%d') }}</td>
@@ -277,27 +278,40 @@ tr:last-child td {
 
 <!--orden por fecha-->
 
-
 <script>
-    let ordenAscendente = true; // Variable que indica si el orden es ascendente
+    let ordenAscendente = true; // Inicializar la variable globalmente
+
+    function toggleDetalles(id) {
+        var detalles = document.getElementById('detalles-' + id);
+        if (detalles.style.display === 'none' || detalles.style.display === '') {
+            detalles.style.display = 'table-row'; // Mostrar detalles
+        } else {
+            detalles.style.display = 'none'; // Ocultar detalles
+        }
+    }
 
     function ordenarPorFecha() {
         const tabla = document.querySelector("table tbody");
-        const filas = Array.from(tabla.querySelectorAll("tr")).filter(fila => fila.id === ""); // Filtrar solo las filas principales, no las de detalles adicionales
+        const filas = Array.from(tabla.querySelectorAll("tr[data-id]")); // Selecciona solo las filas principales
 
         // Ordenar las filas por fecha
         filas.sort((a, b) => {
             const fechaA = new Date(a.querySelector("td:nth-child(3)").innerText); // Obtener la fecha de la tercera columna
             const fechaB = new Date(b.querySelector("td:nth-child(3)").innerText);
-
             return ordenAscendente ? fechaA - fechaB : fechaB - fechaA; // Orden ascendente o descendente
         });
 
-        // Actualizar el DOM con las filas ordenadas
-        filas.forEach(fila => tabla.appendChild(fila));
+        // Actualizar el DOM con las filas ordenadas, incluyendo las filas de detalles
+        filas.forEach(fila => {
+            tabla.appendChild(fila); // Añadir la fila principal
+            const detalles = document.getElementById('detalles-' + fila.getAttribute('data-id')); // Obtener la fila de detalles
+            if (detalles) {
+                tabla.appendChild(detalles); // Añadir la fila de detalles correspondiente
+            }
+        });
 
         // Cambiar el icono de orden y alternar el orden
-        ordenAscendente = !ordenAscendente;
+        ordenAscendente = !ordenAscendente; // Alternar el estado de orden
         const icono = document.getElementById("orden-icon");
         if (ordenAscendente) {
             icono.classList.remove("fa-sort-down");
@@ -308,6 +322,8 @@ tr:last-child td {
         }
     }
 </script>
+
+
 
 
 
