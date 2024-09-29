@@ -22,7 +22,6 @@ def create_app(env="development", static_folder="../../static"):
     #registro funcion en jinja para restringir el front
     app.jinja_env.globals.update(is_authenticated = autenticacion)
 
-
     # Rutas
     routes.register(app)
     
