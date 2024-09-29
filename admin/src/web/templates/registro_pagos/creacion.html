@@ -131,10 +131,12 @@
 
             </div>
 
-            <div class="form-group">
-                <label for="descripcion">Descripción</label>
-                <textarea id="descripcion" name="descripcion" rows="4" placeholder="Ingrese una breve descripción del pago"></textarea>
-            </div>
+   
+            <label for="descripcion">Descripción:</label>
+            <input type="text" name="descripcion" id="descripcion"  required maxlength="255">
+            <div id="descripcion-count">0/255 </div>
+    
+
 
             <div class="form-actions">
                 <button type="submit">Registrar Pago</button>
@@ -144,5 +146,32 @@
     </div>
 </body>
 </html>
+
+
+
+
+<script>
+    print("estre al script")
+    console.log("entro al script");
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const descripcionInput = document.getElementById('descripcion');
+        const countDisplay = document.getElementById('descripcion-count');
+
+        // Función para actualizar el contador de caracteres
+        function updateCount() {
+            const currentLength = descripcionInput.value.length;
+            countDisplay.textContent = `${currentLength}/255`;
+        }
+
+        // Event listener para actualizar el contador al escribir
+        descripcionInput.addEventListener('input', updateCount);
+
+        // Inicializar el contador con el valor actual
+        updateCount();
+    });
+</script>
+
+
 
 {% endblock %}
