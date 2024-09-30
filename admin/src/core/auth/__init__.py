@@ -1,6 +1,6 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.auth.user import User
+from src.core.auth.user import User,Role
 
 
 def list_users():
@@ -17,6 +17,13 @@ def user_new(**kwargs):
     db.session.add(user)
     db.session.commit()
 
+    return user
+
+
+def role_new(**kwargs):
+    user = Role(**kwargs)
+    db.session.add(user)
+    db.session.commit()
     return user
 
 
