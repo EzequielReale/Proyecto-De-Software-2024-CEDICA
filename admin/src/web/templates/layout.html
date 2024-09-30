@@ -40,15 +40,15 @@
                 <!-- Enlaces a las secciones de la página -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'jya' %}active{% endif %}" aria-current="page"
-                            href="{{ url_for('jya.index') }}">J&A</a>
+                        <a class="nav-link {% if 'jya' in request.endpoint %}active{% endif %}" aria-current="page"
+                            href="{{ url_for('jya') }}">J&A</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'ecuestre' %}active{% endif %}"
-                            href="{{ url_for('ecuestre.index') }}">Ecuestre</a>
+                        <a class="nav-link {% if 'ecuestre' in request.endpoint %}active{% endif %}"
+                            href="{{ url_for('ecuestre') }}">Ecuestre</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'team' %}active{% endif %}"
+                        <a class="nav-link {% if 'team' in request.endpoint %}active{% endif %}"
                             href="{{ url_for('team.index') }}">Equipo</a>
                     </li>
                 </ul>
