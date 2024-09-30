@@ -48,23 +48,25 @@ def run():
         postal_code="1923",
         province_id=1
     )
-    member1 = people.member_new(
-            name="Giuliana",
+    # Creo 30 miembros para poder probar la paginación del index
+    for i in range(30):
+        people.member_new(
+            name=f"Giuliana_{i}",
             last_name="Rossi",
-            dni="12345678",
-            phone="123456789",
-            emergency_phone="987654321",
+            dni=f"{12345678 + i}",
+            phone=f"123456789{i}",
+            emergency_phone=f"987654321{i}",
             street="Calle Falsa",
-            number="123",
+            number=f"{123 + i}",
             locality_id=1,
-            email="giuliana@gmail.com",
+            email=f"giuliana_{i}@gmail.com",
             start_date="2023-01-01",
             end_date="2023-12-31",
-            health_insurance="Health Inc.",
-            health_insurance_number="987654321",
+            health_insurance="Health Inc",
+            health_insurance_number=f"987654321{i}",
             condition="Voluntario",
             active=True,
             profession_id=1,
             job_id=1
-    )
+        )
 

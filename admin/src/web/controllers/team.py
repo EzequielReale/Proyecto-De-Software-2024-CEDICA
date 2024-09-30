@@ -6,10 +6,12 @@ from web.forms.member_form import MemberForm
 bp = Blueprint("team", __name__, url_prefix ="/team") 
 
 @bp.get("/")
-def index()->str:
-    """Listado de miembros del equipo"""
-    members = people.list_members()
-    return render_template('team/index.html', members=members)
+def index() -> str:
+    """Listado de miembros del equipo usando paginación"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 25
+    members, total_pages = people.list_members(page, per_page)
+    return render_template('team/index.html', members=members, page=page, total_pages=total_pages)
 
 @bp.get("/<int:id>")
 def show(id: int)->str:
@@ -52,12 +54,12 @@ def create()->str:
     
     # Si se envia el formulario
     if request.method == "POST":
-            form, valid = _get_form(request, profession_list, jobs, provinces, localities)
-            if valid:
-                member = people.member_new(**form.data)
-                return redirect(url_for('team.show', id=member.id))
-            else:
-                member = form.data
+        form, valid = _get_form(request, profession_list, jobs, provinces, localities)
+        if valid:
+            member = people.member_new(**form.data)
+            return redirect(url_for('team.show', id=member.id))
+        else:
+            member = form.data
 
     return render_template('team/create.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces, localities=localities)
 

@@ -2,9 +2,10 @@ from src.core.database import db
 from src.core.people.member import Member
 
 
-def list_members()->list:
-    """Devuelve todos los miembros de la BD"""
-    return Member.query.all()
+def list_members(page=1, per_page=25):
+    """Devuelve los miembros paginados de la BD"""
+    pagination = Member.query.paginate(page=page, per_page=per_page, error_out=False)
+    return pagination.items, pagination.pages
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
