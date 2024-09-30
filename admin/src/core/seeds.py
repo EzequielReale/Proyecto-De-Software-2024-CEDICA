@@ -1,4 +1,4 @@
-from src.core import board, auth, people, professions, adressing,registro_pagos
+from src.core import board, auth, people, professions, adressing, registro_pagos, equestrian
 
 
 def run():
@@ -66,5 +66,32 @@ def run():
             active=True,
             profession_id=1,
             job_id=1
+    )
+    activity1 = equestrian.activity_new(
+        name="Hipoterapia"
+    )
+    activity2 = equestrian.activity_new(
+        name="Monta Terapéutica"
+    )
+    activity3 = equestrian.activity_new(
+        name="Deporte Ecuestre Adaptado"
+    )
+    activity4 = equestrian.activity_new(
+        name="Actividades Recreativas"
+    )
+    activity5 = equestrian.activity_new(
+        name="Equitación"
+    )
+    horse1 = equestrian.horse_new(
+        name="Canelo",
+        birth_date="2015-01-01",
+        gender="Macho",
+        race="Criollo",
+        coat="Marrón",
+        donation=False,
+        entry_date="2023-01-01",
+        assigned_members=[member1],
+        activities=[activity1, activity2, activity3],
+        assigned_location="Establo 1"
     )
 

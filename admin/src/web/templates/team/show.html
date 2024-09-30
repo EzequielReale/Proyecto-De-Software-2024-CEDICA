@@ -7,40 +7,41 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Detalle de miembro del equipo</h1>
-  <p>Información detallada del miembro del equipo</p>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">{{ member.name }} {{ member.last_name }}</h5>
-      <p class="card-text">
-        <strong>DNI:</strong> {{ member.dni }}<br>
-        <strong>Email:</strong> {{ member.email }}<br>
-        <strong>Teléfono:</strong> {{ member.phone }}<br>
-        <strong>Teléfono de emergencia</strong> {{ member.emergency_phone }}<br>
-        <strong>Domicilio</strong> {{ member.street }} {{ member.number }}, {{ member.locality.name }}, provincia de {{ member.locality.province.name }}<br>
-        <strong>Profesión:</strong> {{ member.profession.name }}<br>
-        <strong>Trabajo actual:</strong> {{ member.job.name }}<br>
-        <strong>Fecha de inicio:</strong> {{ member.start_date.strftime('%d-%m-%Y') }}<br>
-        <strong>Fecha de cese:</strong> 
-        {% if member.end_date %}
-            {{ member.end_date.strftime('%d-%m-%Y') }}<br>
-        {% else %}
-            Sin fecha de cese definida<br>
-        {% endif %}
-        <strong>Obra social:</strong> {{ member.health_insurance }}<br>
-        <strong>Número de obra social:</strong> {{ member.health_insurance_number }}<br>
-        <strong>Condición:</strong> {{ member.condition }}<br>
-        <strong>Está activo:</strong> 
-        {% if member.active %}
-            Sí
-        {% else %}
-            No
-        {% endif %}
-        <br>
-      </p>
-    </div>
+<h1>Detalle de miembro del equipo</h1>
+<p>Información detallada del miembro del equipo</p>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ member.name }} {{ member.last_name }}</h5>
+    <p class="card-text">
+      <strong>DNI:</strong> {{ member.dni }}<br>
+      <strong>Email:</strong> {{ member.email }}<br>
+      <strong>Teléfono:</strong> {{ member.phone }}<br>
+      <strong>Teléfono de emergencia</strong> {{ member.emergency_phone }}<br>
+      <strong>Domicilio</strong> {{ member.street }} {{ member.number }}, {{ member.locality.name }}, provincia de {{
+      member.locality.province.name }}<br>
+      <strong>Profesión:</strong> {{ member.profession.name }}<br>
+      <strong>Trabajo actual:</strong> {{ member.job.name }}<br>
+      <strong>Fecha de inicio:</strong> {{ member.start_date.strftime('%d-%m-%Y') }}<br>
+      <strong>Fecha de cese:</strong>
+      {% if member.end_date %}
+      {{ member.end_date.strftime('%d-%m-%Y') }}<br>
+      {% else %}
+      Sin fecha de cese definida<br>
+      {% endif %}
+      <strong>Obra social:</strong> {{ member.health_insurance }}<br>
+      <strong>Número de obra social:</strong> {{ member.health_insurance_number }}<br>
+      <strong>Condición:</strong> {{ member.condition }}<br>
+      <strong>Está activo:</strong>
+      {% if member.active %}
+      Sí
+      {% else %}
+      No
+      {% endif %}
+      <br>
+    </p>
   </div>
-  <a href="{{ url_for('team.index') }}" class="btn btn-primary">Volver al listado de miembros del equipo</a>
+</div>
+<a href="{{ url_for('team.index') }}" class="btn btn-primary">Volver al listado de miembros del equipo</a>
 {% endblock %}
 
 {% block footer %}
