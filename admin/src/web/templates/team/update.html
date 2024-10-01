@@ -39,11 +39,18 @@
       <input type="text" class="form-control" id="number" name="number" value="{{ member.number }}" required pattern="\d+" title="El número no debe contener letras" minlength="1" maxlength="8">
     </div>
     <div class="form-group">
-      <label for="locality_id">Localidad:</label>
-      <select class="form-control" id="locality_id" name="locality_id" required>
-        {% for locality in localities %}
-          <option value="{{ locality.id }}" {% if locality.id == member.locality_id %}selected{% endif %}>{{ locality.name }}</option>
+      <label for="province_id">Provincia:</label>
+      <select class="form-control" id="province_id" name="province_id" required>
+        <option value="">Seleccione una provincia</option>
+        {% for province in provinces %}
+          <option value="{{ province.id }}" {% if member.locality and province.id == member.locality.province_id %}selected{% endif %}>{{ province.name }}</option>
         {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="locality_id">Localidad:</label>
+      <select class="form-control" id="locality_id" name="locality_id" data-selected="{{ member.locality_id }}" required>
+        <option value="">Seleccione una localidad</option>
       </select>
     </div>
     <div class="form-group">
@@ -99,4 +106,47 @@
     <button type="submit" class="btn btn-primary">Actualizar</button>
     <a href="{{ url_for('team.index') }}" class="btn btn-secondary">Cancelar</a>
   </form>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var provinceId = document.getElementById('province_id').value;
+      var localitySelect = document.getElementById('locality_id');
+      var selectedLocalityId = localitySelect.getAttribute('data-selected');
+
+      if (provinceId) {
+          fetch('/localities/get/' + provinceId)
+              .then(response => response.json())
+              .then(data => {
+                  localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+                  data.forEach(function(locality) {
+                      var option = document.createElement('option');
+                      option.value = locality.id;
+                      option.text = locality.name;
+                      if (locality.id == selectedLocalityId) {
+                          option.selected = true;
+                      }
+                      localitySelect.appendChild(option);
+                  });
+              });
+      }
+
+    document.getElementById('province_id').addEventListener('change', function() {
+        var provinceId = this.value;
+        var localitySelect = document.getElementById('locality_id');
+        localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+    
+        if (provinceId) {
+            fetch('/localities/get/' + provinceId)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(function(locality) {
+                        var option = document.createElement('option');
+                        option.value = locality.id;
+                        option.text = locality.name;
+                        localitySelect.appendChild(option);
+                    });
+                });
+        }
+    });
+  });
+  </script>
 {% endblock %}

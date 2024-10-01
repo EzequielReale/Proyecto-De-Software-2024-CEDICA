@@ -1,7 +1,8 @@
-from flask import Blueprint, flash, redirect, render_template, Request, request, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, Request, request, url_for
 
 from src.core import adressing, people, professions
 from web.forms.member_form import MemberForm
+
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
 
@@ -61,7 +62,7 @@ def create()->str:
         else:
             member = form.data
 
-    return render_template('team/create.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces, localities=localities)
+    return render_template('team/create.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces)
 
 @bp.route("/<int:id>/edit", methods=['GET', 'POST'])
 def update(id: int)->str:
@@ -78,7 +79,7 @@ def update(id: int)->str:
         else:
             member = form.data
     
-    return render_template('team/update.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces, localities=localities)
+    return render_template('team/update.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces)
 
 @bp.post("/<int:id>/delete")
 def destroy(id: int)->str:
