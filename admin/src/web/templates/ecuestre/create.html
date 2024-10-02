@@ -32,6 +32,7 @@
 
     .selected {
         background-color: #0077AA !important;
+        border-color: #0077AA !important;
         color: white !important;
     }
 </style>
@@ -58,13 +59,23 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="mb-1" for="gender">Sexo</label>
-            <select class="form-select" name="gender" id="gender" required>
-                <option selected>Seleccione una opción...</option>
-                <option value="0">Macho</option>
-                <option value="1">Hembra</option>
-            </select>
+        <div class="w-100 d-flex flex-row gap-3">
+            <div class="form-group w-50">
+                <label class="mb-1" for="gender">Sexo</label>
+                <select class="form-select" name="gender" id="gender" required>
+                    <option selected>Seleccione una opción...</option>
+                    <option value="0">Macho</option>
+                    <option value="1">Hembra</option>
+                </select>
+            </div>
+            <div class="form-group w-50">
+                <label class="mb-1" for="origin">Origen</label>
+                <select class="form-select" name="origin" id="origin" required>
+                    <option selected>Seleccione una opción...</option>
+                    <option value="0">Compra</option>
+                    <option value="1">Donación</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group w-100 d-flex flex-row gap-3">
@@ -81,6 +92,12 @@
         </div>
 
         <div class="form-group">
+            <label class="mb-1" for="assigned_location">Sede asignada</label>
+            <input type="text" name="assigned_location" id="assigned_location" class="form-control"
+                placeholder="Ingrese el nombre de la sede asignada" required>
+        </div>
+
+        <div class="form-group">
             <label for="activities">Actividades asignadas</label>
             <div class="form-text mt-0 mb-2">
                 Seleccione las actividades que se le asignarán al caballo.
@@ -90,7 +107,7 @@
                 {% if activities %}
                 {% for activity in activities %}
                 <li id="activity-{{activity.id}}" class="list-group-item border rounded py-1"
-                    onclick="toggleSelected({{activity.id}})" style="flex-grow: 1;" role="button">{{
+                    onclick="toggleSelected({{activity.id}})" style="flex-grow: 1; user-select: none;" role="button">{{
                     activity.name }}</li>
                 {% endfor %}
                 {% endif %}
@@ -99,6 +116,12 @@
 
         <!-- Campo oculto para enviar las actividades seleccionadas al form -->
         <input type="hidden" name="selected_activities" id="selected-activities-input">
+
+        <div class="form-group">
+            <label class="mb-1" for="assigned_members">Miembros asignados</label>
+
+            <!-- No tengo idea cómo implementar esto -->
+        </div>
 
         <div class="d-flex flex-row align-items-center justify-content-between w-100 mt-1">
             <a id="btn-back" class="btn border border-2" href="{{ url_for('ecuestre.index') }}">

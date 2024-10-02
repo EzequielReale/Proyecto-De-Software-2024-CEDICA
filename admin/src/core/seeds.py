@@ -84,7 +84,7 @@ def run():
     )
     horse1 = equestrian.horse_new(
         name="Canelo",
-        birth_date="2015-01-01",
+        birth_date="2001-05-04",
         gender="Macho",
         race="Criollo",
         coat="Marrón",
@@ -92,6 +92,18 @@ def run():
         entry_date="2023-01-01",
         assigned_members=[member1],
         activities=[activity1, activity2, activity3],
-        assigned_location="Establo 1"
+        assigned_location="Sede principal"
+    )
+    horse2 = equestrian.horse_new(
+        name="Summer",
+        birth_date="2012-06-10",
+        gender="Macho",
+        race="Norteño",
+        coat="Gris plateado",
+        donation=True,
+        entry_date="2024-03-12",
+        assigned_members=[member1],
+        activities=[activity3, activity2],
+        assigned_location="Sede Winterfell"
     )
 

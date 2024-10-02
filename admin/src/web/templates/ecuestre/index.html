@@ -24,6 +24,17 @@
         color: #0077AA;
         fill: #0077AA;
     }
+
+    th>a {
+        color: #212121;
+        text-decoration: none;
+    }
+
+    th>a>i {
+        transform: scale(0.8);
+        margin-left: 3px;
+        color: #0099CC;
+    }
 </style>
 {% endblock %}
 
@@ -41,13 +52,55 @@
 <table class="table table-striped mt-3 overflow-auto">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Nacimiento</th>
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    Nombre
+                    {% if order_by == 'name' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='birth_date', order='asc' if order_by != 'birth_date' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    Nacimiento
+                    {% if order_by == 'birth_date' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
             <th>Sexo</th>
             <th>Raza</th>
             <th>Pelaje</th>
             <th>Origen</th>
-            <th>Fecha de ingreso</th>
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    Fecha de ingreso
+                    {% if order_by == 'entry_date' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
             <th>Sede Asignada</th>
             <th>Acciones</th>
         </tr>
@@ -75,8 +128,8 @@
                         <i class="fas fa-edit"></i>
                     </a>
                     <!-- Formulario de eliminación -->
-                    <form action="" method="POST" style="display: inline;"
-                        onsubmit="return confirm('¿Estás seguro que quieres eliminar este caballo?');">
+                    <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
                         <button type="submit" title="Eliminar"
                             style="border: none; background: none; color: #0099CC; cursor: pointer;">
                             <i class="fas fa-trash-alt"></i>
@@ -88,7 +141,7 @@
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="8">Aún no hay caballos registrados</td>
+            <td colspan="16">Aún no hay caballos registrados</td>
         </tr>
         {% endif %}
     </tbody>

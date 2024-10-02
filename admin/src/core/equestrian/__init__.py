@@ -3,9 +3,13 @@ from src.core.equestrian.horse import Horse
 from src.core.equestrian.activity import Activity
 
 
-def list_horses()->list:
-    """Devuelve todos los caballos de la BD"""
-    return Horse.query.all()
+def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, page: int = 1) -> list:
+    """Devuelve todos los caballos de la BD con paginación y orden"""
+    order_column = getattr(Horse, order_by)
+    if order == 'desc':
+        order_column = order_column.desc()
+    query = Horse.query.order_by(order_column).paginate(page=page, per_page=limit, error_out=False)
+    return query.items
 
 def get_horse_by_id(horse_id:int)->Horse:
     """Devuelve un caballo por ID"""
