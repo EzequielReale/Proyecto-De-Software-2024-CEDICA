@@ -10,12 +10,12 @@ bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 
 @bp.get("/")
 def index():
-    order_by = request.args.get('order_by', 'id')
+    order_by = request.args.get('order_by', 'name')
     order = request.args.get('order', 'asc')
     limit = int(request.args.get('limit', 10))
     page = int(request.args.get('page', 1))
-    horses = equestrian.list_horses(order_by=order_by, order=order, limit=limit, page=page)
-    return render_template("ecuestre/index.html", horses=horses, order_by=order_by, order=order, limit=limit, page=page)
+    horses, total_pages = equestrian.list_horses(order_by=order_by, order=order, limit=limit, page=page)
+    return render_template("ecuestre/index.html", horses=horses, order_by=order_by, order=order, limit=limit, page=page, total_pages=total_pages)
 
 @bp.get("/<int:id>")
 def show(id: int):

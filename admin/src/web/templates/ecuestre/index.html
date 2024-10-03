@@ -25,15 +25,27 @@
         fill: #0077AA;
     }
 
+    .btn-back {
+        transition: 0.2s !important;
+        color: #222 !important;
+    }
+
+    .btn-back:hover {
+        background-color: #ddd !important;
+    }
+
     th>a {
         color: #212121;
         text-decoration: none;
     }
 
-    th>a>i {
-        transform: scale(0.8);
+    th>a {
         margin-left: 3px;
         color: #0099CC;
+    }
+
+    i {
+        transform: scale(0.8);
     }
 </style>
 {% endblock %}
@@ -141,9 +153,31 @@
         {% endfor %}
         {% else %}
         <tr>
-            <td colspan="16">Aún no hay caballos registrados</td>
+            <td colspan="16">No hay caballos para mostrar</td>
         </tr>
         {% endif %}
     </tbody>
 </table>
+<div class="d-flex flex-row w-100 justify-content-center align-items-center">
+    <div class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
+        {% if page > 1 %}
+        <a style="color: #0099CC;"
+            href="{{ url_for('ecuestre.index', order_by=order_by, limit=limit, page=page-1) }}"><i
+                class="fa fa-angle-double-left" aria-hidden="true"></i>
+        </a>
+        {% else %}
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+        {% endif %}
+        <span>Página {{ page }}</span>
+        {% if page < total_pages %} <a style="color: #0099CC;"
+            href="{{ url_for('ecuestre.index', order_by=order_by, limit=limit, page=page+1) }}"><i
+                class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </a>
+            {% else %}
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+
+            {% endif %}
+
+    </div>
+</div>
 {% endblock %}
