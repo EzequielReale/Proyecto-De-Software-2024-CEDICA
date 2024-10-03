@@ -1,10 +1,23 @@
+from sqlalchemy.types import String, Text
+
 from src.core.database import db
 from core.people.member_rider import Member
 from core.people.member_rider import Rider
 
-def _list(model, page=1, per_page=25)->tuple:
-    """Devuelve los elementos de un modelo paginados de la BD"""
-    pagination = model.query.paginate(page=page, per_page=per_page, error_out=False)
+def _list(model, filters: dict, page=1, per_page=25)->tuple:
+    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados."""
+    query = model.query
+
+    for field, value in filters.items():
+        if value is not None and value != '': # Ignora campos con valores nulos o vacíos
+            column = getattr(model, field)
+            if isinstance(column.type, (String, Text)): # Esto es una comprobación de tipo, dado que sqlalchemy no permite usar ilike en campos de tipo Integer
+                query = query.filter(column.ilike(f"%{value}%"))
+            else:
+                query = query.filter(column == value)
+
+    # Aplica la paginación
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.pages
 
 def _get_by_field(model, field: str, value, exclude_id=None):
@@ -37,9 +50,9 @@ def _delete(model, item_id: int):
     return item
 
 #Funciones de miembros
-def list_members(page=1, per_page=25)->tuple:
-    """Devuelve los miembros paginados de la BD"""
-    return _list(Member, page, per_page)
+def list_members(filters: dict, page=1, per_page=25)->tuple:
+    """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
+    return _list(Member, filters, page, per_page)
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
@@ -58,11 +71,11 @@ def member_delete(member_id:int)->Member:
     return _delete(Member, member_id)
 
 #Funciones de jinetes
-def list_riders(page=1, per_page=25)->tuple:
+def list_riders(filters:dict, page=1, per_page=25)->tuple:
     """Devuelve los jinetes paginados de la BD"""
-    return _list(Rider, page, per_page)
+    return _list(Rider, filters, page, per_page)
 
-def get_rider_by_field(field: str, value, exclude_id=None) -> Rider:
+def get_rider_by_field(field: str, value, exclude_id=None)->Rider:
     """Devuelve un jinete por un campo específico y su valor"""
     return _get_by_field(Rider, field, value, exclude_id)
 
