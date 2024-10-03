@@ -4,19 +4,32 @@ from src.core.database import db
 from core.people.member_rider import Member
 from core.people.member_rider import Rider
 
-def _list(model, filters: dict, page=1, per_page=25)->tuple:
-    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados."""
+def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction='asc'):
+    """Aplica filtros y ordenación a una consulta"""
     query = model.query
 
+    # Aplicar filtros
     for field, value in filters.items():
-        if value is not None and value != '': # Ignora campos con valores nulos o vacíos
+        if value is not None and value != '':
             column = getattr(model, field)
-            if isinstance(column.type, (String, Text)): # Esto es una comprobación de tipo, dado que sqlalchemy no permite usar ilike en campos de tipo Integer
+            if isinstance(column.type, (String, Text)): # Esto es una comprobación de tipo porque sqlalchemy no puede usar ilike en campos que no sean de texto
                 query = query.filter(column.ilike(f"%{value}%"))
             else:
                 query = query.filter(column == value)
 
-    # Aplica la paginación
+    # Aplicar ordenación
+    if sort_by:
+        column = getattr(model, sort_by)
+        if sort_direction == 'desc':
+            query = query.order_by(column.desc())
+        else:
+            query = query.order_by(column.asc())
+
+    return query
+
+def _list(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:
+    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
+    query = _filter_and_sort(model, filters, sort_by, sort_direction)
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.pages
 
@@ -50,9 +63,9 @@ def _delete(model, item_id: int):
     return item
 
 #Funciones de miembros
-def list_members(filters: dict, page=1, per_page=25)->tuple:
+def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:
     """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
-    return _list(Member, filters, page, per_page)
+    return _list(Member, filters, page, per_page, sort_by, sort_direction)
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
@@ -71,9 +84,9 @@ def member_delete(member_id:int)->Member:
     return _delete(Member, member_id)
 
 #Funciones de jinetes
-def list_riders(filters:dict, page=1, per_page=25)->tuple:
+def list_riders(filters:dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:
     """Devuelve los jinetes paginados de la BD"""
-    return _list(Rider, filters, page, per_page)
+    return _list(Rider, filters, page, per_page, sort_by, sort_direction)
 
 def get_rider_by_field(field: str, value, exclude_id=None)->Rider:
     """Devuelve un jinete por un campo específico y su valor"""

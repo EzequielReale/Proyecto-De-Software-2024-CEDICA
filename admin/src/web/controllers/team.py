@@ -16,12 +16,11 @@ bp = Blueprint("team", __name__, url_prefix ="/team")
 
 @bp.get("/")
 def index() -> str:
-    """Listado de miembros del equipo usando filtros y paginación"""
-    # Obtener los parámetros de búsqueda y de paginación desde la URL
+    """Listado de miembros del equipo usando filtros, ordenación y paginación"""
     page = request.args.get('page', 1, type=int)
     per_page = 25
-    
-    # Filtros de búsqueda
+
+    # Obtener los filtros de búsqueda y ordenación
     filters = {
         'name': request.args.get('name'),
         'last_name': request.args.get('last_name'),
@@ -29,15 +28,19 @@ def index() -> str:
         'email': request.args.get('email'),
         'profession_id': request.args.get('profession_id')
     }
+    sort_by = request.args.get('sort_by', 'name')
+    sort_direction = request.args.get('sort_direction', 'asc')
 
-    members, total_pages = people.list_members(filters, page, per_page)
+    members, total_pages = people.list_members(filters, page, per_page, sort_by, sort_direction)
     return render_template(
         'team/index.html', 
         members=members, 
         page=page, 
         total_pages=total_pages, 
         professions=professions.list_professions(),
-        filters=filters
+        filters=filters,
+        sort_by=sort_by,
+        sort_direction=sort_direction
     )
 
 @bp.get("/<int:id>")

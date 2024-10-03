@@ -47,13 +47,47 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Nombre</th>
-      <th>Apellido</th>
+      <!-- Encabezado con enlaces para ordenar -->
+      <th>
+        <a href="{{ url_for('team.index', sort_by='name', sort_direction='asc' if sort_by != 'name' or sort_direction == 'desc' else 'desc', **filters) }}">
+          Nombre
+          {% if sort_by == 'name' %}
+            {% if sort_direction == 'asc' %}
+              &#9650; <!-- Flecha hacia arriba (ascendente) -->
+            {% else %}
+              &#9660; <!-- Flecha hacia abajo (descendente) -->
+            {% endif %}
+          {% endif %}
+        </a>
+      </th>
+      <th>
+        <a href="{{ url_for('team.index', sort_by='last_name', sort_direction='asc' if sort_by != 'last_name' or sort_direction == 'desc' else 'desc', **filters) }}">
+          Apellido
+          {% if sort_by == 'last_name' %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
+          {% endif %}
+        </a>
+      </th>
       <th>DNI</th>
       <th>Email</th>
       <th>Teléfono</th>
       <th>Profesión</th>
-      <th>Trabajo</th>
+      <th>
+        <a href="{{ url_for('team.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}">
+          Fecha de Creación
+          {% if sort_by == 'created_at' %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
+          {% endif %}
+        </a>
+      </th>
       <th>Acciones</th>
     </tr>
   </thead>
@@ -67,10 +101,9 @@
       <td>{{ member.email }}</td>
       <td>{{ member.phone }}</td>
       <td>{{ member.profession.name }}</td>
-      <td>{{ member.job.name }}</td>
+      <td>{{ member.created_at.strftime('%Y-%m-%d') }}</td>
       <td>
         <a href="{{ url_for('team.show', id=member.id) }}" class="btn btn-info">Ver</a>
-        </form>
       </td>
     </tr>
     {% endfor %}
@@ -81,6 +114,7 @@
     {% endif %}
   </tbody>
 </table>
+
 
 <!-- Acá se realiza la paginación -->
 <nav aria-label="Page navigation">
