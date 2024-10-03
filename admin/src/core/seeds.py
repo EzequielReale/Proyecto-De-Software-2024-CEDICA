@@ -40,14 +40,6 @@ def run():
         name="Docente de capacitación",
         description="Enseñanza para nuevos miembros"
     )
-    province1 = adressing.province_new(
-        name="Buenos Aires"
-    )
-    locality1 = adressing.locality_new(
-        name="Berisso",
-        postal_code="1923",
-        province_id=1
-    )
     # Creo 30 miembros para poder probar la paginación del index
     for i in range(30):
         people.member_new(

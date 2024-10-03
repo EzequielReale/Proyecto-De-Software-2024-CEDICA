@@ -106,9 +106,10 @@ def update(id: int)->str:
         if valid:
             member = people.member_update(id, **form.data)
             flash(f"El miembro {member.name} {member.last_name} ha sido actualizado exitosamente", "success")
-            return redirect(url_for('team.show', id=member.id))
+            print(member)
+            return redirect(url_for('team.show', id=id))
         else:
-            member = form.data
+            member = people.Member(**form.data)
     
     return render_template('team/update.html', member=member, professions=profession_list, jobs=jobs, provinces=provinces)
 

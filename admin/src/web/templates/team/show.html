@@ -4,48 +4,91 @@
 
 {% block head %}
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
 
-{% block content %}
-<h1>Detalle de miembro del equipo</h1>
-<p>Información detallada del miembro del equipo</p>
-<a href="{{ url_for('team.update', id=member.id) }}" class="btn btn-warning">Editar</a>
-<form action="{{ url_for('team.destroy', id=member.id) }}" method="POST" style="display:inline;">
-  <button type="submit" class="btn btn-danger">Eliminar</button>
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">{{ member.name }} {{ member.last_name }}</h5>
-      <p class="card-text">
-        <strong>DNI:</strong> {{ member.dni }}<br>
-        <strong>Email:</strong> {{ member.email }}<br>
-        <strong>Teléfono:</strong> {{ member.phone }}<br>
-        <strong>Teléfono de emergencia</strong> {{ member.emergency_phone }}<br>
-        <strong>Domicilio</strong> {{ member.street }} {{ member.number }}, {{ member.locality.name }}, provincia de {{
-        member.locality.province.name }}<br>
-        <strong>Profesión:</strong> {{ member.profession.name }}<br>
-        <strong>Trabajo actual:</strong> {{ member.job.name }}<br>
-        <strong>Fecha de inicio:</strong> {{ member.start_date.strftime('%d-%m-%Y') }}<br>
-        <strong>Fecha de cese:</strong>
-        {% if member.end_date %}
-        {{ member.end_date.strftime('%d-%m-%Y') }}<br>
-        {% else %}
-        Sin fecha de cese definida<br>
-        {% endif %}
-        <strong>Obra social:</strong> {{ member.health_insurance }}<br>
-        <strong>Número de obra social:</strong> {{ member.health_insurance_number }}<br>
-        <strong>Condición:</strong> {{ member.condition }}<br>
-        <strong>Está activo:</strong>
-        {% if member.active %}
-        Sí
-        {% else %}
-        No
-        {% endif %}
-        <br>
-      </p>
-    </div>
-  </div>
-  <a href="{{ url_for('team.index') }}" class="btn btn-primary">Volver al listado de miembros del equipo</a>
-  {% endblock %}
 
-  {% block footer %}
-  {% endblock %}
+{% block content %}
+<h1 style="color: #007bff; margin-bottom: 20px;">Detalle de miembro del equipo</h1>
+<p class="lead mb-4">Información detallada del miembro del equipo</p>
+
+<div class="button-group">
+    <a href="{{ url_for('team.update', id=member.id) }}" class="btn btn-warning btn-icon">
+        <i class="fas fa-edit"></i> Editar
+    </a>
+    <form action="{{ url_for('team.destroy', id=member.id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger btn-icon">
+            <i class="fas fa-trash-alt"></i> Eliminar
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ member.name }} {{ member.last_name }}</h5>
+        <p class="card-text">
+            <strong>DNI:</strong> {{ member.dni }}<br>
+            <strong>Email:</strong> {{ member.email }}<br>
+            <strong>Teléfono:</strong> {{ member.phone }}<br>
+            <strong>Teléfono de emergencia:</strong> {{ member.emergency_phone }}<br>
+            <strong>Domicilio:</strong> {{ member.street }} {{ member.number }}, {{ member.locality.name }}, provincia de {{ member.locality.province.name }}<br>
+            <strong>Profesión:</strong> {{ member.profession.name }}. {{ member.profession.description }}<br>
+            <strong>Trabajo actual:</strong> {{ member.job.name }}. {{ member.job.description }}<br>
+            <strong>Condición:</strong> {{ member.condition }}<br>
+            <strong>Está activo en el trabajo:</strong> {% if member.active %}Sí{% else %}No{% endif %}<br>
+            <strong>Fecha de inicio:</strong> {{ member.start_date.strftime('%d-%m-%Y') }}<br>
+            <strong>Fecha de cese:</strong> {% if member.end_date %}{{ member.end_date.strftime('%d-%m-%Y') }}{% else %}Sin fecha de cese definida{% endif %}<br>
+            <strong>Obra social:</strong> {{ member.health_insurance }}<br>
+            <strong>Número de obra social:</strong> {{ member.health_insurance_number }}<br>
+        </p>
+    </div>
+</div>
+
+<a href="{{ url_for('team.index') }}" class="btn btn-primary mt-3">Volver al listado de miembros del equipo</a>
+
+<style>
+  body {
+      background-color: #f8f9fa;
+  }
+  .card {
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .card-title {
+      font-size: 1.5rem;
+      color: #0056b3;
+      margin-bottom: 10px;
+  }
+  .card-text {
+      font-size: 1.1rem;
+      color: #333;
+  }
+  .button-group {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+  }
+  .btn-icon {
+      margin-left: 10px;
+  }
+  .btn {
+      border-radius: 20px;
+      padding: 10px 20px;
+  }
+  .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+  }
+  .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+  }
+  .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+  }
+</style>
+{% endblock %}
+{% block footer %}
+{% endblock %}

@@ -7,7 +7,6 @@ class Locality(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
-    postal_code = db.Column(db.String(8), nullable=False)
     province_id = db.Column(db.Integer, db.ForeignKey('provinces.id'), nullable=False)
     province = db.relationship('Province', backref='localities', lazy=True)
     persons = db.relationship('Person', back_populates='locality')
