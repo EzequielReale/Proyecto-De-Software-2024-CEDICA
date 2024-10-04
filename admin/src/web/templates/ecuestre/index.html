@@ -34,18 +34,46 @@
         background-color: #ddd !important;
     }
 
+    #pagination>i {
+        margin-top: 3px;
+        transform: scale(0.8);
+    }
+
     th>a {
-        color: #212121;
+        color: #0077AA;
         text-decoration: none;
     }
 
-    th>a {
+    th>a>i {
         margin-left: 3px;
-        color: #0099CC;
     }
 
-    i {
-        transform: scale(0.8);
+    .form-filter-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    @media screen and (max-width: 768px) {
+        #main-buttons {
+            flex-direction: column !important;
+        }
+
+        .form-filter-container {
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        tr>td:nth-child(4),
+        tr>td:nth-child(5),
+        tr>td:nth-child(6),
+        tr>td:nth-child(7),
+        tr>th:nth-child(4),
+        tr>th:nth-child(5),
+        tr>th:nth-child(6),
+        tr>th:nth-child(7) {
+            display: none;
+        }
     }
 </style>
 {% endblock %}
@@ -56,11 +84,47 @@
         <h1>Ecuestre</h1>
         <p>Página de administración de caballos 🐴</p>
     </div>
-    <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
-        <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
-        Agregar nuevo
-    </a>
+    <div id="main-buttons" class="d-flex flex-row gap-3">
+        <a data-bs-toggle="collapse" href="#search-container" role="button" aria-expanded="false"
+            aria-controls="search-container" class="btn btn-outline-dark d-flex align-items-center pb-2">
+            <i style="transform: scale(0.75);" class="fa fa-filter me-2 mt-1"></i>
+            Filtros
+        </a>
+
+        <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
+            <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
+            Agregar nuevo
+        </a>
+    </div>
 </header>
+<div class="collapse mb-3 {% if search or activity_id %}show{% endif %}" id="search-container">
+    <form method="get" class="d-flex flex-row align-items-end gap-3" action="{{ url_for('ecuestre.index') }}">
+        <div class="form-filter-container" style="flex-grow: 1;">
+            <div class="form-group" style="flex-grow: 1;">
+                <label class="mb-1" for="search">Buscar por nombre:</label>
+                <input type="text" id="search" name="search" value="{{ search }}" class="form-control">
+            </div>
+            <div class="form-group" style="flex-grow: 1;">
+                <label class="mb-1" for="activity_id">Filtrar por actividad:</label>
+                <select id="activity_id" name="activity_id" class="form-select">
+                    <option value="">Todas las actividades</option>
+                    {% for activity in activities %}
+                    <option value="{{ activity.id }}" {% if activity.id==activity_id %}selected{% endif %}>{{
+                        activity.name
+                        }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-filter-container" id="form-buttons-container">
+            <a href="{{ url_for('ecuestre.index') }}" class="btn btn-outline-secondary d-flex align-items-center">
+                Borrar filtros
+            </a>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+</div>
 <table class="table table-striped mt-3 overflow-auto">
     <thead>
         <tr>
@@ -94,10 +158,6 @@
                     {% endif %}
                 </a>
             </th>
-            <th>Sexo</th>
-            <th>Raza</th>
-            <th>Pelaje</th>
-            <th>Origen</th>
             <th>
                 <a
                     href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page) }}">
@@ -113,6 +173,10 @@
                     {% endif %}
                 </a>
             </th>
+            <th>Sexo</th>
+            <th>Raza</th>
+            <th>Pelaje</th>
+            <th>Origen</th>
             <th>Sede Asignada</th>
             <th>Acciones</th>
         </tr>
@@ -123,11 +187,11 @@
         <tr>
             <td>{{ horse.name }}</td>
             <td>{{ horse.birth_date }}</td>
+            <td>{{ horse.entry_date }}</td>
             <td>{{ horse.gender }}</td>
             <td>{{ horse.race }}</td>
             <td>{{ horse.coat }}</td>
             <td>{{ "Donación" if horse.donation else "Compra" }}</td>
-            <td>{{ horse.entry_date }}</td>
             <td>{{ horse.assigned_location }}</td>
             <td>
                 <div class="action-icons">
@@ -158,8 +222,8 @@
         {% endif %}
     </tbody>
 </table>
-<div class="d-flex flex-row w-100 justify-content-center align-items-center">
-    <div class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
+<div class="mt-4 d-flex flex-row w-100 justify-content-center align-items-center">
+    <div id="pagination" class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
         {% if page > 1 %}
         <a style="color: #0099CC;"
             href="{{ url_for('ecuestre.index', order_by=order_by, limit=limit, page=page-1) }}"><i
@@ -175,9 +239,7 @@
             </a>
             {% else %}
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-
             {% endif %}
-
     </div>
 </div>
 {% endblock %}

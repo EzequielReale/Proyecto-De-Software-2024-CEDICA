@@ -14,8 +14,12 @@ def index():
     order = request.args.get('order', 'asc')
     limit = int(request.args.get('limit', 10))
     page = int(request.args.get('page', 1))
-    horses, total_pages = equestrian.list_horses(order_by=order_by, order=order, limit=limit, page=page)
-    return render_template("ecuestre/index.html", horses=horses, order_by=order_by, order=order, limit=limit, page=page, total_pages=total_pages)
+    search = request.args.get('search', '')
+    activity_id = request.args.get('activity_id', type=int)
+    
+    horses, total_pages = equestrian.list_horses(order_by=order_by, order=order, limit=limit, page=page, search=search, activity_id=activity_id)
+    
+    return render_template("ecuestre/index.html", horses=horses, activities=equestrian.list_activities(), order_by=order_by, order=order, limit=limit, page=page, search=search, activity_id=activity_id, total_pages=total_pages)
 
 @bp.get("/<int:id>")
 def show(id: int):
