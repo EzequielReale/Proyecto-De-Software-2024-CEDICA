@@ -5,14 +5,14 @@
 {% block head %}
 {{ super() }}
 <style>
-    .action-icons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
     a,
     a:hover {
         text-decoration: none !important;
+    }
+
+    .action-icons {
+        display: flex;
+        gap: 0.5rem;
     }
 
     .action-icons i {
@@ -45,7 +45,8 @@
     }
 
     th>a>i {
-        margin-left: 3px;
+        margin-left: 2px;
+        transform: scale(0.7);
     }
 
     .form-filter-container {
@@ -64,6 +65,7 @@
             margin-bottom: 10px;
         }
 
+        /* Ocultar columnas en pantallas pequeñas */
         tr>td:nth-child(4),
         tr>td:nth-child(5),
         tr>td:nth-child(6),
@@ -72,6 +74,15 @@
         tr>th:nth-child(5),
         tr>th:nth-child(6),
         tr>th:nth-child(7) {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+
+        /* Ocultar última columna en pantallas muy pequeñas */
+        tr>td:nth-child(8),
+        tr>th:nth-child(8) {
             display: none;
         }
     }
@@ -130,7 +141,7 @@
         <tr>
             <th>
                 <a
-                    href="{{ url_for('ecuestre.index', order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    href="{{ url_for('ecuestre.index', order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Nombre
                     {% if order_by == 'name' %}
                     {% if order == 'asc' %}
@@ -145,7 +156,7 @@
             </th>
             <th>
                 <a
-                    href="{{ url_for('ecuestre.index', order_by='birth_date', order='asc' if order_by != 'birth_date' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    href="{{ url_for('ecuestre.index', order_by='birth_date', order='asc' if order_by != 'birth_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Nacimiento
                     {% if order_by == 'birth_date' %}
                     {% if order == 'asc' %}
@@ -160,7 +171,7 @@
             </th>
             <th>
                 <a
-                    href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page) }}">
+                    href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Fecha de ingreso
                     {% if order_by == 'entry_date' %}
                     {% if order == 'asc' %}
@@ -226,7 +237,7 @@
     <div id="pagination" class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
         {% if page > 1 %}
         <a style="color: #0099CC;"
-            href="{{ url_for('ecuestre.index', order_by=order_by, limit=limit, page=page-1) }}"><i
+            href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page-1, search=search, activity_id=activity_id) }}"><i
                 class="fa fa-angle-double-left" aria-hidden="true"></i>
         </a>
         {% else %}
@@ -234,8 +245,8 @@
         {% endif %}
         <span>Página {{ page }}</span>
         {% if page < total_pages %} <a style="color: #0099CC;"
-            href="{{ url_for('ecuestre.index', order_by=order_by, limit=limit, page=page+1) }}"><i
-                class="fa fa-angle-double-right" aria-hidden="true"></i>
+            href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page+1, search=search, activity_id=activity_id) }}">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             </a>
             {% else %}
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
