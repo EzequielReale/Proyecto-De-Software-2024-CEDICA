@@ -32,6 +32,13 @@ def find_user_email(email):
     user = User.query.filter_by(email=email).first()
     return user
 
+
+def find_user_id(id):
+    """ busco usuario por id """
+    user = User.query.filter_by(id=id).first()
+    return user
+
+
 def find_user(email,password):
     user = find_user_email(email)
     if user and bcrypt.check_password_hash(user.password,password):
