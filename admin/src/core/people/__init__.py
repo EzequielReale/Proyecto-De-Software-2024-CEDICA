@@ -1,8 +1,8 @@
 from sqlalchemy.types import String, Text
 
 from src.core.database import db
-from core.people.member_rider import Member
-from core.people.member_rider import Rider
+from src.core.people.member_rider import Member
+from src.core.people.member_rider import Rider
 
 def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction='asc'):
     """Aplica filtros y ordenación a una consulta"""
