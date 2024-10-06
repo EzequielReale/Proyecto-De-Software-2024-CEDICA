@@ -105,8 +105,9 @@
     </div>
     <div id="main-buttons" class="d-flex flex-row gap-3">
         <!-- Botones principales -->
-        <a data-bs-toggle="collapse" href="#search-container" role="button" aria-expanded="false"
-            aria-controls="search-container" class="btn btn-outline-dark d-flex align-items-center pb-2">
+        <a data-bs-toggle="collapse" onmouseup="clickFilter()" href="#search-container" role="button"
+            aria-expanded="false" aria-controls="search-container" id="filter-button"
+            class="btn btn-outline-dark d-flex align-items-center pb-2 {% if search or activity_id %}active{% endif %}">
             <i style="transform: scale(0.75);" class="fa fa-filter me-2 mt-1"></i>
             Filtros
         </a>
@@ -266,4 +267,16 @@
             {% endif %}
     </div>
 </div>
+<script>
+    function clickFilter() {
+        const filterButton = document.querySelector('#filter-button');
+        const searchContainer = document.querySelector('#search-container');
+
+        if (searchContainer.classList.contains('show')) {
+            filterButton.classList.remove('active');
+        } else {
+            filterButton.classList.add('active');
+        }
+    }
+</script>
 {% endblock %}
