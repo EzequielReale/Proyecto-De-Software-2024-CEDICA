@@ -6,96 +6,346 @@
 
 {% block content %}
 
-<h1>Crear miembro del equipo</h1>
+<h1 class="text-primary mb-4">Crear miembro del equipo</h1>
 <p>Formulario para crear un nuevo miembro del equipo</p>
-<form method="post">
-    <div class="form-group">
-      <label for="name">Nombre:</label>
-      <input type="text" class="form-control" id="name" name="name" value="{% if member and member.name %}{{ member.name }}{% endif %}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre no debe contener números" minlength="1" maxlength="64">
+<form method="post" class="p-4 bg-light rounded shadow">
+  <div class="form-group mb-3">
+    <label for="name">Nombre:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      <input type="text" class="form-control" id="name" name="name"
+        value="{% if member and member.name %}{{ member.name }}{% endif %}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+        title="El nombre no debe contener números" minlength="1" maxlength="64">
     </div>
-    <div class="form-group">
-      <label for="last_name">Apellido:</label>
-      <input type="text" class="form-control" id="last_name" name="last_name" value="{% if member and member.last_name %}{{ member.last_name }}{% endif %}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El apellido no debe contener números" minlength="1" maxlength="64">
+  </div>
+  <div class="form-group mb-3">
+    <label for="last_name">Apellido:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user"></i></span>
+      <input type="text" class="form-control" id="last_name" name="last_name"
+        value="{% if member and member.last_name %}{{ member.last_name }}{% endif %}" required
+        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El apellido no debe contener números" minlength="1" maxlength="64">
     </div>
-    <div class="form-group">
-      <label for="dni">DNI:</label>
-      <input type="text" class="form-control" id="dni" name="dni" value="{% if member and member.dni %}{{ member.dni }}{% endif %}" required pattern="\d+" title="El DNI no debe contener letras" minlength="7" maxlength="10">
+  </div>
+  <div class="form-group mb-3">
+    <label for="dni">DNI:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+      <input type="text" class="form-control" id="dni" name="dni"
+        value="{% if member and member.dni %}{{ member.dni }}{% endif %}" required pattern="\d+"
+        title="El DNI no debe contener letras" minlength="7" maxlength="10">
     </div>
-    <div class="form-group">
-      <label for="phone">Teléfono:</label>
-      <input type="text" class="form-control" id="phone" name="phone" value="{% if member and member.phone %}{{ member.phone }}{% endif %}" required pattern="[0-9+\-\s]+" title="El teléfono no debe contener letras" minlength="7" maxlength="32">
+  </div>
+  <div class="form-group mb-3">
+    <label for="phone">Teléfono:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-phone"></i></span>
+      <input type="text" class="form-control" id="phone" name="phone"
+        value="{% if member and member.phone %}{{ member.phone }}{% endif %}" required pattern="[0-9+\-\s]+"
+        title="El teléfono no debe contener letras" minlength="7" maxlength="32">
     </div>
-    <div class="form-group">
-      <label for="emergency_phone">Teléfono de emergencia:</label>
-      <input type="text" class="form-control" id="emergency_phone" name="emergency_phone" value="{% if member and member.emergency_phone %}{{ member.emergency_phone }}{% endif %}" required pattern="[0-9+\-\s]+" title="El teléfono de emergencia no debe contener letras" minlength="7" maxlength="32">
+  </div>
+  <div class="form-group mb-3">
+    <label for="emergency_phone">Teléfono de emergencia:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+      <input type="text" class="form-control" id="emergency_phone" name="emergency_phone"
+        value="{% if member and member.emergency_phone %}{{ member.emergency_phone }}{% endif %}" required
+        pattern="[0-9+\-\s]+" title="El teléfono de emergencia no debe contener letras" minlength="7" maxlength="32">
     </div>
-    <div class="form-group">
-      <label for="street">Calle:</label>
-      <input type="text" class="form-control" id="street" name="street" value="{% if member and member.street %}{{ member.street }}{% endif %}" required minlength="1" maxlength="128">
+  </div>
+  <div class="form-group mb-3">
+    <label for="street">Calle:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-road"></i></span>
+      <input type="text" class="form-control" id="street" name="street"
+        value="{% if member and member.street %}{{ member.street }}{% endif %}" required minlength="1" maxlength="128">
     </div>
-    <div class="form-group">
-      <label for="number">Número:</label>
-      <input type="text" class="form-control" id="number" name="number" value="{% if member and member.number %}{{ member.number }}{% endif %}" required pattern="\d+" title="El número no debe contener letras" minlength="1" maxlength="8">
+  </div>
+  <div class="form-group mb-3">
+    <label for="number">Número:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
+      <input type="text" class="form-control" id="number" name="number"
+        value="{% if member and member.number %}{{ member.number }}{% endif %}" required pattern="\d+"
+        title="El número no debe contener letras" minlength="1" maxlength="8">
     </div>
-    <div class="form-group">
-      <label for="locality_id">Localidad:</label>
-      <select class="form-control" id="locality_id" name="locality_id" required>
-        {% for locality in localities %}
-          <option value="{{ locality.id }}" {% if member and locality.id == member.locality_id %}selected{% endif %}>{{ locality.name }}</option>
+  </div>
+  <div class="form-group mb-3">
+    <label for="province_id">Provincia:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+      <select class="form-control" id="province_id" name="province_id" required>
+        <option value="">Seleccione una provincia</option>
+        {% for province in provinces %}
+        <option value="{{ province.id }}" {% if member.locality and province.id==member.locality.province_id %}selected{% endif %}>
+          {{ province.name }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" name="email" value="{% if member and member.email %}{{ member.email }}{% endif %}" required>
+  </div>
+  <div class="form-group mb-3">
+    <label for="locality_id">Localidad:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-city"></i></span>
+      <select class="form-control" id="locality_id" name="locality_id" data-selected="{{ member.locality_id }}" required>
+        <option value="">Seleccione una localidad</option>
+      </select>
     </div>
-    <div class="form-group">
-      <label for="start_date">Fecha de inicio:</label>
-      <input type="date" class="form-control" id="start_date" name="start_date" value="{% if member and member.start_date %}{{ member.start_date.strftime('%Y-%m-%d') }}{% endif %}" required>
+  </div>
+  <div class="form-group mb-3">
+    <label for="email">Email:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+      <input type="email" class="form-control" id="email" name="email"
+        value="{% if member and member.email %}{{ member.email }}{% endif %}" required>
     </div>
-    <div class="form-group">
-      <label for="end_date">Fecha de cese:</label>
-      <input type="date" class="form-control" id="end_date" name="end_date" value="{% if member and member.end_date %}{{ member.end_date.strftime('%Y-%m-%d') }}{% endif %}">
+  </div>
+  <div class="form-group mb-3">
+    <label for="start_date">Fecha de inicio:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+      <input type="date" class="form-control" id="start_date" name="start_date"
+        value="{% if member and member.start_date %}{{ member.start_date.strftime('%Y-%m-%d') }}{% endif %}" required>
     </div>
-    <div class="form-group">
-      <label for="health_insurance">Obra social:</label>
-      <input type="text" class="form-control" id="health_insurance" name="health_insurance" value="{% if member and member.health_insurance %}{{ member.health_insurance }}{% endif %}" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre de la obra social no debe contener números" minlength="1" maxlength="32">
+  </div>
+  <div class="form-group mb-3">
+    <label for="end_date">Fecha de cese:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-calendar-times"></i></span>
+      <input type="date" class="form-control" id="end_date" name="end_date"
+        value="{% if member and member.end_date %}{{ member.end_date.strftime('%Y-%m-%d') }}{% endif %}">
     </div>
-    <div class="form-group">
-      <label for="health_insurance_number">Número de la obra social:</label>
-      <input type="text" class="form-control" id="health_insurance_number" name="health_insurance_number" value="{% if member and member.health_insurance_number %}{{ member.health_insurance_number }}{% endif %}" required pattern="\d+" title="El número de la obra social no debe contener letras" minlength="1" maxlength="32">
+  </div>
+  <div class="form-group mb-3">
+    <label for="health_insurance">Obra social:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
+      <input type="text" class="form-control" id="health_insurance" name="health_insurance"
+        value="{% if member and member.health_insurance %}{{ member.health_insurance }}{% endif %}" required
+        pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+" title="El nombre de la obra social no debe contener números" minlength="1"
+        maxlength="32">
     </div>
-    <div class="form-group">
-      <label for="condition">Condición:</label>
+  </div>
+  <div class="form-group mb-3">
+    <label for="health_insurance_number">Número de la obra social:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-hospital"></i></span>
+      <input type="text" class="form-control" id="health_insurance_number" name="health_insurance_number"
+        value="{% if member and member.health_insurance_number %}{{ member.health_insurance_number }}{% endif %}"
+        required pattern="\d+" title="El número de la obra social no debe contener letras" minlength="1" maxlength="32">
+    </div>
+  </div>
+  <div class="form-group mb-3">
+    <label for="condition">Condición del empleado:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
       <select class="form-control" id="condition" name="condition" required>
-        <option value="Voluntario" {% if member and member.condition == 'Voluntario' %}selected{% endif %}>Voluntario</option>
-        <option value="Personal Rentado" {% if member and member.condition == 'Personal Rentado' %}selected{% endif %}>Personal Rentado</option>
+        <option value="">Seleccione una condición</option>
+        <option value="Voluntario" {% if member and member.condition=='Voluntario' %}selected{% endif %}>Voluntario</option>
+        <option value="Personal Rentado" {% if member and member.condition=='Personal Rentado' %}selected{% endif %}>Personal Rentado</option>
       </select>
     </div>
-    <div class="form-group">
-      <label for="active">Activo:</label>
-      <select class="form-control" id="active" name="active" required>
-        <option value="true" {% if member and member.active %}selected{% endif %}>Sí</option>
-        <option value="false" {% if member and not member.active %}selected{% endif %}>No</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="profession_id">Profesión:</label>
+  </div>
+  <div class="form-group mb-3">
+    <label class="custom-checkbox">
+        Activo actualmente en el trabajo:
+        <input type="checkbox" id="active" name="active" value="true" {% if member and member.active %}checked{% endif %}>
+        <span class="checkmark"></span>
+    </label>
+</div>
+  <div class="form-group mb-3">
+    <label for="profession_id">Profesión:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-graduation-cap"></i></span>
       <select class="form-control" id="profession_id" name="profession_id" required>
+        <option value="">Seleccione una profesión</option>
         {% for profession in professions %}
-          <option value="{{ profession.id }}" {% if member and profession.id == member.profession_id %}selected{% endif %}>{{ profession.name }}</option>
+        <option value="{{ profession.id }}" {% if member.profession_id == profession.id %}selected{% endif %}>
+          {{ profession.name }}</option>
         {% endfor %}
       </select>
     </div>
-    <div class="form-group">
-      <label for="job_id">Trabajo:</label>
+  </div>
+  <div class="form-group mb-3">
+    <label for="job_id">Puesto laboral:</label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="fas fa-briefcase"></i></span>
       <select class="form-control" id="job_id" name="job_id" required>
+        <option value="">Seleccione un puesto laboral</option>
         {% for job in jobs %}
-          <option value="{{ job.id }}" {% if member and job.id == member.job_id %}selected{% endif %}>{{ job.name }}</option>
+        <option value="{{ job.id }}" {% if member.job_id == job.id %}selected{% endif %}>
+          {{ job.name }}</option>
         {% endfor %}
       </select>
     </div>
-    <button type="submit" class="btn btn-primary">Crear</button>
-    <a href="{{ url_for('team.index') }}" class="btn btn-secondary">Cancelar</a>
+  </div>
+  <button type="submit" class="btn btn-primary">Guardar</button>
+  <a href="{{ url_for('team.index') }}" class="btn btn-secondary">Cancelar</a>
 </form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var provinceId = document.getElementById('province_id').value;
+    var localitySelect = document.getElementById('locality_id');
+    var selectedLocalityId = localitySelect.getAttribute('data-selected');
+
+    function loadLocalities(provinceId, selectedLocalityId) {
+      if (provinceId) {
+        fetch('/localities/get/' + provinceId)
+          .then(response => response.json())
+          .then(data => {
+            localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+            data.forEach(function (locality) {
+              var option = document.createElement('option');
+              option.value = locality.id;
+              option.text = locality.name;
+              if (locality.id == selectedLocalityId) {
+                option.selected = true;
+              }
+              localitySelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error('Error al cargar localidades:', error));
+      }
+    }
+
+    // Cargar las localidades al cargar la página
+    loadLocalities(provinceId, selectedLocalityId);
+
+    // Cargar las localidades al cambiar la provincia
+    document.getElementById('province_id').addEventListener('change', function () {
+      var provinceId = this.value;
+      loadLocalities(provinceId, null);
+    });
+  });
+</script>
+
+{% block styles %}
+<style>
+  /* Estilos para el formulario */
+  form {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    color: #0056b3;
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }
+
+  .form-control {
+    border-radius: 5px;
+    border: 1px solid #0056b3;
+    transition: border-color 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  .btn {
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(90deg, #0056b3, #003f7f);
+    transform: scale(1.05);
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+  }
+
+  .btn-secondary:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
+  }
+
+  /* Iconos en los inputs */
+  .input-group {
+    position: relative;
+  }
+
+  .input-group .form-control {
+    padding-left: 30px;
+  }
+
+  .input-group .input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #007bff;
+  }
+
+  input[type="checkbox"] {
+    width: 20px;  /* Ajusta el tamaño */
+    height: 20px; /* Ajusta el tamaño */
+    cursor: pointer; /* Cambia el cursor cuando pasas por encima */
+}
+
+  .custom-checkbox {
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 5px; /* Para bordes redondeados */
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background-color: #28a745; /* Color cuando está activo */
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
+    display: block;
+}
+
+.custom-checkbox .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+}
+</style>
+{% endblock %}
 {% endblock %}
