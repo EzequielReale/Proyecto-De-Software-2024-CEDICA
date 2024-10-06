@@ -4,9 +4,11 @@ from src.core.bcrypt import bcrypt
 from src.core import database
 from src.core.config import config
 from src.web.handlers.autenticacion import autenticacion
-from src.web import routes
 from src.web import blueprints
 from src.web import commands
+from src.web import routes
+from src.web.storage import storage
+
 
 session = Session()
 
@@ -30,5 +32,8 @@ def create_app(env="development", static_folder="../../static"):
     
     # Comandos
     commands.register(app)
+
+    # Storage
+    storage.init_app(app)
 
     return app

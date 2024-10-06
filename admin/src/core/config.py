@@ -13,6 +13,11 @@ class ProductionConfig(Config):
     """Configuracion de la BD en produccion"""
     SQLALCHEMY_DATABASE_URI = environ.get("DATABASE_URL")
 
+    MINIO_SERVER = environ.get("MINIO_SERVER")
+    MINIO_ACCESS_KEY = environ.get("MINIO_ACCESS_KEY")
+    MINIO_SECRET_KEY = environ.get("MINIO_SECRET_KEY")
+    MINIO_SECURE = False
+
 
 class DevelopmentConfig(Config):
     """Development configuration"""
@@ -26,7 +31,12 @@ class DevelopmentConfig(Config):
     DB_NAME = environ.get("DEV_DB_NAME")
     SQLALCHEMY_DATABASE_URI = (
     f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-)
+    )
+    
+    MINIO_SERVER = environ.get("DEV_MINIO_SERVER")
+    MINIO_ACCESS_KEY = environ.get("DEV_MINIO_ACCESS_KEY")
+    MINIO_SECRET_KEY = environ.get("DEV_MINIO_SECRET_KEY")
+    MINIO_SECURE = False
 
 
 class TestingConfig(Config):
