@@ -1,6 +1,19 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.auth.user import User,Role
+from src.core.auth.user import User,Role,Permission
+
+
+def get_permissions(user):
+    """Retorna los permisos del rol del usuario"""
+    # Obtenemos los roles del usuario y luego los permisos relacionados con esos roles
+    permisos = set()  # Usamos un set para evitar duplicados
+    for role in user.roles:
+        for permission in role.permissions:
+            permisos.add(permission.name)
+    
+    return list(permisos)  # Retornamos la lista de nombres de permisos
+
+
 
 
 def list_users():
@@ -26,6 +39,12 @@ def role_new(**kwargs):
     db.session.commit()
     return user
 
+
+def permiso_new(**kwargs):
+    permiso = Permission(**kwargs)
+    db.session.add(permiso)
+    db.session.commit()
+    return permiso
 
 def find_user_email(email):
     """ busco usuario por email """

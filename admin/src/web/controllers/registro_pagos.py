@@ -1,13 +1,16 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from src.core import auth
-from src.core import registro_pagos
+from src.core import auth, registro_pagos
+from src.web.handlers.autenticacion import check_permission
+from src.web.handlers.error import forbidden
 
 bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 
 @bp.get("/")
 def index():
     """controlador listado, paso al template los pagos"""
+    if not check_permission(session, "administracion_index"):   ##chequeo si puede 
+        return forbidden()
     pagos = registro_pagos.administracion_index(request)
     return render_template("registro_pagos/index.html",pagos=pagos)
 

@@ -10,11 +10,13 @@ from flask import (
 
 from src.core import adressing, people, professions
 from web.forms.member_form import MemberForm
+from src.web.handlers.autenticacion import login_required
 
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
 
 @bp.get("/")
+@login_required
 def index() -> str:
     """Listado de miembros del equipo usando filtros, ordenación y paginación"""
     page = request.args.get('page', 1, type=int)
