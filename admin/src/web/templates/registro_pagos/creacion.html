@@ -92,15 +92,17 @@
         }
     </style>
 
+
 <body>
     <div class="container">
         <h2>Registro de Pago</h2>
         <form action="{{ url_for('registro_pagos.create') }}" method="POST">
+            
             <div class="form-group">
                 
               <label for="beneficiario">Beneficiario (Opcional)</label>
               <select name="beneficiario" id="beneficiario">
-                 <option value="" selected>Ninguno</option> <!-- Opción por defecto "Ninguno" -->
+                 <option value="" selected>Ninguno</option> 
                 {% for user in users %}
                  <option value="{{ user.id }}">
                    {{ user.email }}
@@ -111,7 +113,7 @@
 
             <div class="form-group">
                 <label for="monto">Monto</label>
-                <input type="number" id="monto" name="monto" placeholder="Ingrese el monto" step="0.01" min="0" required>
+                <input type="number" id="monto" name="monto" placeholder="Ingrese el monto" step="0.01" min="1" required>
             </div>
 
             <div class="form-group">
@@ -145,6 +147,8 @@
         <a href="{{ url_for('registro_pagos.index') }}">Cancelar</a>
     </div>
 </body>
+ 
+
 </html>
 
 

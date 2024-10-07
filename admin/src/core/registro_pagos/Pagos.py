@@ -20,13 +20,13 @@ class Pago(db.Model):
     beneficiario = db.relationship('User', backref='pagos')
     
     monto = db.Column(db.Integer, nullable=False)  
-    fecha_pago = db.Column(db.DateTime, default=datetime.now)  # asumo q es la de creacion ?
+    fecha_pago = db.Column(db.DateTime,nullable=False)  
     
     # Clave foránea con Tipo_pago
     tipo_pago_id = db.Column(db.Integer, db.ForeignKey('tipos.id'), nullable=False)  # Tipo de pago, no permite nulos
     tipo_pago = db.relationship('Tipo_pago', backref='pagos')  # Relación con el tipo de pago
     
-    descripcion = db.Column(db.String(255), nullable=True)  # Descripción del pago
+    descripcion = db.Column(db.String(255), nullable=False)  # Descripción del pago
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # Actualización automática
 
     def __repr__(self):
