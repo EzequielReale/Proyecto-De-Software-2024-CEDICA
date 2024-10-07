@@ -2,10 +2,12 @@ from flask import Blueprint, flash, redirect, render_template, Request, request,
 
 from src.core import adressing, people, professions
 from web.forms.member_form import MemberForm
+from src.web.handlers.autenticacion import login_required
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
 
 @bp.get("/")
+@login_required
 def index()->str:
     """Listado de miembros del equipo"""
     members = people.list_members()

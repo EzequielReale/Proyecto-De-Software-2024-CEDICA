@@ -1,3 +1,4 @@
+from datetime import datetime
 from src.core import board, auth, people, professions, adressing,registro_pagos
 
 
@@ -9,14 +10,29 @@ def run():
     issue2= board.create_issue(
         email="yo@gmail.com"
     )
-    role = auth.role_new(
-        name="Administracion"
+    permiso = auth.permiso_new(
+       name="administracion_index"
     )
+    permiso2 = auth.permiso_new(
+       name="administracion_show"
+    )
+
+    role = auth.role_new(
+      name="Administracion",
+      permissions = [permiso,permiso2]
+    )
+
     user1 = auth.user_new(
         email="giuliana@gmail.com",
         password="123",
-        role = role,
-        alias= "chu"
+        roles=[role],
+        alias="chu"
+    )
+
+    user2 = auth.user_new(
+        email="chu@gmail.com",
+        password="123",
+        alias="chu"
     )
     tipo1= registro_pagos.tipo_new(
         tipo="Honorarios"
@@ -30,7 +46,9 @@ def run():
     pago = registro_pagos.pago_create(
         monto = 2000,
         beneficiario = user1,
-        tipo_pago = tipo1
+        tipo_pago = tipo1,
+        fecha_pago= datetime.now(),
+        descripcion = "h"
     )
     profession1 = professions.profession_new(
         name="Docente",

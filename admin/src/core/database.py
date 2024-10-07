@@ -19,6 +19,7 @@ def config(app):
 
 def reset():
     """Resetea la bd"""
+
     db.drop_all() #Borra toda la BD
     print("BD borrada con exito") 
     db.create_all() #Vuelve a crear las tablas
