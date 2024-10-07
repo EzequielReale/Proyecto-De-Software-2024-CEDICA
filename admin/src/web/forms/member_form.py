@@ -68,7 +68,7 @@ class MemberForm(Form):
         ('Voluntario', 'Voluntario'),
         ('Personal Rentado', 'Personal Rentado')
     ], validators=[DataRequired(message="La condición es obligatoria")])
-    active = BooleanField('Activo', validators=[DataRequired(message="El estado activo es obligatorio")])
+    active = BooleanField('Activo', validators=[Optional()])
     locality_id = SelectField('Localidad', coerce=int, validators=[DataRequired(message="La localidad es obligatoria")])
     profession_id = SelectField('Profesión', coerce=int, validators=[DataRequired(message="La profesión es obligatoria")])
     job_id = SelectField('Trabajo', coerce=int, validators=[DataRequired(message="El trabajo es obligatorio")])
