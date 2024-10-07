@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.core import board, auth, people, professions, adressing,registro_pagos
+from src.core import board, auth, people, professions, adressing, registro_pagos, equestrian
 
 
 def run():
@@ -65,6 +65,25 @@ def run():
         name = "Ensenada",
         province = province1
     )
+    member1 = people.member_new(
+            name="Giuliana",
+            last_name="Rossi",
+            dni="12345678",
+            phone="123456789",
+            emergency_phone=987654321,
+            street="Calle Falsa",
+            number=123,
+            locality_id=1,
+            email="giuliana@gmail.com",
+            start_date="2023-01-01",
+            end_date="2023-12-31",
+            health_insurance="Health Inc",
+            health_insurance_number=987654321,
+            condition="Voluntario",
+            active=True,
+            profession_id=1,
+            job_id=1
+    )
     # Creo 30 miembros para poder probar la paginación del index
     for i in range(30):
         people.member_new(
@@ -85,5 +104,44 @@ def run():
             active=True,
             profession_id=1,
             job_id=1
-        )
+    )
+    activity1 = equestrian.activity_new(
+        name="Hipoterapia"
+    )
+    activity2 = equestrian.activity_new(
+        name="Monta Terapéutica"
+    )
+    activity3 = equestrian.activity_new(
+        name="Deporte Ecuestre Adaptado"
+    )
+    activity4 = equestrian.activity_new(
+        name="Actividades Recreativas"
+    )
+    activity5 = equestrian.activity_new(
+        name="Equitación"
+    )
+    horse1 = equestrian.horse_new(
+        name="Canelo",
+        birth_date="2001-05-04",
+        gender="Macho",
+        race="Criollo",
+        coat="Marrón",
+        donation=False,
+        entry_date="2023-01-01",
+        assigned_members=[member1],
+        activities=[activity1, activity2, activity3],
+        assigned_location="Sede principal"
+    )
+    horse2 = equestrian.horse_new(
+        name="Summer",
+        birth_date="2012-06-10",
+        gender="Macho",
+        race="Norteño",
+        coat="Gris plateado",
+        donation=True,
+        entry_date="2024-03-12",
+        assigned_members=[member1],
+        activities=[activity3, activity2],
+        assigned_location="Sede Winterfell"
+    )
 

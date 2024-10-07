@@ -4,9 +4,283 @@
 
 {% block head %}
 {{ super() }}
+<style>
+    /* Saco el subrayado de los enlaces */
+    a,
+    a:hover {
+        text-decoration: none !important;
+    }
+
+    /* Estilos para los botones de las distintas acciones */
+    .action-icons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-icons i {
+        transition: 0.3s;
+        color: #0099CC;
+    }
+
+    .action-icons i:hover {
+        color: #0077AA;
+        fill: #0077AA;
+    }
+
+    /* Estilos para el botón de regreso */
+    .btn-back {
+        transition: 0.2s !important;
+        color: #222 !important;
+    }
+
+    .btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    /* Estilos para los íconos de paginación */
+    #pagination i {
+        margin-top: 3px;
+        transform: scale(0.8);
+    }
+
+    #pagination>a {
+        padding-top: 3px;
+    }
+
+    /* Estilos para columnas ordenables */
+    th>a {
+        color: #0077AA;
+        text-decoration: none;
+    }
+
+    th>a>i {
+        margin-left: 2px;
+        transform: scale(0.7);
+    }
+
+    /* Acomodar filtros en fila */
+    .form-filter-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    @media screen and (max-width: 768px) {
+
+        /* Acomodar botones en columnas */
+        #main-buttons {
+            flex-direction: column !important;
+        }
+
+        .form-filter-container {
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        /* Ocultar columnas en pantallas pequeñas */
+        tr>td:nth-child(4),
+        tr>td:nth-child(5),
+        tr>td:nth-child(6),
+        tr>td:nth-child(7),
+        tr>th:nth-child(4),
+        tr>th:nth-child(5),
+        tr>th:nth-child(6),
+        tr>th:nth-child(7) {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+
+        /* Ocultar última columna en pantallas muy pequeñas */
+        tr>td:nth-child(8),
+        tr>th:nth-child(8) {
+            display: none;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<h1>Ecuestre</h1>
-<p>Pagina de ecuestre</p>
+<header class="d-flex flex-row align-items-center justify-content-between w-100">
+    <div>
+        <h1>Ecuestre</h1>
+        <p>Página de administración de caballos 🐴</p>
+    </div>
+    <div id="main-buttons" class="d-flex flex-row gap-3">
+        <!-- Botones principales -->
+        <a data-bs-toggle="collapse" onmouseup="clickFilter()" href="#search-container" role="button"
+            aria-expanded="false" aria-controls="search-container" id="filter-button"
+            class="btn btn-outline-dark d-flex align-items-center pb-2 {% if search or activity_id %}active{% endif %}">
+            <i style="transform: scale(0.75);" class="fa fa-filter me-2 mt-1"></i>
+            Filtros
+        </a>
+
+        <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
+            <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
+            Nuevo
+        </a>
+    </div>
+</header>
+<div class="collapse mb-3 {% if search or activity_id %}show{% endif %}" id="search-container">
+    <!-- Formulario de búsqueda y filtros -->
+    <form method="get" class="d-flex flex-row align-items-end gap-3" action="{{ url_for('ecuestre.index') }}">
+        <div class="form-filter-container" style="flex-grow: 1;">
+            <div class="form-group" style="flex-grow: 1;">
+                <label class="mb-1" for="search">Buscar por nombre:</label>
+                <input type="text" id="search" name="search" value="{{ search }}" class="form-control">
+            </div>
+            <div class="form-group" style="flex-grow: 1;">
+                <label class="mb-1" for="activity_id">Filtrar por actividad:</label>
+                <select id="activity_id" name="activity_id" class="form-select">
+                    <option value="">Todas las actividades</option>
+                    {% for activity in activities %}
+                    <option value="{{ activity.id }}" {% if activity.id==activity_id %}selected{% endif %}>{{
+                        activity.name
+                        }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-filter-container">
+            <a href="{{ url_for('ecuestre.index') }}" class="btn btn-outline-secondary d-flex align-items-center">
+                Limpiar filtros
+            </a>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
+    </form>
+</div>
+<table class="table table-striped mt-3 overflow-auto">
+    <thead>
+        <tr>
+            <!-- Cabeceras de la tabla -->
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
+                    Nombre
+                    {% if order_by == 'name' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='birth_date', order='asc' if order_by != 'birth_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
+                    Nacimiento
+                    {% if order_by == 'birth_date' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>
+                <a
+                    href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
+                    Fecha de ingreso
+                    {% if order_by == 'entry_date' %}
+                    {% if order == 'asc' %}
+                    <i class="fas fa-sort-asc"></i>
+                    {% else %}
+                    <i class="fas fa-sort-desc"></i>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-sort"></i>
+                    {% endif %}
+                </a>
+            </th>
+            <th>Sexo</th>
+            <th>Raza</th>
+            <th>Pelaje</th>
+            <th>Origen</th>
+            <th>Sede Asignada</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if horses %}
+        {% for horse in horses %}
+        <!-- Render de las filas de caballos -->
+        <tr>
+            <td>{{ horse.name }}</td>
+            <td>{{ horse.birth_date }}</td>
+            <td>{{ horse.entry_date }}</td>
+            <td>{{ horse.gender }}</td>
+            <td>{{ horse.race }}</td>
+            <td>{{ horse.coat }}</td>
+            <td>{{ "Donación" if horse.donation else "Compra" }}</td>
+            <td>{{ horse.assigned_location }}</td>
+            <td>
+                <div class="action-icons">
+                    <!-- Icono de vista detallada -->
+                    <a href="{{ url_for('ecuestre.show', id=horse.id) }}" title="Ver detalles">
+                        <i class="fas fa-file-text"></i>
+                    </a>
+                    <!-- Icono de edición -->
+                    <a href="" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <!-- Formulario de eliminación -->
+                    <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
+                        <button type="submit" title="Eliminar"
+                            style="border: none; background: none; color: #0099CC; cursor: pointer;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+            <!-- Render en caso que no haya resultados -->
+            <td colspan="16">No hay caballos para mostrar</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+<div class="mt-4 d-flex flex-row w-100 justify-content-center align-items-center">
+    <div id="pagination" class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
+        {% if page > 1 %}
+        <a style="color: #0099CC;"
+            href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page-1, search=search, activity_id=activity_id) }}"><i
+                class="fa fa-angle-double-left" aria-hidden="true"></i>
+        </a>
+        {% else %}
+        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+        {% endif %}
+        <span>Página {{ page }}</span>
+        {% if page < total_pages %} <a style="color: #0099CC;"
+            href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page+1, search=search, activity_id=activity_id) }}">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </a>
+            {% else %}
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            {% endif %}
+    </div>
+</div>
+<script>
+    function clickFilter() {
+        const filterButton = document.querySelector('#filter-button');
+        const searchContainer = document.querySelector('#search-container');
+
+        if (searchContainer.classList.contains('show')) {
+            filterButton.classList.remove('active');
+        } else {
+            filterButton.classList.add('active');
+        }
+    }
+</script>
 {% endblock %}

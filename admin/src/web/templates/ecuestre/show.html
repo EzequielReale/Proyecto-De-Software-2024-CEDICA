@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Ver miembro{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    a,
+    a:hover {
+        text-decoration: none !important;
+    }
+
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    @media screen and (max-width: 768px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+        }
+
+        header p {
+            font-size: 0.9rem;
+        }
+
+        #btn-back {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="d-flex flex-row justify-content-between align-items-center">
+    <div>
+        <h1>Vista detallada de {{ horse.name }} 🐎</h1>
+        <p>Información registrada acerca del caballo</p>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+        <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
+            onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
+            <button type="submit" title="Eliminar" class="btn btn-danger">
+                <i style="transform: scale(0.8);" class="fas fa-trash-alt me-1"></i>
+                Eliminar
+            </button>
+        </form>
+        <a class="btn btn-warning" href="{{ url_for('ecuestre.index') }}">
+            <i class="fas fa-edit me-1"></i>
+            Editar
+        </a>
+        <a id="btn-back" class="btn border border-2" href="{{ url_for('ecuestre.index') }}">
+            <i style="transform: scale(0.6);" class="fa fa-chevron-left me-1"></i>
+            Volver al listado
+        </a>
+    </div>
+</header>
+<div class="d-flex flex-row justify-content-evenly align-items-start flex-wrap w-100 gap-3 mt-3">
+    <div class="card" style="flex-grow: 0.3;">
+        <div class="card-header bg-secondary-subtle fw-medium">
+            Información general
+        </div>
+        <div class="card-body pt-2">
+            <p class="card-text">
+                <span class="fw-medium">Nombre:</span> {{ horse.name }}<br>
+                <span class="fw-medium">Nacimiento:</span> {{ horse.birth_date }}<br>
+                <span class="fw-medium">Sexo:</span> {{ horse.gender }}<br>
+                <span class="fw-medium">Raza:</span> {{ horse.race }}<br>
+                <span class="fw-medium">Pelaje:</span> {{ horse.coat }}<br>
+                <span class="fw-medium">Origen:</span> {{ "Donación" if horse.donation else "Compra" }}<br>
+                <span class="fw-medium">Fecha de ingreso:</span> {{ horse.entry_date }}<br>
+                <span class="fw-medium">Sede asignada:</span> {{ horse.assigned_location }}<br>
+            </p>
+        </div>
+    </div>
+    <div class="card" style="flex-grow: 0.3;">
+        <div class="card-header bg-secondary-subtle fw-medium">
+            Actividades asignadas
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if horse.activities %}
+            {% for activity in horse.activities %}
+            <li class="list-group-item">{{ activity.name }}</li>
+            {% endfor %}
+            {% else %}
+            <li class="list-group-item">Este caballo no tiene actividades asignadas</li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="card" style="flex-grow: 0.3;">
+        <div class="card-header bg-secondary-subtle fw-medium">
+            Sus entrenadores y/o conductores
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if horse.assigned_members %}
+            {% for member in horse.assigned_members %}
+            <li class="list-group-item">{{ member.name }} - {{ member.job }}</li>
+            {% endfor %}
+            {% else %}
+            <li class="list-group-item">No hay miembros asignados</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
