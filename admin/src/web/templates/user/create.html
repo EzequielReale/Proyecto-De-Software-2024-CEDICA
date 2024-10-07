@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block title %}Gestion de usuarios{% endblock %}
+ 
+{% block head %}
+{{ super() }}
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    button {
+        margin: 10px 0;
+        padding: 15px 30px;
+        font-size: 16px;
+        width: 200px;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+<h1>Crear nuevo usuario</h1>
+<p>Formulario para crear un nuevo usuario</p>
+
+<main>
+    
+    <form method="POST">
+
+        {{ form.csrf_token }}
+        <div>
+            {{ form.alias.label }} {{ form.alias() }}
+            {% for error in form.alias.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.email.label }} {{ form.email() }}
+            {% for error in form.email.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.password.label }} {{ form.password() }}
+            {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.confirm_password.label }} {{ form.confirm_password() }}
+            {% for error in form.confirm_password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.role.label }} {{ form.role() }}
+            {% for error in form.role.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+
+</main>
+{% endblock %}

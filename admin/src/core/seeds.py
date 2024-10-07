@@ -1,14 +1,34 @@
+from src.core.models.operations import role_operations as Role
+from src.core.models.operations import user_operations as User
+from src.core.models.operations import role_operations as Role
+from src.core.models.operations import permission_operations as Permission
 from datetime import datetime
-from src.core import board, auth, people, professions, adressing, registro_pagos, equestrian
+from src.core import auth, people, professions, adressing, registro_pagos, equestrian
 
 
 def run():
-    """Llena la base de datos con issues de prueba"""
-    issue1 = board.create_issue(
-        email="giu@gmail.com"
+
+    perm1 = Permission.create_permission(name='index')
+    perm2 = Permission.create_permission(name='new')
+    perm3 = Permission.create_permission(name='destroy')
+    perm4 = Permission.create_permission(name='update')
+    perm5 = Permission.create_permission(name='show')
+
+    rol1 = Role.create_role(
+        name='Tecnica',
     )
-    issue2= board.create_issue(
-        email="yo@gmail.com"
+    rol2 = Role.create_role(
+        name='Encuestre',
+    )
+    rol3 = Role.create_role(
+        name='Voluntariado',
+    )
+    rol4 = Role.create_role(
+        name='Administracion',
+    )
+    rol5 = Role.create_role(
+        name='SystemAdmin',
+        permissions=[perm1,perm2,perm3,perm4,perm5]
     )
     permiso = auth.permiso_new(
        name="administracion_index"
@@ -144,4 +164,30 @@ def run():
         activities=[activity3, activity2],
         assigned_location="Sede Winterfell"
     )
+
+    user_admin = User.user_new(
+        email="admin@admin.com",
+        alias = "admin",
+        password="admin",
+        isActive=True,
+        roles=[rol5]
+    )
+
+    user1 = User.user_new(
+        email="giuliana@gmail.com",
+        alias = "giu",
+        password="123",
+        isActive=True,
+    )
+
+    user2 = User.user_new(
+        email="lau@gmail.com",
+        alias = "lau",
+        password="123",
+        isActive=True,
+    )
+
+
+
+
 
