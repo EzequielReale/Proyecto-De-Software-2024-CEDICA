@@ -1,5 +1,5 @@
 from src.core.database import db
-from src.core.people.member import Member
+from src.core.people.member_rider import Member
 
 class Horse(db.Model):
     """Modelo para los caballos de la institución"""
