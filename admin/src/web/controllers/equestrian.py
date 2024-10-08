@@ -32,7 +32,13 @@ def show(id: int):
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required
 def create():
-    return render_template('ecuestre/create.html', activities=equestrian.list_activities(), members=people.list_members())
+    return render_template('ecuestre/create.html', activities=equestrian.list_activities(), members=people.list_members({
+        'name': '',
+        'last_name': '',
+        'dni': '',
+        'email': '',
+        'profession_id': ''
+    }))
 
 @bp.post("/<int:id>/delete")
 @login_required
