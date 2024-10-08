@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
+from src.core.user_role_permission.operations.user_operations import get_user_by_id
 from src.core import auth, registro_pagos
 from src.web.handlers.autenticacion import check_permission
 from src.web.handlers.error import forbidden
@@ -42,7 +43,7 @@ def validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id):
     
         # Verificamos si se seleccionó un beneficiario
      if beneficiario_id:
-         beneficiario = auth.find_user_id(beneficiario_id)
+         beneficiario = get_user_by_id(beneficiario_id)
          if not beneficiario:
              flash("El beneficiario seleccionado no es válido", 'danger')
              return False, None,None
