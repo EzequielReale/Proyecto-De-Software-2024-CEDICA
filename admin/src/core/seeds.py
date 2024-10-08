@@ -8,11 +8,11 @@ from src.core import auth, people, professions, adressing, registro_pagos, eques
 
 def run():
 
-    perm1 = Permission.create_permission(name='index')
-    perm2 = Permission.create_permission(name='new')
-    perm3 = Permission.create_permission(name='destroy')
-    perm4 = Permission.create_permission(name='update')
-    perm5 = Permission.create_permission(name='show')
+    perm1 = Permission.permiso_new(name='index')
+    perm2 = Permission.permiso_new(name='new')
+    perm3 = Permission.permiso_new(name='destroy')
+    perm4 = Permission.permiso_new(name='update')
+    perm5 = Permission.permiso_new(name='show')
 
     rol1 = Role.role_new(
         name='Tecnica',
@@ -30,30 +30,46 @@ def run():
         name='SystemAdmin',
         permissions=[perm1,perm2,perm3,perm4,perm5]
     )
-    permiso = auth.permiso_new(
-       name="administracion_index"
+    user_admin = User.user_new(
+        email="admin@admin.com",
+        alias = "admin",
+        password= "admin",
+        isActive=True,
+        roles=[rol5]
     )
-    permiso2 = auth.permiso_new(
-       name="administracion_show"
-    )
-
-    role = auth.role_new(
-      name="Administracion",
-      permissions = [permiso,permiso2]
-    )
-
-    user1 = auth.user_new(
+    user1 = User.user_new(
         email="giuliana@gmail.com",
+        alias = "giu",
         password="123",
-        roles=[role],
-        alias="chu"
+        isActive=True,
     )
-
-    user2 = auth.user_new(
-        email="chu@gmail.com",
+    user2 = User.user_new(
+        email="lau@gmail.com",
+        alias = "lau",
         password="123",
-        alias="chu"
+        isActive=True,
     )
+    # permiso = auth.permiso_new(
+    #    name="administracion_index"
+    # )
+    # permiso2 = auth.permiso_new(
+    #    name="administracion_show"
+    # )
+    # role = auth.role_new(
+    #   name="Administracion",
+    #   permissions = [permiso,permiso2]
+    # )
+    # user1 = auth.user_new(
+    #     email="giuliana@gmail.com",
+    #     password="123",
+    #     roles=[role],
+    #     alias="chu"
+    # )
+    # user2 = auth.user_new(
+    #     email="chu@gmail.com",
+    #     password="123",
+    #     alias="chu"
+    # )
     tipo1= registro_pagos.tipo_new(
         tipo="Honorarios"
     )
@@ -164,30 +180,3 @@ def run():
         activities=[activity3, activity2],
         assigned_location="Sede Winterfell"
     )
-
-    user_admin = User.user_new(
-        email="admin@admin.com",
-        alias = "admin",
-        password="admin",
-        isActive=True,
-        roles=[rol5]
-    )
-
-    user1 = User.user_new(
-        email="giuliana@gmail.com",
-        alias = "giu",
-        password="123",
-        isActive=True,
-    )
-
-    user2 = User.user_new(
-        email="lau@gmail.com",
-        alias = "lau",
-        password="123",
-        isActive=True,
-    )
-
-
-
-
-
