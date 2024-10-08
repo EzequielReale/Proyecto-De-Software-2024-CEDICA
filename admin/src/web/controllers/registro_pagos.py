@@ -1,7 +1,12 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
+<<<<<<< HEAD
 from src.core.user_role_permission.operations.user_operations import get_user_by_id
 from src.core import auth, registro_pagos
+=======
+from src.core.user_role_permission.operations.user_operations import get_user_by_id,list_users
+from src.core import  registro_pagos
+>>>>>>> f4a432c (arregloss)
 from src.web.handlers.autenticacion import check_permission
 from src.web.handlers.error import forbidden
 
@@ -15,40 +20,39 @@ def index():
     return render_template("registro_pagos/index.html",pagos=pagos)
 
 
-def validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id):
-     """valido los parametros segun ciertos requerimientos"""
-     if not monto or float(monto) <= 0:
-            flash("El monto debe ser mayor a 0", 'danger')
-            return False, None,None
-        
-     if not tipo_pago_id:
-         flash("Debe seleccionar un tipo de pago", 'danger')
-         return False, None,None
-        
-     if not fecha_pago:
-         flash("Debe ingresar una fecha de pago", 'danger')
-         return False, None,None
-        
-     if not des or len(des) > 255:
-         flash("La descripción es obligatoria y debe tener un máximo de 255 caracteres", 'danger')
-         return False, None,None
-        
-        # Verificamos que el tipo de pago exista en la base de datos
-     tipo_pago_obj = registro_pagos.get_tipo_pago(tipo_pago_id)
-     if not tipo_pago_obj:
-         flash("El tipo de pago seleccionado no es válido", 'danger')
-         return False, None,None
-        
-     beneficiario = None   
+#saco los flash para que sea mas generica 
+def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
+    """Valido los parámetros según ciertos requerimientos"""
     
-        # Verificamos si se seleccionó un beneficiario
-     if beneficiario_id:
-         beneficiario = get_user_by_id(beneficiario_id)
-         if not beneficiario:
-             flash("El beneficiario seleccionado no es válido", 'danger')
-             return False, None,None
-     return True, beneficiario,tipo_pago_obj
+    
+    if not monto or float(monto) <= 0:
+        return False, "El monto debe ser mayor a 0", None, None
+    
+    
+    if not tipo_pago_id:
+        return False, "Debe seleccionar un tipo de pago", None, None
+    
+    
+    if not fecha_pago:
+        return False, "Debe ingresar una fecha de pago", None, None
+    
+    
+    if not des or len(des) > 255:
+        return False, "La descripción es obligatoria y debe tener un máximo de 255 caracteres", None, None
+    
+    tipo_pago_obj = registro_pagos.get_tipo_pago(tipo_pago_id)
+    if not tipo_pago_obj:
+        return False, "El tipo de pago seleccionado no es válido", None, None
+    
+    beneficiario = None
 
+
+    if beneficiario_id:
+        beneficiario = get_user_by_id(beneficiario_id)
+        if not beneficiario:
+            return False, "El beneficiario seleccionado no es válido", None, None
+    
+    return True, "", beneficiario, tipo_pago_obj
 
 
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
@@ -63,13 +67,15 @@ def update(id):
         des=  request.form['descripcion']
         beneficiario_id = request.form['beneficiario']
         
-        pude,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
+        pude,mensaje,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
         if pude:
             registro_pagos.administracion_update(id,monto,tipo_pago,fecha_pago,des,beneficiario)
             flash('Pago actualizado exitosamente.', 'success')
             return redirect(url_for('registro_pagos.index')) 
+        else:
+            flash(mensaje, 'danger')
     #es la primera vez q entra o hubo algun error en el envio
-    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users= auth.list_users()) #lo devuelvo al mismo lug con los mismos datos
+    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users= list_users()) #lo devuelvo al mismo lug con los mismos datos
 
 
 
@@ -96,7 +102,7 @@ def create():
         des=  request.form['descripcion']
         beneficiario_id = request.form['beneficiario']
         
-        pude,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
+        pude,mensaje,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
         if pude:
              if(beneficiario):
                 pago_data = {
@@ -117,6 +123,7 @@ def create():
              registro_pagos.administracion_create(**pago_data)
              flash('Se agrego el pago correctamente.', 'success')
              return redirect(url_for('registro_pagos.index')) 
-     
+        else:
+            flash(mensaje, 'danger')
        #es l primera vez q entra o hubo un problema con el envio
-     return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(),users= auth.list_users()) 
+     return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(),users= list_users()) 

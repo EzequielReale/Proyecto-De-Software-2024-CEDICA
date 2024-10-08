@@ -60,6 +60,10 @@
                         <a class="nav-link {% if 'team' in request.endpoint %}active{% endif %}"
                             href="{{ url_for('team.index') }}">Equipo</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'registro_pagos' in request.endpoint %}active{% endif %}"
+                            href="{{ url_for('registro_pagos.index') }}">Registro de Pagos</a>
+                    </li>
                     {% endif %}
                 </ul>
 
