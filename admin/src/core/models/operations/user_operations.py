@@ -62,7 +62,6 @@ def get_user_by_status(user_status):
     """ Obtiene usuarios por su estado """
     return User.query.filter_by(isActive=user_status).first()
 
-<<<<<<< HEAD
 #####################################################
 
 # Metodos agregados por Giu
@@ -81,15 +80,10 @@ def find_user_id(id):
 
 def find_user(email,password):
     user = find_user_email(email)
-=======
-def find_user(email,password):
-    user = get_user_by_email(email)
->>>>>>> development
     if user and bcrypt.check_password_hash(user.password,password):
         return user
     return None
 
-<<<<<<< HEAD
 
 def get_permissions(user):
     """Retorna los permisos del rol del usuario"""
@@ -100,5 +94,3 @@ def get_permissions(user):
             permisos.add(permission.name)
     
     return list(permisos)  # Retornamos la lista de nombres de permisos
-=======
->>>>>>> development
