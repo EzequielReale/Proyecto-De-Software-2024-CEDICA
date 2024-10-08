@@ -1,6 +1,6 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.models.user_role_permission.upr_models import User, Role, Permission
+from src.core.user_role_permission.upr_models import User, Role, Permission
 
 
 def get_permissions(user):
