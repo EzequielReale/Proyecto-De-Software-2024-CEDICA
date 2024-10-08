@@ -9,8 +9,7 @@ bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 @bp.get("/")
 def index():
     """controlador listado, paso al template los pagos"""
-    if not check_permission(session, "administracion_index"):   ##chequeo si puede 
-        return forbidden()
+
     pagos = registro_pagos.administracion_index(request)
     return render_template("registro_pagos/index.html",pagos=pagos)
 
@@ -39,6 +38,8 @@ def validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id):
          flash("El tipo de pago seleccionado no es válido", 'danger')
          return False, None,None
         
+     beneficiario = None   
+    
         # Verificamos si se seleccionó un beneficiario
      if beneficiario_id:
          beneficiario = auth.find_user_id(beneficiario_id)

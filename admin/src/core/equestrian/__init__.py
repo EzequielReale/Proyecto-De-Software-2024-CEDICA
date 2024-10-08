@@ -1,6 +1,8 @@
 from src.core.database import db
 from src.core.equestrian.horse import Horse
 from src.core.equestrian.activity import Activity
+from src.core.people.member_rider import Member
+from src.core.equestrian.horse_document import HorseDocument
 
 
 def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, page: int = 1, search: str = '', activity_id: int = None):
@@ -24,6 +26,14 @@ def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, pag
     # Paginación
     paginated_query = query.paginate(page=page, per_page=limit, error_out=False)
     return paginated_query.items, paginated_query.pages
+
+def get_drivers():
+    """Obtiene todos los conductores"""
+    return Member.query.filter_by(job_id=4).all()
+
+def get_trainers():
+    """Obtiene todos los entrenadores de caballos"""
+    return Member.query.filter_by(job_id=8).all()
 
 def get_horse_by_id(horse_id:int)->Horse:
     """Devuelve un caballo por ID"""
@@ -50,6 +60,18 @@ def horse_delete(horse_id:int)->Horse:
     db.session.delete(horse)
     db.session.commit()
     return horse
+
+def add_document_url(self, document_type, url):
+    """Adjuntar una URL de documento al caballo"""
+    document = HorseDocument(horse_id=self.id, document_type=document_type, url=url)
+    db.session.add(document)
+    db.session.commit()
+
+def add_document_file(self, document_type, file_path):
+    """Subir un archivo de documento al caballo"""
+    document = HorseDocument(horse_id=self.id, document_type=document_type, file_path=file_path)
+    db.session.add(document)
+    db.session.commit()
 
 
 """Módulo de actividades"""
