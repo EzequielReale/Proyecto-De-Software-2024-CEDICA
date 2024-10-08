@@ -1,5 +1,5 @@
 from src.core.database import db
-from src.core.models.user_role_permission.upr_models import Role
+from src.core.user_role_permission.upr_models import Role
 
 def get_role_by_name(role_name)->Role:
     """ Recibe el nombre de un role y retorna el role correspondiente si existia"""

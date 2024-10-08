@@ -1,7 +1,7 @@
-from src.core.models.operations import role_operations as Role
-from src.core.models.operations import user_operations as User
-from src.core.models.operations import role_operations as Role
-from src.core.models.operations import permission_operations as Permission
+from src.core.user_role_permission.operations import role_operations as Role
+from src.core.user_role_permission.operations import user_operations as User
+from src.core.user_role_permission.operations import role_operations as Role
+from src.core.user_role_permission.operations import permission_operations as Permission
 from datetime import datetime
 from src.core import auth, people, professions, adressing, registro_pagos, equestrian
 
