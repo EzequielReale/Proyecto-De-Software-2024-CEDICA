@@ -1,5 +1,5 @@
 from src.core.database import db
-from src.core.models.user_role_permission.upr_models import Permission
+from src.core.user_role_permission.upr_models import Permission
 
 def get_permission_by_name(permission_name):
     """ Recibe el nombre de un permiso y retorna el permiso correspondiente si existia"""

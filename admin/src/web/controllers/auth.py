@@ -3,7 +3,7 @@ from flask import render_template
 from flask import request,redirect, flash,url_for
 
 from flask import session
-from src.core.models.operations.user_operations import find_user
+from src.core.user_role_permission.operations.user_operations import find_user
 
 bp= Blueprint("auth",__name__,url_prefix="/auth")
 

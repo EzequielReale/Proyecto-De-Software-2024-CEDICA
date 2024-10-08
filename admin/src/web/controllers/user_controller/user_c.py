@@ -3,8 +3,8 @@ from flask import render_template
 from flask import redirect
 from flask import flash
 from flask import request
-from src.core.models.operations.user_operations import *
-from src.core.models.operations.role_operations import *
+from src.core.user_role_permission.operations.user_operations import *
+from src.core.user_role_permission.operations.role_operations import *
 from src.web.controllers.user_controller.user_validator import RegistrationForm
 from src.web.controllers.user_controller.user_validator import UpdateForm
 from src.web.controllers.user_controller.user_validator import SearchForm
