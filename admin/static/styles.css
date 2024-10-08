@@ -38,24 +38,6 @@ main.no-aside {
     grid-template-columns: 1fr;
 }
 
-header,
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-}
-
-header a,
-footer a {
-    color: #fff;
-    text-decoration: none;
-}
-
-header a:hover,
-footer a:hover {
-    text-decoration: underline;
-}
-
 /* Content styles */
 
 h1,

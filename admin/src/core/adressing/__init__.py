@@ -20,7 +20,7 @@ def province_new(**kwargs)->Province:
 
 """Módulo de localidades"""
 def list_localities()->list:
-    """Obtiene todas las localidades"""
+    """Obtiene todas las localidades con solo id y name"""
     return db.session.query(Locality).all()
 
 def get_locality_by_id(locality_id:int)->Locality:

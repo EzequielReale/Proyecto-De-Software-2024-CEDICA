@@ -1,0 +1,448 @@
+{% extends "layout.html" %}
+
+{% block title %}Registro de caballos{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .form-group label {
+        font-weight: 500;
+    }
+
+    a,
+    a:hover {
+        text-decoration: none !important;
+    }
+
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    #activities-list li {
+        transition: 0.2s;
+    }
+
+    #activities-list li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #assign-buttons-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    #assign-buttons-container button {
+        color: #333;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    #assign-buttons-container button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .selected {
+        background-color: #0077AA !important;
+        border-color: #0077AA !important;
+        color: white !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>🐎 Registro de caballos</h2>
+    <p>Formulario para registrar un nuevo caballo en la institución</p>
+    <form action="{{ url_for('registro_pagos.create') }}" method="POST">
+        <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
+            <li class="nav-item">
+                <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información
+                    general</a>
+            </li>
+            <li class="nav-item">
+                <a role="button" class="nav-link" onclick="changePage(1)">Miembros y actividades</a>
+            </li>
+            <li class="nav-item">
+                <a role="button" class="nav-link" onclick="changePage(2)">Documentos</a>
+            </li>
+        </ul>
+        <div class="d-flex flex-column gap-3 p-4 border border-top-0 rounded-bottom">
+            <section class="d-flex flex-column gap-3">
+                <div>
+                    <h5 class="border-bottom border-dark pb-2">Información general</h5>
+                    <p class="mt-0 mb-3">
+                        Información básica acerca del nuevo integrante.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label class="mb-1" for="name">Nombre</label>
+                    <input class="form-control" type="text" id="name" name="name"
+                        placeholder="Ingrese el nombre del caballo" required maxlength="64">
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label class="mb-1" for="birth_date">Nacimiento</label>
+                        <input class="form-control" type="date" id="birth_date" name="birth_date" required>
+                    </div>
+                    <div class="form-group w-50">
+                        <label class="mb-1" for="entry_date">Fecha de ingreso</label>
+                        <input class="form-control" type="date" id="entry_date" name="entry_date" required>
+                    </div>
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label class="mb-1" for="gender">Sexo</label>
+                        <select class="form-select" name="gender" id="gender" required>
+                            <option selected>Seleccione una opción...</option>
+                            <option value="0">Macho</option>
+                            <option value="1">Hembra</option>
+                        </select>
+                    </div>
+                    <div class="form-group w-50">
+                        <label class="mb-1" for="origin">Origen</label>
+                        <select class="form-select" name="origin" id="origin" required>
+                            <option selected>Seleccione una opción...</option>
+                            <option value="0">Compra</option>
+                            <option value="1">Donación</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group w-100 d-flex flex-row gap-3">
+                    <div class="w-50">
+                        <label class="mb-1" for="race">Raza</label>
+                        <input id="race" name="race" placeholder="Ingrese la raza del caballo" type="text"
+                            class="form-control" required maxlength="32">
+                    </div>
+                    <div class="w-50">
+                        <label class="mb-1" for="coat">Pelaje</label>
+                        <input id="coat" name="coat" placeholder="Ingrese el pelaje del caballo" type="text"
+                            class="form-control" required maxlength="32">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="mb-1" for="assigned_location">Sede asignada</label>
+                    <input type="text" name="assigned_location" id="assigned_location" class="form-control"
+                        placeholder="Ingrese el nombre de la sede asignada" required>
+                </div>
+            </section>
+            <section class="visually-hidden d-flex flex-column flex-wrap justify-content-between gap-4">
+                <div>
+                    <h5 class="border-bottom border-dark pb-2">Actividades</h5>
+                    <p class="mt-0 mb-3">
+                        Seleccione las actividades de las que formará parte el caballo.
+                    </p>
+                    <ul id="activities-list"
+                        class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
+                        {% if activities %}
+                        {% for activity in activities %}
+                        <li id="activity-{{activity.id}}" class="list-group-item border rounded"
+                            onclick="toggleSelected('activity', {{activity.id}})"
+                            style="flex-grow: 1; user-select: none; padding: 8px 20px !important;" role="button">{{
+                            activity.name }}</li>
+                        {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="d-flex flex-column">
+                    <h5 class="border-bottom border-dark pb-2">Miembros</h5>
+                    <p class="mt-0 mb-3">
+                        Asigne los entrenadores y conductores que estarán a cargo del caballo.
+                    </p>
+                    <table class="table table-striped overflow-auto">
+                        <thead>
+                            <tr>
+                                <!-- Cabeceras de la tabla -->
+                                <th>Miembro</th>
+                                <th>Puesto laboral</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if horses %}
+                            {% else %}
+                            <tr>
+                                <!-- Render en caso que no haya resultados -->
+                                <td colspan="16">No hay miembros asignados a este caballo aún</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-outline-primary mt-2 align-self-end justify-content-end"
+                        data-bs-toggle="modal" data-bs-target="#modal-members">
+                        <i style="transform: scale(0.8);" class="me-1 fa fa-plus"></i>
+                        Agregar miembro
+                    </button>
+                </div>
+            </section>
+
+            <section class="visually-hidden d-flex flex-column">
+                <h5 class="border-bottom border-dark pb-2">Documentación complementaria</h5>
+                <p>Pestaña para adjuntar documentación acerca del caballo. Como su ficha general, registros
+                    veterinarios, etc.</p>
+                <table class="table table-striped overflow-auto">
+                    <thead>
+                        <tr>
+                            <!-- Cabeceras de la tabla -->
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        {% if horses %}
+                        {% for horse in horses %}
+                        <!-- Render de las filas de caballos -->
+                        <tr>
+                            <td>{{ horse.name }}</td>
+                            <td>{{ horse.birth_date }}</td>
+                            <td>{{ horse.entry_date }}</td>
+                            <td>{{ horse.gender }}</td>
+                            <td>{{ horse.race }}</td>
+                            <td>{{ horse.coat }}</td>
+                            <td>{{ "Donación" if horse.donation else "Compra" }}</td>
+                            <td>{{ horse.assigned_location }}</td>
+                            <td>
+                                <button type="submit" title="Eliminar"
+                                    style="border: none; background: none; color: #0099CC; cursor: pointer;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <!-- Render en caso que no haya resultados -->
+                            <td colspan="16">Todavía no adjuntaste documentación</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <div class="d-flex flex-row gap-2 justify-content-end w-100">
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                        data-bs-target="#modal-files">
+                        <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                        Enlace
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                        data-bs-target="#modal-files">
+                        <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
+                        Subir archivo
+                    </button>
+                </div>
+            </section>
+
+            <div class="modal fade" id="modal-activities" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Asignar
+                                actividades
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mt-0 mb-3">
+                                Seleccione las actividades de las que formará parte el caballo.
+                            </p>
+                            <ul id="activities-list"
+                                class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
+                                {% if activities %}
+                                {% for activity in activities %}
+                                <li id="activity-{{activity.id}}" class="list-group-item border rounded"
+                                    onclick="toggleSelected('activity', {{activity.id}})"
+                                    style="flex-grow: 1; user-select: none; padding: 8px 20px !important;"
+                                    role="button">{{
+                                    activity.name }}</li>
+                                {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-members" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Asignar
+                                miembros
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mt-0 mb-0">
+                                Seleccione los miembros que estarán a cargo del caballo.
+                            </p>
+                            <div class="d-flex flex-row justify-content-around gap-2 mt-3">
+                                <div class="w-50">
+                                    <h6>Entrenadores</h6>
+                                    <ul id="trainers-list"
+                                        class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
+                                        {% if trainers %}
+                                        {% for trainer in trainers %}
+                                        <li id="activity-{{trainer.id}}" class="list-group-item border rounded"
+                                            onclick="toggleSelected('trainer', {{trainer.id}})"
+                                            style="flex-grow: 1; user-select: none; padding: 8px 20px !important;"
+                                            role="button">{{
+                                            trainer.name }}</li>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="w-50">
+                                    <h6>Conductores</h6>
+                                    <ul id="drivers-list"
+                                        class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
+                                        {% if drivers %}
+                                        {% for driver in drivers %}
+                                        <li id="activity-{{driver.id}}" class="list-group-item border rounded"
+                                            onclick="toggleSelected('activity', {{driver.id}})"
+                                            style="flex-grow: 1; user-select: none; padding: 8px 20px !important;"
+                                            role="button">{{
+                                            driver.name }}</li>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-files" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Adjuntar
+                                documentación
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mt-0 mb-3">
+                                Adjunte los archivos y/o documentación necesaria para el caballo.
+                            </p>
+                            <div class="form-group mb-3">
+                                <label class="mb-2" for="files">Ficha general</label>
+                                <input class="form-control" type="file" id="files" name="files" multiple>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="mb-2" for="files">Planificación de entrenamiento</label>
+                                <input class="form-control" type="file" id="files" name="files" multiple>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="mb-2" for="files">Informe de evolución</label>
+                                <input class="form-control" type="file" id="files" name="files" multiple>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="mb-2" for="files">Carga de imágenes</label>
+                                <input class="form-control" type="file" id="files" name="files" multiple>
+                            </div>
+                            <div class="form-group mb-1">
+                                <label class="mb-2" for="files">Registros veterinarios</label>
+                                <input class="form-control" type="file" id="files" name="files" multiple>
+                            </div>
+
+                            <!-- 
+                            No hay que hacerlo así. 
+                            Adjuntar toda la documentación y separarla por tipos, no al revés.
+                            Ejemplo en el documento del trabajo integrador.
+                        -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campo oculto para enviar las actividades seleccionadas al form -->
+            <input type="hidden" name="selected_activities" id="selected-activities-input">
+
+            <!-- Campo oculto para enviar los miembros seleccionadas al form -->
+            <input type="hidden" name="selected_members" id="selected-members-input">
+        </div>
+        <div class="d-flex flex-row align-items-center justify-content-between w-100 mt-4">
+            <a id="btn-back" class="btn border border-2" href="{{ url_for('ecuestre.index') }}">
+                <i style="transform: scale(0.6);" class="fa fa-chevron-left me-1"></i>
+                Volver</a>
+            <button class="btn btn-primary" type="submit">Registrar caballo</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Evento que se ejecuta cuando se termina de cargar el DOM y establece la fecha máxima en el campo de fecha de nacimiento.
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtener la fecha actual en formato YYYY-MM-DD
+        var today = new Date().toISOString().split('T')[0];
+        // Establecer el atributo max del campo de fecha de nacimiento
+        document.getElementById('birth_date').setAttribute('max', today);
+    });
+
+    // Lista de actividades seleccionadas
+    const selectedActivities = [];
+
+    // Función para alternar la clase 'selected' en los elementos de la lista de actividades
+    function toggleSelected(prefix, id) {
+        // Obtener el elemento de la lista de actividades
+        const element = document.getElementById(prefix + '-' + id);
+
+        // Alternar la clase 'selected' y agregar o eliminar el ID de la actividad de la lista
+        if (element.classList.toggle('selected')) {
+            selectedActivities.push(id);
+        } else {
+            selectedActivities.splice(selectedActivities.indexOf(id), 1);
+        }
+    }
+
+    // Función para cambiar de página en el formulario
+    function changePage(page) {
+        // Obtener las secciones del formulario
+        const sections = document.querySelectorAll('form section');
+
+        // Ocultar todas las secciones
+        sections.forEach(section => section.classList.add('visually-hidden'));
+
+        // Mostrar la sección correspondiente a la página seleccionada
+        sections[page].classList.remove('visually-hidden');
+
+        // Cambiar la clase 'active' en los botones de la barra de navegación
+        document.querySelectorAll('#form-tabs .nav-link').forEach((button, index) => {
+            if (index === page) {
+                button.classList.add('active');
+                button.attributes['aria-current'] = 'page';
+            } else {
+                button.classList.remove('active');
+                button.attributes['aria-current'] = '';
+            }
+        });
+    }
+
+    // Evento para actualizar el campo oculto antes de enviar el formulario
+    document.getElementById('horse-form').addEventListener('submit', function () {
+        document.getElementById('selected-activities-input').value = JSON.stringify(selectedActivities);
+    });
+</script>
+{% endblock %}
