@@ -14,19 +14,19 @@ def run():
     perm4 = Permission.create_permission(name='update')
     perm5 = Permission.create_permission(name='show')
 
-    rol1 = Role.create_role(
+    rol1 = Role.role_new(
         name='Tecnica',
     )
-    rol2 = Role.create_role(
+    rol2 = Role.role_new(
         name='Encuestre',
     )
-    rol3 = Role.create_role(
+    rol3 = Role.role_new(
         name='Voluntariado',
     )
-    rol4 = Role.create_role(
+    rol4 = Role.role_new(
         name='Administracion',
     )
-    rol5 = Role.create_role(
+    rol5 = Role.role_new(
         name='SystemAdmin',
         permissions=[perm1,perm2,perm3,perm4,perm5]
     )
