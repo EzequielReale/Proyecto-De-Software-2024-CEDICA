@@ -1,5 +1,5 @@
 from src.core.database import db
-from src.core.models.upr_models import RolePermission
+from src.core.models.user_role_permission.upr_models import RolePermission
 
 def create_role_permission(**kwargs)->RolePermission:
     """ Recibe nombre del rol y permisos asociados

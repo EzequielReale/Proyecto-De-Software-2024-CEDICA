@@ -1,6 +1,6 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.models.upr_models import User
+from src.core.models.user_role_permission.upr_models import User
 
 #################################################
 
@@ -62,9 +62,43 @@ def get_user_by_status(user_status):
     """ Obtiene usuarios por su estado """
     return User.query.filter_by(isActive=user_status).first()
 
+<<<<<<< HEAD
+#####################################################
+
+# Metodos agregados por Giu
+
+def find_user_email(email):
+    """ busco usuario por email """
+    user = User.query.filter_by(email=email).first()
+    return user
+
+
+def find_user_id(id):
+    """ busco usuario por id """
+    user = User.query.filter_by(id=id).first()
+    return user
+
+
+def find_user(email,password):
+    user = find_user_email(email)
+=======
 def find_user(email,password):
     user = get_user_by_email(email)
+>>>>>>> development
     if user and bcrypt.check_password_hash(user.password,password):
         return user
     return None
 
+<<<<<<< HEAD
+
+def get_permissions(user):
+    """Retorna los permisos del rol del usuario"""
+    # Obtenemos los roles del usuario y luego los permisos relacionados con esos roles
+    permisos = set()  # Usamos un set para evitar duplicados
+    for role in user.roles:
+        for permission in role.permissions:
+            permisos.add(permission.name)
+    
+    return list(permisos)  # Retornamos la lista de nombres de permisos
+=======
+>>>>>>> development
