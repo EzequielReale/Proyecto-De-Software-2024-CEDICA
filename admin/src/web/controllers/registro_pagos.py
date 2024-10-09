@@ -1,14 +1,8 @@
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-<<<<<<< HEAD
-from src.core.user_role_permission.operations.user_operations import get_user_by_id
-from src.core import auth, registro_pagos
-=======
 from src.core.user_role_permission.operations.user_operations import get_user_by_id,list_users
 from src.core import  registro_pagos
->>>>>>> f4a432c (arregloss)
-from src.web.handlers.autenticacion import check_permission
-from src.web.handlers.error import forbidden
+
 
 bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 
