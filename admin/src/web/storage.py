@@ -20,7 +20,7 @@ class Storage:
             secure=minio_secure
         )
 
-        app.storage = self._client
+        app.storage = self
 
         return app
 

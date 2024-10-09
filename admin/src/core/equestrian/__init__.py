@@ -80,7 +80,7 @@ def list_activities()->list:
     return Activity.query.all()
 
 def get_activity_by_id(activity_id:int)->Activity:
-    """Obtiene un trabajo por ID"""
+    """Obtiene una actividad por ID"""
     return Activity.query.filter_by(id=activity_id).first()
 
 def activity_new(**kwargs)->Activity:
