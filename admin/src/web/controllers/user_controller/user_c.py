@@ -5,19 +5,47 @@ from flask import flash
 from flask import request
 from src.core.user_role_permission.operations.user_operations import *
 from src.core.user_role_permission.operations.role_operations import *
-from src.web.controllers.user_controller.user_validator import RegistrationForm
-from src.web.controllers.user_controller.user_validator import UpdateForm
-from src.web.controllers.user_controller.user_validator import SearchForm
+from src.web.controllers.user_controller.user_forms.user_register_form import RegistrationForm
+from src.web.controllers.user_controller.user_forms.user_update_form import UpdateForm
+from src.web.handlers.autenticacion import login_required
 
 
 bp= Blueprint("user",__name__, url_prefix="/user")
 
 
+@login_required
 @bp.get("/")
 def index():
-    """Listado de usuarios"""
-    users = list_users()
-    return render_template("user/index.html" , users=users)
+    """Recibe los parametros de busqueda (email, estado, rol),
+    filtra los registros, realiza la busqueda en la BD y retorna los resultados"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+
+    # Obtener los filtros de búsqueda y ordenación
+    filters = {
+        'email': request.args.get('email'),
+        'isActive': request.args.get('status'),
+        'roles': request.args.get('role_id')
+    }
+    sort_by = request.args.get('sort_by', 'email')
+    sort_direction = request.args.get('sort_direction', 'asc')
+
+    users, total_pages = list_users_advance(filters, page, per_page, sort_by, sort_direction)
+
+    return render_template('/user/index.html', 
+                           page=page,
+                           total_pages=total_pages,
+                           roles = list_roles(),
+                           sort_by=sort_by,
+                           sort_direction=sort_direction,
+                           filters=filters,
+                           users=users)
+
+@bp.get("/<string:email>")
+def show(email: str)->str:
+    """Recibe el email de un usuario y muestra su información"""
+    user = get_user_by_email(email)
+    return render_template('user/show.html', user=user)
 
 
 @bp.route("/new" , methods=["GET", "POST"])
@@ -91,32 +119,6 @@ def update_email(user_email,new_email):
         return redirect("/user/update")
     else:
         user_update(user_email, email=new_email)
-
-
-
-@bp.route('/search', methods=['GET'])
-def search():
-    """Recibe los parametros de busqueda (email, estado, rol),
-    filtra los registros, realiza la busqueda en la BD y retorna los resultados"""
-    form = SearchForm(request.args, meta={'csrf': False})  # Desactivar CSRF para formularios GET
-    search_executed = False
-    users = []
-
-    if request.args and form.validate():
-        query = User.query
-        search_executed = True
-        
-        if form.email.data:
-            query = query.filter(User.email.like(f"%{form.email.data}%"))
-        if form.status.data and form.status.data != 'Todos':
-            query = query.filter(User.isActive == form.status.data)
-        
-        #if form.role.data:
-         #   role_exists = get_role_by_name(form.role.data)
-         #  query = query.filter(User.role.like(f"%{form.role.data}%"))
-        
-        users = query.all()
-
-    return render_template('/user/search.html', form=form, search_executed=search_executed, users=users)
+    
 
 
