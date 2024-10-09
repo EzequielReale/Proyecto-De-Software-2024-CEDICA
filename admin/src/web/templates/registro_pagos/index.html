@@ -9,11 +9,6 @@
 
 {% block aside %}
 
-        <li class="nav-item">
-            <a class="nav-link active" href="{{ url_for('registro_pagos.index') }}">Listado de Pagos</a>
-        </li>
-
-
 {% endblock %}  
 
 
@@ -173,6 +168,8 @@ tr:last-child td {
     padding-bottom: 10px; /* Espaciado inferior */
 }
 
+
+
 </style>
 
     <h2>Listado de Pagos</h2>
@@ -184,25 +181,43 @@ tr:last-child td {
 {% else %}
 
  <!-- Buscador -->
- <div class="search-container">
-    <form action="{{ url_for('registro_pagos.index') }}" method="GET"  class="form-inline">
+ <div class="search-container p-3 mb-4 bg-light rounded">
+    <form action="{{ url_for('registro_pagos.index') }}" method="GET" class="d-flex align-items-end">
         
         <!-- Rango de fechas -->
-        <input type="date" name="fecha_inicio"  placeholder="Fecha inicio">
-        <input type="date" name="fecha_fin"   placeholder="Fecha fin">
+        <div class="form-group mr-3">
+            <label for="fecha_inicio" class="font-weight-bold">Fecha de Inicio</label>
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" placeholder="Seleccione la fecha de inicio">
+        </div>
+        
+        <div class="form-group mr-3">
+            <label for="fecha_fin" class="font-weight-bold">Fecha de Fin</label>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" placeholder="Seleccione la fecha de fin">
+        </div>
         
         <!-- Tipo de pago -->
-        <select name="tipo_pago" >
-            <option value="">Todos los tipos</option>
-            <option value="Honorarios">Honorarios</option>
-            <option value="Proveedor">Proveedor</option>
-            <option value="Varios">Varios</option>
-        </select>
+        <div class="form-group mr-3">
+            <label for="tipo_pago" class="font-weight-bold">Tipo de Pago</label>
+            <select name="tipo_pago" id="tipo_pago" class="form-control">
+                <option value="">Todos los tipos</option>
+                <option value="Honorarios">Honorarios</option>
+                <option value="Proveedor">Proveedor</option>
+                <option value="Varios">Varios</option>
+            </select>
+        </div>
         
-        <button type="submit"  class="btn btn-primary">Buscar</button>
+        <!-- Botón de búsqueda -->
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </div>
     </form>
 
-    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Crear nuevo pago</a>
+
+
+    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo</a>
+</div>
+
+
 
 </div>
 
@@ -213,8 +228,9 @@ tr:last-child td {
                 <th>Monto</th>
 
                 <th>
-                    <a href="#" onclick="ordenarPorFecha()" style="color: #f8f9fa;">Fecha 
-                        <i id="orden-icon" class="fas fa-sort" style="color: #f8f9fa;"></i> 
+                    <a href="{{ url_for('registro_pagos.index', order_by='fecha_pago', order=('desc' if request.args.get('order') == 'asc' else 'asc')) }}" style="color: #f8f9fa;">
+                        Fecha
+                        <i class="fas {{ 'fa-sort-up' if request.args.get('order') == 'asc' else 'fa-sort-down' }}" style="color: #f8f9fa;"></i>
                     </a>
                 </th>
 
@@ -250,7 +266,9 @@ tr:last-child td {
             <!-- Fila de detalles adicionales -->
             <tr id="detalles-{{ pago.id }}" class="detalles-pago">
                 <td colspan="6">
-                    <strong>Fecha de modificación:</strong> {{ pago.updated_at }}<br>
+                    <strong>Fecha de modificación:</strong> {{ pago.updated_at.strftime('%Y-%m-%d') }}<br>
+                    <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%Y-%m-%d') }}<br>
+
                     {% if pago.beneficiario %}
                     <strong>Datos del beneficiario:</strong> Alias - {{ pago.beneficiario.alias }}<br>
                     {% endif %}
@@ -276,53 +294,8 @@ tr:last-child td {
 
 
 
-<!--orden por fecha-->
 
-<script>
-    let ordenAscendente = true; // Inicializar la variable globalmente
-
-    function toggleDetalles(id) {
-        var detalles = document.getElementById('detalles-' + id);
-        if (detalles.style.display === 'none' || detalles.style.display === '') {
-            detalles.style.display = 'table-row'; // Mostrar detalles
-        } else {
-            detalles.style.display = 'none'; // Ocultar detalles
-        }
-    }
-
-    function ordenarPorFecha() {
-        const tabla = document.querySelector("table tbody");
-        const filas = Array.from(tabla.querySelectorAll("tr[data-id]")); // Selecciona solo las filas principales
-
-        // Ordenar las filas por fecha
-        filas.sort((a, b) => {
-            const fechaA = new Date(a.querySelector("td:nth-child(3)").innerText); // Obtener la fecha de la tercera columna
-            const fechaB = new Date(b.querySelector("td:nth-child(3)").innerText);
-            return ordenAscendente ? fechaA - fechaB : fechaB - fechaA; // Orden ascendente o descendente
-        });
-
-        // Actualizar el DOM con las filas ordenadas, incluyendo las filas de detalles
-        filas.forEach(fila => {
-            tabla.appendChild(fila); // Añadir la fila principal
-            const detalles = document.getElementById('detalles-' + fila.getAttribute('data-id')); // Obtener la fila de detalles
-            if (detalles) {
-                tabla.appendChild(detalles); // Añadir la fila de detalles correspondiente
-            }
-        });
-
-        // Cambiar el icono de orden y alternar el orden
-        ordenAscendente = !ordenAscendente; // Alternar el estado de orden
-        const icono = document.getElementById("orden-icon");
-        if (ordenAscendente) {
-            icono.classList.remove("fa-sort-down");
-            icono.classList.add("fa-sort-up");
-        } else {
-            icono.classList.remove("fa-sort-up");
-            icono.classList.add("fa-sort-down");
-        }
-    }
-</script>
-
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 
 
