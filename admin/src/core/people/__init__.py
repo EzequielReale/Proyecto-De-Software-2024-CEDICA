@@ -99,6 +99,7 @@ def list_documents(person_id: int):
     for doc in docs_db:
         file_url = current_app.storage.client.presigned_get_object("grupo04", doc.document_path)
         files.append({
+            'id': doc.id,
             'name': doc.document_name,  
             'url': file_url
         })

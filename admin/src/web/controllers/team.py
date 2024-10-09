@@ -120,6 +120,9 @@ def update(id: int)->str:
 @bp.post("/<int:id>/delete")
 def destroy(id: int)->str:
     """Recibe el id de un miembro del equipo y lo elimina fisicamente de la BD"""
+    documents = people.list_documents(id)
+    for document in documents:
+        people.delete_document(document['id'])
     member = people.member_delete(id)
     flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
     return redirect(url_for('team.index'))
@@ -138,3 +141,10 @@ def add_document(id: int)->str:
         flash(f"Error en el formulario: {error_messages}", "danger")
 
     return render_template('team/add_document.html', member_id=id, form=form)
+
+@bp.post("/<int:id>/delete_document/<int:document_id>")
+def destroy_document(id: int, document_id: int)->str:
+    """Recibe el id de un miembro del equipo y el id de un documento y lo elimina de la BD"""
+    document = people.delete_document(document_id)
+    flash(f"Documento {document.document_name} eliminado exitosamente", "success")
+    return redirect(url_for('team.show', id=id))
