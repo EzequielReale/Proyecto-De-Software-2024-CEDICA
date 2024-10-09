@@ -17,7 +17,7 @@
     <a href="{{ url_for('team.update', id=member.id) }}" class="btn btn-warning btn-icon">
         <i class="fas fa-edit"></i> Editar
     </a>
-    <form action="{{ url_for('team.destroy', id=member.id) }}" method="POST" style="display:inline;">
+    <form action="{{ url_for('team.destroy', id=member.id) }}" method="POST" onsubmit="return confirmDeleteMember();" style="display:inline;">
         <button type="submit" class="btn btn-danger btn-icon">
             <i class="fas fa-trash-alt"></i> Eliminar
         </button>
@@ -64,8 +64,7 @@
                 {% for document in documents %}
                 <li >
                     <a href="{{ document.url }}" target="_blank" style="flex-grow: 1; font-size: 1.2rem;">{{ document.name }}</a>
-                    <form action="{{ url_for('team.destroy_document', id=member.id, document_id=document.id) }}" method="POST"
-                        style="display:inline;">
+                    <form action="{{ url_for('team.destroy_document', id=member.id, document_id=document.id) }}" method="POST" onsubmit="return confirmDeleteDocument();" style="display:inline;">
                         <button type="submit" class="btn btn-danger btn-icon">
                             <i class="fas fa-trash-alt"></i>
                         </button>
@@ -79,6 +78,18 @@
         </p>
     </div>
 </div>
+
+{%block scripts%}
+<script>
+    function confirmDeleteMember() {
+        return confirm("¿Está seguro de que desea eliminar este miembro?");
+    }
+
+    function confirmDeleteDocument() {
+        return confirm("¿Está seguro de que desea eliminar este documento?");
+    }
+</script>
+{%endblock%}
 
 <style>
     body {

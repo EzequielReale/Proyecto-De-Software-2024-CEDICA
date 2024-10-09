@@ -136,7 +136,7 @@ def add_document(id: int)->str:
         people.member_add_document(id, document)
         flash("Documento agregado exitosamente", "success")
         return redirect(url_for('team.show', id=id))
-    else:
+    elif form.errors:
         error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
         flash(f"Error en el formulario: {error_messages}", "danger")
 
