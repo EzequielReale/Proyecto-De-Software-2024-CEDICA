@@ -24,4 +24,15 @@ class Storage:
 
         return app
 
+    @property
+    def client(self):
+        """Devuelve el cliente de MinIO"""
+        return self._client
+    
+    @client.setter
+    def client(self, client):
+        """Establece el cliente de MinIO"""
+        self._client = client
+
+
 storage = Storage()

@@ -1,8 +1,15 @@
+from os import fstat
+import uuid
+
+from flask import current_app
+from minio.error import S3Error
 from sqlalchemy.types import String, Text
 
 from src.core.database import db
 from src.core.people.member_rider import Member
 from src.core.people.member_rider import Rider
+from src.core.people.person_document import PersonDocument as Document
+
 
 def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction='asc'):
     """Aplica filtros y ordenación a una consulta"""
@@ -62,6 +69,49 @@ def _delete(model, item_id: int):
     db.session.commit()
     return item
 
+def _add_document(person_id: int, file: bytes, path:str)->Document:
+    """Añade un documento a un elemento por ID y lo guarda en MinIO"""
+    size = fstat(file.fileno()).st_size
+    try:
+        document = current_app.storage.client.put_object(
+            "grupo04",
+            path,
+            file,
+            size,
+            file.content_type
+        )
+    except S3Error as e:
+        raise RuntimeError(f"Error subiendo el documento: {e}")
+
+    document = Document(
+        person_id=person_id,
+        document_path=path,
+        document_name=file.filename
+    )
+    db.session.add(document)
+    db.session.commit()
+    return document
+
+def list_documents(person_id: int):
+    """Devuelve los documentos de una persona por ID con URLs descargables"""
+    docs_db = Document.query.filter_by(person_id=person_id).all()
+    files = []
+    for doc in docs_db:
+        file_url = current_app.storage.client.presigned_get_object("grupo04", doc.document_path)
+        files.append({
+            'name': doc.document_name,  
+            'url': file_url
+        })
+    return files
+
+def delete_document(document_id: int):
+    """Elimina un documento por ID"""
+    document = _get_by_field(Document, 'id', document_id)
+    current_app.storage.client.remove_object("grupo04", document.document_path)
+    db.session.delete(document)
+    db.session.commit()
+    return document
+
 #Funciones de miembros
 def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:
     """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
@@ -82,6 +132,12 @@ def member_update(member_id:int, **kwargs)->Member:
 def member_delete(member_id:int)->Member:
     """Elimina un miembro por ID"""
     return _delete(Member, member_id)
+
+def member_add_document(member_id:int, file:bytes)->Member:
+    """Añade un documento a un miembro por ID y lo guarda en MinIO"""
+    ulid = uuid.uuid4().hex
+    path = f"members/{member_id}/{ulid}_{file.filename}"
+    return _add_document(member_id, file, path)
 
 #Funciones de jinetes
 def list_riders(filters:dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:

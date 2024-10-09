@@ -12,6 +12,7 @@
 <h1 style="color: #007bff; margin-bottom: 20px;">Detalle de miembro del equipo</h1>
 <p class="lead mb-4">Información detallada del miembro del equipo</p>
 
+
 <div class="button-group">
     <a href="{{ url_for('team.update', id=member.id) }}" class="btn btn-warning btn-icon">
         <i class="fas fa-edit"></i> Editar
@@ -45,8 +46,33 @@
         </p>
     </div>
 </div>
-
-<a href="{{ url_for('team.index') }}" class="btn btn-primary mt-3">Volver al listado de miembros del equipo</a>
+<br>
+<div class="button-group">
+    <a href="{{ url_for('team.index') }}" class="btn btn-primary btn-icon">
+        <i class="fas fa-arrow-left"></i> Volver al listado de miembros del equipo
+    </a>
+    <a href="{{ url_for('team.add_document', id=member.id) }}" class="btn btn-success btn-icon">
+        <i class="fas fa-file-alt"></i> Agregar documento
+    </a>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Documentos</h5>
+        <p class="card-text">
+            {% if documents %}
+            <ul>
+                {% for document in documents %}
+                <li>
+                    <a href="{{ document.url }}" target="_blank">{{ document.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No hay documentos cargados</p>
+            {% endif %}
+        </p>
+    </div>
+</div>
 
 <style>
     body {
