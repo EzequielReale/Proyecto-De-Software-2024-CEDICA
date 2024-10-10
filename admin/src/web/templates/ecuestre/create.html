@@ -77,7 +77,7 @@
 <div class="container">
     <h2>🐎 Registro de caballos</h2>
     <p>Formulario para registrar un nuevo caballo en la institución</p>
-    <form action="{{ url_for('registro_pagos.create') }}" method="POST">
+    <form action="{{ url_for('ecuestre.create') }}" method="POST">
         <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
             <li class="nav-item">
                 <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información
@@ -86,15 +86,12 @@
             <li class="nav-item">
                 <a role="button" class="nav-link" onclick="changePage(1)">Miembros y actividades</a>
             </li>
-            <li class="nav-item">
-                <a role="button" class="nav-link" onclick="changePage(2)">Documentos</a>
-            </li>
         </ul>
         <div class="d-flex flex-column gap-3 p-4 border border-top-0 rounded-bottom">
             <section class="d-flex flex-column gap-3">
                 <div>
                     <h5 class="border-bottom border-dark pb-2">Información general</h5>
-                    <p class="mt-0 mb-2">
+                    <p class="mt-0 mb-3">
                         Información básica acerca del nuevo integrante.
                     </p>
                 </div>
@@ -216,7 +213,7 @@
                     <thead>
                         <tr>
                             <th>Tipo</th>
-                            <th>URL / Documento</th>
+                            <th>Documento</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -226,18 +223,20 @@
                         </tr>
                     </tbody>
                 </table>
-                <div class="mt-2 d-flex flex-row gap-2 justify-content-end w-100">
-                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                        data-bs-target="#modal-attach-url">
-                        <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
-                        Enlace
-                    </button>
-                    <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
-                        data-bs-target="#modal-upload-file">
-                        <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
-                        Subir archivo
-                    </button>
-                </div>
+                <!--
+                    <div class="d-flex flex-row gap-2 justify-content-end w-100">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                            data-bs-target="#modal-attach-url">
+                            <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                            Enlace
+                        </button>
+                        <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
+                            data-bs-target="#modal-upload-file">
+                            <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
+                            Subir archivo
+                        </button>
+                    </div>
+                -->
             </section>
 
             <div class="modal fade" id="modal-activities" tabindex="-1" aria-hidden="true">
@@ -280,12 +279,12 @@
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Agregar
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Asignar
                                 conductor</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-select" name="driver" id="driver-select" required>
+                            <select class="form-select" id="driver-select">
                                 <option value="" selected>Seleccione un conductor...</option>
                                 {% if drivers %}
                                 {% for driver in drivers %}
@@ -293,7 +292,7 @@
                                 {% endfor %}
                                 {% endif %}
                             </select>
-                            <p class="form-text mt-2 mb-0">Seleccione un conductor para asignarle al caballo.</p>
+                            <p class="form-text mt-2 mb-0">Seleccione un conductor para asignar al caballo.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -309,12 +308,12 @@
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Agregar
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase" id="exampleModalLabel">Asignar
                                 entrenador</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <select class="form-select" name="trainer" id="trainer-select" required>
+                            <select class="form-select" id="trainer-select">
                                 <option value="" selected>Seleccione un entrenador...</option>
                                 <option value="1">Entrenador ejemplo 1</option>
                                 {% if trainers %}
@@ -323,7 +322,7 @@
                                 {% endfor %}
                                 {% endif %}
                             </select>
-                            <p class="form-text mt-2 mb-0">Seleccione un entrenador para asignarle al caballo.</p>
+                            <p class="form-text mt-2 mb-0">Seleccione un entrenador para asignar al caballo.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -334,85 +333,85 @@
                 </div>
             </div>
 
-            <!-- Modal para subir archivos -->
-            <div class="modal fade" id="modal-upload-file" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5 fw-bolder text-uppercase">Subir archivo</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="upload-file-form">
-                                <div class="form-group">
-                                    <label class="mb-1" for="file-type">Tipo de documentación</label>
-                                    <select class="form-select" id="file-type" required>
-                                        <option selected>Seleccione una opción...</option>
-                                        <option value="Ficha general">Ficha general del caballo</option>
-                                        <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                        </option>
-                                        <option value="Informe de Evolución">Informe de Evolución</option>
-                                        <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                        <option value="Registro veterinario">Registro veterinario</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label class="mb-1" for="file-upload">Subir archivo</label>
-                                    <input type="file" class="form-control" id="file-upload"
-                                        accept=".pdf,.doc,.xls,.jpeg" required>
+            <!-- 
+                <div class="modal fade" id="modal-upload-file" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Subir archivo</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="upload-file-form">
+                                    <div class="form-group">
+                                        <label class="mb-1" for="file-type">Tipo de documentación</label>
+                                        <select class="form-select" id="file-type" required>
+                                            <option selected>Seleccione una opción...</option>
+                                            <option value="Ficha general">Ficha general del caballo</option>
+                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
+                                            </option>
+                                            <option value="Informe de Evolución">Informe de Evolución</option>
+                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
+                                            <option value="Registro veterinario">Registro veterinario</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label class="mb-1" for="file-upload">Subir archivo</label>
+                                        <input type="file" class="form-control" id="file-upload"
+                                            accept=".pdf,.doc,.xls,.jpeg" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="uploadFile()">Subir archivo</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="uploadFile()">Subir archivo</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Modal para enlazar URLs -->
-            <div class="modal fade" id="modal-attach-url" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5 fw-bolder text-uppercase">Adjuntar URL</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="attach-url-form">
-                                <div class="form-group">
-                                    <label class="mb-1" for="url-type">Tipo de documentación</label>
-                                    <select class="form-select" id="url-type" required>
-                                        <option selected>Seleccione una opción...</option>
-                                        <option value="Ficha general">Ficha general del caballo</option>
-                                        <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                        </option>
-                                        <option value="Informe de Evolución">Informe de Evolución</option>
-                                        <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                        <option value="Registro veterinario">Registro veterinario</option>
-                                    </select>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label class="mb-1" for="document-url">URL del documento</label>
-                                    <input type="url" class="form-control" id="document-url"
-                                        placeholder="Ingrese la URL del documento" required>
+    
+                <div class="modal fade" id="modal-attach-url" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Adjuntar URL</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="attach-url-form">
+                                    <div class="form-group">
+                                        <label class="mb-1" for="url-type">Tipo de documentación</label>
+                                        <select class="form-select" id="url-type" required>
+                                            <option selected>Seleccione una opción...</option>
+                                            <option value="Ficha general">Ficha general del caballo</option>
+                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
+                                            </option>
+                                            <option value="Informe de Evolución">Informe de Evolución</option>
+                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
+                                            <option value="Registro veterinario">Registro veterinario</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label class="mb-1" for="document-url">URL del documento</label>
+                                        <input type="url" class="form-control" id="document-url"
+                                            placeholder="Ingrese la URL del documento" required>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="attachUrl()">Adjuntar URL</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="attachUrl()">Adjuntar URL</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            -->
 
             <!-- Campo oculto para enviar las actividades seleccionadas al form -->
             <input type="hidden" name="selected_activities" id="selected-activities-input">
 
             <!-- Campo oculto para enviar los miembros seleccionadas al form -->
-            <input type="hidden" id="assigned-members-input" name="assigned_members">
+            <input type="hidden" name="assigned_members" id="assigned-members-input">
 
         </div>
         <div class="d-flex flex-row align-items-center justify-content-between w-100 mt-4">
@@ -438,8 +437,6 @@
     const selectedActivities = [];
     // Lista de miembros asignados
     const assignedMembers = [];
-    // Lista de documentos adjuntos
-    const attachedFiles = [];
 
     // Función para alternar la clase 'selected' en los elementos de la lista de actividades
     function toggleSelected(prefix, id) {
@@ -477,11 +474,12 @@
         });
     }
 
-    // Evento para actualizar el campo oculto antes de enviar el formulario
+    // Evento para actualizar los campos ocultos antes de enviar el formulario
     document.getElementById('horse-form').addEventListener('submit', function (event) {
-        // Update hidden fields before submitting
         document.getElementById('selected-activities-input').value = JSON.stringify(selectedActivities);
         document.getElementById('assigned-members-input').value = JSON.stringify(assignedMembers);
+
+        console.log('que onda')
     });
 
     // Función para validar URL
@@ -493,124 +491,6 @@
         catch (_) {
             return false;
         }
-    }
-
-    // Función para subir archivo
-    function uploadFile() {
-        const fileType = document.getElementById('file-type').value;
-        const fileInput = document.getElementById('file-upload');
-        const file = fileInput.files[0];
-
-        if (!fileType || fileType === 'Seleccione una opción...') {
-            alert('Por favor, seleccione un tipo de documentación.');
-            return;
-        }
-
-        if (!file) {
-            alert('Por favor, seleccione un archivo para subir.');
-            return;
-        }
-
-        // Lógica para cargar archivos a Minio
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('fileType', fileType);
-
-        fetch('/ecuestre/upload', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const filePath = data.filePath; // Ruta del archivo devuelta por el servidor
-
-                    // Cerrar el modal
-                    const modalCloseButton = document.querySelector('#modal-upload-file .btn-close');
-                    modalCloseButton.click();
-
-                    // Agregar el archivo a la lista de documentos adjuntos
-                    attachedFiles.push({ type: fileType, path: filePath, name: file.name });
-
-                    // Actualizar la tabla de documentos
-                    updateDocumentsTable();
-
-                    console.log(data)
-                    console.log(attachedFiles)
-                } else {
-                    alert('Error al subir el archivo.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al subir el archivo.');
-            });
-    }
-
-    // Función para adjuntar URL
-    function attachUrl() {
-        const urlType = document.getElementById('url-type').value;
-        const documentUrl = document.getElementById('document-url').value;
-
-        if (!urlType || urlType === 'Seleccione una opción...') {
-            alert('Por favor, seleccione un tipo de documentación.');
-            return;
-        }
-
-        if (!documentUrl) {
-            alert('Por favor, ingrese una URL.');
-            return;
-        }
-
-        if (!isValidUrl(documentUrl)) {
-            alert('Por favor, ingrese una URL válida.');
-            return;
-        }
-
-        // Agregar la URL a la lista de documentos adjuntos
-        attachedFiles.push({ type: urlType, url: documentUrl });
-
-        // Actualizar la tabla de documentos
-        updateDocumentsTable();
-
-        // Cerrar el modal
-        const modalCloseButton = document.querySelector('#modal-attach-url .btn-close');
-        modalCloseButton.click();
-    }
-
-    // Función para actualizar la tabla de documentos
-    function updateDocumentsTable() {
-        const tableBody = document.querySelector('#documents-table-body');
-        tableBody.innerHTML = '';
-
-        if (attachedFiles.length === 0) {
-            const noDocumentsRow = document.createElement('tr');
-            noDocumentsRow.innerHTML = `
-                <td colspan="3">Todavía no adjuntaste documentación</td>
-            `;
-            tableBody.appendChild(noDocumentsRow);
-        } else {
-            attachedFiles.forEach((file, index) => {
-                const newRow = document.createElement('tr');
-                newRow.innerHTML = `
-                    <td>${file.type}</td>
-                    <td>${file.name || file.url}</td>
-                    <td>
-                        <span class="text-danger" role="button" onclick="removeDocument(${index})">
-                            <i style="transform: scale(0.9);" class="fa fa-trash me-1"></i>
-                            Eliminar
-                        </span>
-                    </td>
-                `;
-                tableBody.appendChild(newRow);
-            });
-        }
-    }
-
-    // Función para eliminar un documento de la lista
-    function removeDocument(index) {
-        attachedFiles.splice(index, 1);
-        updateDocumentsTable();
     }
 
     // Función para agregar un miembro a la tabla
