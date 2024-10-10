@@ -9,6 +9,10 @@ class PersonDocument(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     document_name = db.Column(db.String(255), nullable=False)
     document_path = db.Column(db.String(255), nullable=False)
+    document_type = db.Column(
+        db.Enum("Entrevista", "Evaluación", "Planificaciones", "Evolución", "Crónicas", "Documental", name="document_type_enum"),
+        nullable=True
+    )
 
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"), nullable=False)
     person = db.relationship("Person", back_populates="documents")

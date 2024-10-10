@@ -48,11 +48,7 @@ class Rider(Person):
 
     id = db.Column(db.Integer, db.ForeignKey("persons.id"), primary_key=True)
     birth_date = db.Column(db.Date, nullable=False)
-    grant_owner = db.Column(db.Boolean, default=False)
     grant_percentage = db.Column(db.Float, default=0.0, nullable=True)
-    has_disability_certificate = db.Column(db.Boolean, default=False)
-    disability_diagnosis = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
-    has_family_allowance = db.Column(db.Boolean, default=False)
     family_allowance = db.Column(
         db.Enum(
             "Asignación universal por hijo",
@@ -67,6 +63,8 @@ class Rider(Person):
     )
     has_guardianship = db.Column(db.Boolean, default=False)
 
+    disability_id = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
+    disability = db.relationship("DisabilityDiagnosis", backref="riders", lazy=True)
     city_of_birth = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
     city_of_birth = db.relationship("Locality", back_populates="riders", lazy=True, overlaps="locality,persons")
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")

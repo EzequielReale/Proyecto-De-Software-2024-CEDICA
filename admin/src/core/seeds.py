@@ -3,7 +3,7 @@ from src.core.user_role_permission.operations import user_operations as User
 from src.core.user_role_permission.operations import role_operations as Role
 from src.core.user_role_permission.operations import permission_operations as Permission
 from datetime import datetime
-from src.core import  people, professions, adressing, registro_pagos, equestrian
+from src.core import disabilities, people, professions, adressing, registro_pagos, equestrian
 
 
 def run():
@@ -163,6 +163,13 @@ def run():
             profession_id=1,
             job_id=1
     )
+    disability_type1 = disabilities.disability_type_new(
+        name="Mental"
+    )
+    disability1 = disabilities.disability_diagnosis_new(
+        name="Autismo",
+        type_id=disability_type1.id  # Ensure the ID is used
+    )
     # Creo 30 miembros para poder probar la paginación del index
     for i in range(30):
         people.member_new(
@@ -173,7 +180,7 @@ def run():
             emergency_phone=f"987654321{i}",
             street="Calle Falsa",
             number=f"{123 + i}",
-            locality_id=1,
+            locality=locality1,
             email=f"giuliana_{i}@gmail.com",
             start_date="2023-01-01",
             end_date="2023-12-31",
@@ -194,14 +201,13 @@ def run():
             number=f"{223 + i}",
             health_insurance="Health Inc",
             health_insurance_number=f"287654321{i}",
-            locality_id=locality1,
-            birth_date="2000-01-01",
-            grant_owner=False,
-            grant_percentage=0.0,
-            has_disability_certificate=False,
-            has_family_allowance=False,
-            pension_benefit=None,
-            has_guardianship=False,
+            locality_id=locality1.id,
+            birth_date="2002-01-01",
+            grant_percentage=20,
+            disability_id=disability1.id,
+            family_allowance="Asignación universal por hijo",
+            pension_benefit="Nacional",
+            has_guardianship=True,
             city_of_birth=locality1
         )
     activity1 = equestrian.activity_new(

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Nuevo documento{% endblock %}
+
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.document.label(class="form-label") }}
+        {{ form.document(class="form-control", accept=".doc,.docx,.xls,.xlsx,.pdf,image/*") }}
+    </div>
+    <div class="mb-3"></div>
+    <label for="document_type" class="form-label">Tipo de documento</label>
+    <select id="document_type" name="document_type" class="form-control">
+        <option value="Entrevista">Entrevista</option>
+        <option value="Evaluación">Evaluación</option>
+        <option value="Planificaciones">Planificaciones</option>
+        <option value="Evolución">Evolución</option>
+        <option value="Crónicas">Crónicas</option>
+        <option value="Documental">Documental</option>
+    </select>
+    </div>
+    <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    <a href="{{ url_for('jya.show', id=rider_id) }}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+{% endblock %}

@@ -11,6 +11,7 @@ class DisabilityDiagnosis(db.Model):
     type_id = db.Column(
         db.Integer, db.ForeignKey("disability_types.id"), nullable=False
     )
+    type = db.relationship("DisabilityType", back_populates="diagnoses")
 
     def __repr__(self):
         return f"DisabilityDiagnosis {self.id}"

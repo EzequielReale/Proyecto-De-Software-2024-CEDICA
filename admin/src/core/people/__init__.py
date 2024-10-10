@@ -180,3 +180,10 @@ def rider_update(rider_id: int, **kwargs) -> Rider:
 def rider_delete(rider_id: int) -> Rider:
     """Elimina un jinete por ID"""
     return _delete(Rider, rider_id)
+
+
+def rider_add_document(rider_id: int, file: bytes) -> Document:
+    """Añade un documento a un jinete por ID y lo guarda en MinIO"""
+    ulid = uuid.uuid4().hex
+    path = f"riders/{rider_id}/{ulid}_{file.filename}"
+    return _add_document(rider_id, file, path)

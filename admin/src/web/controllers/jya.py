@@ -50,7 +50,7 @@ def show(id: int) -> str:
     """Recibe el id de un j/a y muestra su información"""
     rider = people.get_rider_by_field("id", id)
     documents = people.list_documents(id)
-    return render_template("jya/show.html", rider=rider, documents=documents)
+    return render_template("jya/show.html", rider=rider, documents=documents, current_year=datetime.now().year,)
 
 
 def _get_validator(localities: list, rider_id=None) -> RiderForm:

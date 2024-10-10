@@ -10,7 +10,7 @@
     {{ form.hidden_tag() }}
     <div class="mb-3">
         {{ form.document.label(class="form-label") }}
-        {{ form.document(class="form-control", accept=".doc,.docx,.pdf,image/*") }}
+        {{ form.document(class="form-control", accept=".doc,.docx,.xls,.xlsx,.pdf,image/*") }}
     </div>
     <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
     <a href="{{ url_for('team.show', id=member_id) }}" class="btn btn-secondary">Cancelar</a>
