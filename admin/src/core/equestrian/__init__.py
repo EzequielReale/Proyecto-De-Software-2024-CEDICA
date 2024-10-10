@@ -52,18 +52,28 @@ def get_document_types()->list:
     """Devuelve todos los tipos de documentos"""
     return HorseDocumentType.query.all()
 
-def get_horse_documents(horse_id: int):
+def get_horse_documents(horse_id: int, document_type_id: int = None, order_by: str = 'id', order: str = 'asc')->list:
     """Devuelve los documentos de un caballo por ID con URLs descargables"""
-    docs_db = HorseDocument.query.filter_by(horse_id=horse_id).all()
-    files = []
+    docs_db = HorseDocument.query.filter_by(horse_id=horse_id)
+    if document_type_id:
+        docs_db = docs_db.filter_by(document_type_id=document_type_id)
+        
+    # Ordenamiento
+    order_column = getattr(HorseDocument, order_by)
+    if order == 'desc':
+        order_column = order_column.desc()
+    docs_db = docs_db.order_by(order_column)
+        
+    docs = []
     for doc in docs_db:
-        file_url = current_app.storage._client.presigned_get_object("grupo04", doc.file_path) if doc.file_path else doc.url
-        files.append({
+        doc_url = current_app.storage._client.presigned_get_object("grupo04", doc.file_path) if doc.file_path else doc.url
+        docs.append({
+            'id': doc.id,
             'type': doc.document_type.name,
             'upload_date': doc.upload_date,
-            'url': file_url
+            'url': doc_url
         })
-    return files
+    return docs
 
 
 def horse_new(**kwargs)->Horse:
@@ -176,6 +186,14 @@ def _add_document(horse_id: int, document_type_id: int, file: bytes, path: str)-
         file_path=path
     )
     db.session.add(document)
+    db.session.commit()
+    return document
+
+def delete_document(document_id: int):
+    """Elimina un documento por ID"""
+    document = HorseDocument.query.filter_by(id=document_id).first()
+    current_app.storage.client.remove_object("grupo04", document.file_path)
+    db.session.delete(document)
     db.session.commit()
     return document
 

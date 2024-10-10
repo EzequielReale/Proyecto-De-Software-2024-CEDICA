@@ -1,17 +1,14 @@
 from flask import Blueprint
 from flask import request
-from flask import jsonify
 from flask import render_template
 from flask import request,redirect
 from flask import url_for
-from flask import current_app
 from flask import json
+from flask import flash
 from src.core.database import db
 from src.web.handlers.autenticacion import login_required
 from src.core import equestrian
 from src.core import people
-from werkzeug.utils import secure_filename
-from os import fstat
 
 bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 
@@ -33,8 +30,16 @@ def index():
 @login_required
 def show(id: int):
     """Detalle de un caballo en específico"""
+    order_by = request.args.get('order_by', 'document_type')
+    order = request.args.get('order', 'asc')
+    initial_page = request.args.get('initial_page', 0, type=int)
+    document_type_id = request.args.get('document_type', type=int)
+    
+    if order_by == 'document_type':
+        order_by = 'document_type_id'
+        
     horse = equestrian.get_horse_by_id(id)
-    return render_template('ecuestre/show.html', horse=horse, document_types=equestrian.get_document_types(), documents=equestrian.get_horse_documents(id))
+    return render_template('ecuestre/show.html', horse=horse, order_by=order_by, order=order, initial_page=1 if document_type_id else initial_page, document_types=equestrian.get_document_types(), documents=equestrian.get_horse_documents(id, document_type_id=document_type_id, order_by=order_by, order=order))
 
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required
@@ -91,6 +96,7 @@ def create():
         
         db.session.commit()
         
+        flash(f"Caballo creado exitosamente", "success")
         return redirect(url_for('ecuestre.index'))
     
     return render_template('ecuestre/create.html', activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
@@ -157,6 +163,7 @@ def update(id: int)->str:
             members=assigned_members
         )
         
+        flash(f"Caballo actualizado exitosamente", "success")
         return redirect(url_for('ecuestre.index'))
     
     return render_template('ecuestre/update.html', horse=horse_dict, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
@@ -167,6 +174,7 @@ def update(id: int)->str:
 def destroy(id: int):
     """Eliminar un caballo de la institución"""
     horse = equestrian.horse_delete(id)
+    flash(f"Caballo {horse.name} eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.index'))
 
 
@@ -177,5 +185,14 @@ def upload(id: int):
         equestrian.horse_attach_document(id, request.form['doc-type'], request.form['document-url'])
     else:
         equestrian.horse_add_document(id, request.form['doc-type'], request.files['file'])
-        
-    return redirect(url_for('ecuestre.show', id=id))
+    
+    flash(f"Documento agregado exitosamente", "success")
+    return redirect(url_for('ecuestre.show', id=id, initial_page=1))
+
+
+@bp.post("/<int:id>/delete_document/<int:document_id>")
+def delete_document(id: int, document_id: int)->str:
+    """Recibe el ID de un caballo y el ID de un documento y lo elimina de la BD"""
+    equestrian.delete_document(document_id)
+    flash(f"Documento eliminado exitosamente", "success")
+    return redirect(url_for('ecuestre.show', id=id, initial_page=1))

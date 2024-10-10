@@ -26,6 +26,17 @@
         fill: #0077AA;
     }
 
+    /* Estilos para columnas ordenables */
+    th>a {
+        color: #0077AA;
+        text-decoration: none;
+    }
+
+    th>a>i {
+        margin-left: 2px;
+        transform: scale(0.7);
+    }
+
     #btn-back {
         transition: 0.2s;
         color: #222 !important;
@@ -93,14 +104,16 @@
 <div>
     <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
         <li class="nav-item">
-            <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información</a>
+            <a role="button" class="nav-link {{ 'active' if initial_page==0 }}" aria-current="page"
+                onclick="changePage(0)">Información</a>
         </li>
         <li class="nav-item">
-            <a role="button" class="nav-link" onclick="changePage(1)">Documentos</a>
+            <a role="button" class="nav-link {{ 'active' if initial_page==1 }}" onclick="changePage(1)">Documentos</a>
         </li>
     </ul>
     <div id="tabs-container" class="border border-top-0 rounded-bottom mt-0 p-4">
-        <section class="d-flex flex-row justify-content-between align-items-start flex-wrap w-100 gap-5 mt-0">
+        <section class="d-flex flex-row justify-content-between align-items-start flex-wrap w-100 gap-5 mt-0
+        {{ 'visually-hidden' if initial_page != 0 }}">
             <div style="flex-grow: 0.33;">
                 <h5 class="border-bottom border-dark mb-3 pb-2 w-100">
                     Información general
@@ -145,13 +158,41 @@
                 </ul>
             </div>
         </section>
-        <section class="visually-hidden d-flex flex-column">
+        <section class="{{ 'visually-hidden' if initial_page != 1 }} d-flex flex-column">
             <h5 class="border-bottom border-dark pb-2">Documentación complementaria</h5>
             <table class="table table-striped overflow-auto">
                 <thead>
                     <tr>
-                        <th>Tipo</th>
-                        <th>Fecha de subida</th>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', id=horse.id, order_by='document_type_id', order='asc' if order_by != 'document_type_id' or order == 'desc' else 'desc') }}">
+                                Tipo de documento
+                                {% if order_by == 'document_type_id' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', id=horse.id, order_by='upload_date', order='asc' if order_by != 'upload_date' or order == 'desc' else 'desc') }}">
+                                Fecha de subida
+                                {% if order_by == 'upload_date' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -162,21 +203,22 @@
                         <td>{{ document.type }}</td>
                         <td>{{ document.upload_date }}</td>
                         <td>
-                            <a Ver </a>
-                                <div class="action-icons">
-                                    <!-- Icono de vista / descarga -->
-                                    <a href="{{ document.url }}" title="Ver" target="_blank">
-                                        <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
-                                    </a>
-                                    <!-- Formulario de eliminación -->
-                                    <form action="" method="POST" style="display: inline;"
-                                        onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
-                                        <button type="submit" title="Eliminar" role="button"
-                                            style="border: none; background: none; color: #0099CC;">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                            <div class="action-icons">
+                                <!-- Icono de vista / descarga -->
+                                <a href="{{ document.url }}" title="Ver" target="_blank">
+                                    <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                                </a>
+                                <!-- Formulario de eliminación -->
+                                <form
+                                    action="{{ url_for('ecuestre.delete_document', id=horse.id, document_id=document.id) }}"
+                                    method="POST" style="display: inline;"
+                                    onsubmit="return confirm('¿Quieres eliminar la documentación seleccionada?');">
+                                    <button type="submit" title="Eliminar" role="button"
+                                        style="border: none; background: none; color: #0099CC;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}
