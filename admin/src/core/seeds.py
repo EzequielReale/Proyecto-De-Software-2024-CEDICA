@@ -152,7 +152,7 @@ def run():
             emergency_phone=987654321,
             street="Calle Falsa",
             number=123,
-            locality_id=1,
+            locality=locality1,
             email="giuliana@gmail.com",
             start_date="2023-01-01",
             end_date="2023-12-31",
@@ -183,7 +183,27 @@ def run():
             active=True,
             profession_id=1,
             job_id=1
-    )
+        )
+        people.rider_new(
+            name=f"Fernando_{i}",
+            last_name="Alonso",
+            dni=f"{22345678 + i}",
+            phone=f"223456789{i}",
+            emergency_phone=f"287654321{i}",
+            street="Calle Verdadera",
+            number=f"{223 + i}",
+            health_insurance="Health Inc",
+            health_insurance_number=f"287654321{i}",
+            locality_id=locality1,
+            birth_date="2000-01-01",
+            grant_owner=False,
+            grant_percentage=0.0,
+            has_disability_certificate=False,
+            has_family_allowance=False,
+            pension_benefit=None,
+            has_guardianship=False,
+            city_of_birth=locality1
+        )
     activity1 = equestrian.activity_new(
         name="Hipoterapia"
     )

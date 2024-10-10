@@ -20,6 +20,3 @@ class PersonDocument(db.Model):
 
     def __repr__(self):
         return f"<PersonDocument {self.id}>"
-
-    def __str__(self):
-        return f"{self.document_type} {self.document_number}"

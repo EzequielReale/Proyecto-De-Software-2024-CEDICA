@@ -1,6 +1,9 @@
 from src.core.database import db
 from src.core.people.person import Person
 
+# Este import no se usa, pero sqlalchemy lo necesita para crear 1ro la tabla de disability_diagnosis
+from src.core.disabilities.disability_diagnosis import DisabilityDiagnosis
+
 
 class RiderMember(db.Model):
     __tablename__ = "rider_member"
@@ -26,15 +29,11 @@ class Member(Person):
     )
     active = db.Column(db.Boolean, default=True)
 
-    profession_id = db.Column(
-        db.Integer, db.ForeignKey("professions.id"), nullable=True
-    )
+    profession_id = db.Column(db.Integer, db.ForeignKey("professions.id"), nullable=True)
     profession = db.relationship("Profession", backref="members", lazy=True)
     job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"), nullable=False)
     job = db.relationship("Job", backref="members", lazy=True)
-    riders = db.relationship(
-        "Rider", secondary="rider_member", back_populates="members"
-    )
+    riders = db.relationship("Rider", secondary="rider_member", back_populates="members")
 
     def __repr__(self):
         return f"Member {self.id}"
@@ -50,24 +49,27 @@ class Rider(Person):
     id = db.Column(db.Integer, db.ForeignKey("persons.id"), primary_key=True)
     birth_date = db.Column(db.Date, nullable=False)
     grant_owner = db.Column(db.Boolean, default=False)
-    grant_percentage = db.Column(db.Float, default=0.0)
+    grant_percentage = db.Column(db.Float, default=0.0, nullable=True)
     has_disability_certificate = db.Column(db.Boolean, default=False)
-    #disability_type = db.Column(db.Integer, db.ForeignKey("disability_types.id"), nullable=True)
-    #disability_diagnosis = db.Column(db.Integer, db.ForeignKey("disabilities.id"), nullable=True)
+    disability_diagnosis = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
     has_family_allowance = db.Column(db.Boolean, default=False)
-    #family_allowance = db.Column(db.Integer, db.ForeignKey("family_allowances.id"), nullable=True)
-    pension_benefit = db.Column(db.Enum("Nacional", "Provincial", name="pension_benefits"), nullable=True)
+    family_allowance = db.Column(
+        db.Enum(
+            "Asignación universal por hijo",
+            "Asignación universal por hijo con discapacidad",
+            "Asignación por ayuda escolar anual",
+            name="family_allowances",
+        ),
+        nullable=True,
+    )
+    pension_benefit = db.Column(
+        db.Enum("Nacional", "Provincial", name="pension_benefits"), nullable=True
+    )
     has_guardianship = db.Column(db.Boolean, default=False)
 
-    city_of_birth = db.Column(
-        db.Integer, db.ForeignKey("localities.id"), nullable=False
-    )
-    city_of_birth = db.relationship(
-        "Locality", back_populates="riders", lazy=True, overlaps="locality,persons"
-    )
-    members = db.relationship(
-        "Member", secondary="rider_member", back_populates="riders"
-    )
+    city_of_birth = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
+    city_of_birth = db.relationship("Locality", back_populates="riders", lazy=True, overlaps="locality,persons")
+    members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
     def __repr__(self):
         return f"Rider {self.id}"

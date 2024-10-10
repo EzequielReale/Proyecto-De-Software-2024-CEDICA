@@ -123,6 +123,11 @@ def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_directio
     return _list(Member, filters, page, per_page, sort_by, sort_direction)
 
 
+def list_professionals() -> list:
+    """Devuelve todos los miembros de la BD"""
+    return Member.query.all()
+
+
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
     return _get_by_field(Member, field, value, exclude_id)
