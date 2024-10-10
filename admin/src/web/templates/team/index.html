@@ -11,66 +11,76 @@
 <p style="margin-bottom: 20px;">Página de presentación del equipo</p>
 
 <!-- Formulario de búsqueda -->
-<form action="{{ url_for('team.index') }}" method="GET" class="form-inline mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+<form action="{{ url_for('team.index') }}" method="GET" class="form-inline mb-3"
+  style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
   <div class="form-group mr-3" style="margin-bottom: 10px;">
     <label for="name">Nombre:</label>
-    <input type="text" class="form-control" id="name" name="name" value="{{ filters.name or '' }}" placeholder="Nombre" style="width: auto; display: inline-block;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
+    <input type="text" class="form-control" id="name" name="name" value="{{ filters.name or '' }}" placeholder="Nombre"
+      style="width: auto; display: inline-block;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
   </div>
   <div class="form-group mr-3" style="margin-bottom: 10px;">
     <label for="last_name">Apellido:</label>
-    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ filters.last_name or '' }}" placeholder="Apellido" style="width: auto; display: inline-block;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
+    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ filters.last_name or '' }}"
+      placeholder="Apellido" style="width: auto; display: inline-block;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
   </div>
   <div class="form-group mr-3" style="margin-bottom: 10px;">
     <label for="dni">DNI:</label>
-    <input type="text" class="form-control" id="dni" name="dni" value="{{ filters.dni or '' }}" placeholder="DNI" style="width: auto; display: inline-block;" pattern="\d+">
+    <input type="text" class="form-control" id="dni" name="dni" value="{{ filters.dni or '' }}" placeholder="DNI"
+      style="width: auto; display: inline-block;" pattern="\d+">
   </div>
   <div class="form-group mr-3" style="margin-bottom: 10px;">
     <label for="email">Email:</label>
-    <input type="text" class="form-control" id="email" name="email" value="{{ filters.email or '' }}" placeholder="Email" style="width: auto; display: inline-block;">
+    <input type="text" class="form-control" id="email" name="email" value="{{ filters.email or '' }}"
+      placeholder="Email" style="width: auto; display: inline-block;">
   </div>
   <div class="form-group mr-3" style="margin-bottom: 10px;">
     <label for="profession">Profesión:</label>
     <select class="form-control" id="profession_id" name="profession_id" style="width: auto; display: inline-block;">
       <option value="">Seleccionar</option>
       {% for profession in professions %}
-      <option value="{{ profession.id }}" {% if profession.id == filters.profession_id %}selected{% endif %}>
+      <option value="{{ profession.id }}" {% if profession.id==filters.profession_id %}selected{% endif %}>
         {{ profession.name }}
       </option>
       {% endfor %}
     </select>
   </div>
-  <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">Buscar</button>
-  <a href="{{ url_for('team.index') }}" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros</a>
+  <button type="submit" class="btn btn-primary"
+    style="background-color: #007bff; border-color: #007bff;">Buscar</button>
+  <a href="{{ url_for('team.index') }}" class="btn btn-secondary"
+    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros</a>
 </form>
 
 <a href="{{ url_for('team.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
   <i class="fas fa-user-plus"></i> Crear miembro nuevo
 </a>
 
-<table class="table table-striped" style="margin-top: 20px; background-color: #ffffff; border-radius: 5px; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+<table class="table table-striped"
+  style="margin-top: 20px; background-color: #ffffff; border-radius: 5px; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
   <thead>
     <tr>
       <th style="background-color: #0056b3; color: #ffffff;">
-        <a href="{{ url_for('team.index', sort_by='name', sort_direction='asc' if sort_by != 'name' or sort_direction == 'desc' else 'desc', **filters) }}" style="color: inherit; text-decoration: none;">
+        <a href="{{ url_for('team.index', sort_by='name', sort_direction='asc' if sort_by != 'name' or sort_direction == 'desc' else 'desc', **filters) }}"
+          style="color: inherit; text-decoration: none;">
           Nombre
           {% if sort_by == 'name' %}
-            {% if sort_direction == 'asc' %}
-              &#9650;
-            {% else %}
-              &#9660;
-            {% endif %}
+          {% if sort_direction == 'asc' %}
+          &#9650;
+          {% else %}
+          &#9660;
+          {% endif %}
           {% endif %}
         </a>
       </th>
       <th style="background-color: #0056b3; color: #ffffff;">
-        <a href="{{ url_for('team.index', sort_by='last_name', sort_direction='asc' if sort_by != 'last_name' or sort_direction == 'desc' else 'desc ', **filters) }}" style="color: inherit; text-decoration: none;">
+        <a href="{{ url_for('team.index', sort_by='last_name', sort_direction='asc' if sort_by != 'last_name' or sort_direction == 'desc' else 'desc ', **filters) }}"
+          style="color: inherit; text-decoration: none;">
           Apellido
           {% if sort_by == 'last_name' %}
-            {% if sort_direction == 'asc' %}
-              &#9650;
-            {% else %}
-              &#9660;
-            {% endif %}
+          {% if sort_direction == 'asc' %}
+          &#9650;
+          {% else %}
+          &#9660;
+          {% endif %}
           {% endif %}
         </a>
       </th>
@@ -79,14 +89,15 @@
       <th style="background-color: #0056b3; color: #ffffff;">Teléfono</th>
       <th style="background-color: #0056b3; color: #ffffff;">Profesión</th>
       <th style="background-color: #0056b3; color: #ffffff;">
-        <a href="{{ url_for('team.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}" style="color: inherit; text-decoration: none;">
+        <a href="{{ url_for('team.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}"
+          style="color: inherit; text-decoration: none;">
           Fecha de Creación
           {% if sort_by == 'created_at' %}
-            {% if sort_direction == 'asc' %}
-              &#9650;
-            {% else %}
-              &#9660;
-            {% endif %}
+          {% if sort_direction == 'asc' %}
+          &#9650;
+          {% else %}
+          &#9660;
+          {% endif %}
           {% endif %}
         </a>
       </th>
@@ -118,23 +129,26 @@
   <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
     {% if page > 1 %}
     <li class="page-item">
-      <a class="page-link" href="{{ url_for('team.index', page=page-1, **filters) }}" aria-label="Previous" style="color: #0056b3;">
+      <a class="page-link" href="{{ url_for('team.index', page=page-1, **filters) }}" aria-label="Previous"
+        style="color: #0056b3;">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     {% endif %}
     {% for p in range(1, total_pages + 1) %}
     <li class="page-item {% if p == page %}active{% endif %}">
-      <a class="page-link" href="{{ url_for('team.index', page=p, **filters) }}" style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{ p }}</a>
+      <a class="page-link" href="{{ url_for('team.index', page=p, **filters) }}"
+        style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+        p }}</a>
     </li>
     {% endfor %}
-    {% if page < total_pages %}
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('team.index', page=page+1, **filters) }}" aria-label="Next" style="color: #0056b3;">
+    {% if page < total_pages %} <li class="page-item">
+      <a class="page-link" href="{{ url_for('team.index', page=page+1, **filters) }}" aria-label="Next"
+        style="color: #0056b3;">
         <span aria-hidden="true">&raquo;</span>
       </a>
-    </li>
-    {% endif %}
+      </li>
+      {% endif %}
   </ul>
 </nav>
 

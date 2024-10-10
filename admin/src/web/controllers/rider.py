@@ -1,12 +1,12 @@
 from flask import Blueprint, flash, redirect, render_template, Request, request, url_for
 
-from src.core import adressing, people, professions
-from src.web.forms.member_form import MemberForm
+from src.core import adressing, people
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
+from src.web.forms.rider_form import RiderForm
 from src.web.handlers.autenticacion import login_required
 
 
-bp = Blueprint("team", __name__, url_prefix="/team")
+bp = Blueprint("jya", __name__, url_prefix="/jya")
 
 
 @bp.get("/")
@@ -21,21 +21,18 @@ def index() -> str:
         "name": request.args.get("name"),
         "last_name": request.args.get("last_name"),
         "dni": request.args.get("dni"),
-        "email": request.args.get("email"),
-        "profession_id": request.args.get("profession_id"),
     }
     sort_by = request.args.get("sort_by", "name")
     sort_direction = request.args.get("sort_direction", "asc")
 
-    members, total_pages = people.list_members(
+    riders, total_pages = people.list_riders(
         filters, page, per_page, sort_by, sort_direction
     )
     return render_template(
         "team/index.html",
-        members=members,
+        riders=riders,
         page=page,
         total_pages=total_pages,
-        professions=professions.list_professions(),
         filters=filters,
         sort_by=sort_by,
         sort_direction=sort_direction,
@@ -46,40 +43,25 @@ def index() -> str:
 @login_required
 def show(id: int) -> str:
     """Recibe el id de un miembro del equipo y muestra su información"""
-    member = people.get_member_by_field("id", id)
+    rider = people.get_rider_by_field("id", id)
     documents = people.list_documents(id)
-    return render_template("team/show.html", member=member, documents=documents)
+    return render_template("team/show.html", rider=rider, documents=documents)
 
 
-def _get_data_from_db():
-    """Obtiene la lista de profesiones, trabajos, provincias y localidades de la BD"""
-    profession_list = professions.list_professions()
-    jobs = professions.list_jobs()
-    provinces = adressing.list_provinces()
-    localities = adressing.list_localities()
-    return profession_list, jobs, provinces, localities
-
-
-def _get_validator(profession_list: list, jobs: list, localities: list, member_id=None) -> MemberForm:
+def _get_validator(localities: list, rider_id=None) -> RiderForm:
     """Recibe la lista de profesiones, trabajos, localidades y el id del miembro y retorna el validador del formulario"""
-    form = MemberForm(member_id=member_id)
-    form.profession_id.choices = [
-        (profession.id, profession.name) for profession in profession_list
-    ]
-    form.job_id.choices = [(job.id, job.name) for job in jobs]
+    form = RiderForm(rider_id=rider_id)
     form.locality_id.choices = [(locality.id, locality.name) for locality in localities]
     return form
 
 
 def _validate_request(
     req: Request,
-    profession_list: list,
-    jobs: list,
     localities: list,
-    member_id=None,
+    rider_id=None,
 ) -> tuple:
     """Recibe la request, la lista de profesiones, trabajos, provincias y localidades y valida que el formulario sea correcto"""
-    form = _get_validator(profession_list, jobs, localities, member_id)
+    form = _get_validator(localities, rider_id)
     form.process(req.form)
     if not form.validate():
         error_messages = [
@@ -95,30 +77,26 @@ def _validate_request(
 @login_required
 def create() -> str:
     """Muestra el formulario para crear un nuevo miembro del equipo y lo guarda en la BD"""
-    member = {}
-    profession_list, jobs, provinces, localities = _get_data_from_db()
+    rider = {}
 
     # Si se envia el formulario
     if request.method == "POST":
         form, valid = _validate_request(
-            request, profession_list, jobs, localities
+            request
         )
         if valid:
-            member = people.member_new(**form.data)
+            rider = people.rider_new(**form.data)
             flash(
-                f"El miembro {member.name} {member.last_name} ha sido creado exitosamente",
+                f"El miembro {rider.name} {rider.last_name} ha sido creado exitosamente",
                 "success",
             )
-            return redirect(url_for("team.show", id=member.id))
+            return redirect(url_for("team.show", id=rider.id))
         else:
-            member = form.data
+            rider = form.data
 
     return render_template(
         "team/create.html",
-        member=member,
-        professions=profession_list,
-        jobs=jobs,
-        provinces=provinces,
+        rider=rider,
     )
 
 
@@ -126,31 +104,27 @@ def create() -> str:
 @login_required
 def update(id: int) -> str:
     """Recibe el id de un miembro del equipo y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
-    member = people.get_member_by_field("id", id)
-    profession_list, jobs, provinces, localities = _get_data_from_db()
+    rider = people.get_rider_by_field("id", id)
 
     # Si se envia el formulario
     if request.method == "POST":
         form, valid = _validate_request(
-            request, profession_list, jobs, localities, member.id
+            request, rider_id=rider.id
         )
         if valid:
-            member = people.member_update(id, **form.data)
+            rider = people.rider_update(id, **form.data)
             flash(
-                f"El miembro {member.name} {member.last_name} ha sido actualizado exitosamente",
+                f"El miembro {rider.name} {rider.last_name} ha sido actualizado exitosamente",
                 "success",
             )
             return redirect(url_for("team.show", id=id))
         else:
-            member = people.Member(**form.data)
-            member.id = id
+            rider = people.Rider(**form.data)
+            rider.id = id
 
     return render_template(
         "team/update.html",
-        member=member,
-        professions=profession_list,
-        jobs=jobs,
-        provinces=provinces,
+        rider=rider,
     )
 
 
@@ -161,8 +135,8 @@ def destroy(id: int) -> str:
     documents = people.list_documents(id)
     for document in documents:
         people.delete_document(document["id"])
-    member = people.member_delete(id)
-    flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
+    rider = people.rider_delete(id)
+    flash(f"El miembro {rider.name} {rider.last_name} ha sido eliminado", "success")
     return redirect(url_for("team.index"))
 
 
@@ -173,7 +147,7 @@ def add_document(id: int) -> str:
     form = DocumentForm()
     if form.validate_on_submit():
         document = form.document.data
-        people.member_add_document(id, document)
+        people.rider_add_document(id, document)
         flash("Documento agregado exitosamente", "success")
         return redirect(url_for("team.show", id=id))
     elif form.errors:
@@ -182,7 +156,7 @@ def add_document(id: int) -> str:
         ]
         flash(f"Error en el formulario: {error_messages}", "danger")
 
-    return render_template("team/add_document.html", member_id=id, form=form)
+    return render_template("team/add_document.html", rider_id=id, form=form)
 
 
 @bp.post("/<int:id>/delete_document/<int:document_id>")
