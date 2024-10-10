@@ -20,6 +20,7 @@ class Person(db.Model):
     number = db.Column(db.String(8), nullable=False)
     locality_id = db.Column(db.Integer, db.ForeignKey('localities.id'), nullable=False)
     locality = db.relationship('Locality', back_populates='persons', lazy=True, overlaps="riders")
+    documents = db.relationship('PersonDocument', back_populates='person')
     type = db.Column(db.String(16))  # Campo utilizado para la discriminación de la herencia
 
     created_at = db.Column(db.DateTime, default=datetime.now)
