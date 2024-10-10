@@ -234,8 +234,8 @@
                     <!-- Formulario de eliminación -->
                     <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
                         onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
-                        <button type="submit" title="Eliminar"
-                            style="border: none; background: none; color: #0099CC; cursor: pointer;">
+                        <button type="submit" title="Eliminar" role="button"
+                            style="border: none; background: none; color: #0099CC;">>
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </form>

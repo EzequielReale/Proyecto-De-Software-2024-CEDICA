@@ -11,14 +11,9 @@ from src.web.handlers.autenticacion import login_required
 from src.core import equestrian
 from src.core import people
 from werkzeug.utils import secure_filename
-from ulid import ULID
 from os import fstat
-import os
 
 bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
-
-UPLOAD_FOLDER = '/ecuestre'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg'}
 
 @bp.get("/")
 @login_required
@@ -39,7 +34,7 @@ def index():
 def show(id: int):
     """Detalle de un caballo en específico"""
     horse = equestrian.get_horse_by_id(id)
-    return render_template('ecuestre/show.html', horse=horse)
+    return render_template('ecuestre/show.html', horse=horse, document_types=equestrian.get_document_types(), documents=equestrian.get_horse_documents(id))
 
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required
@@ -59,24 +54,28 @@ def create():
         selected_activities = request.form.get('selected_activities')
         if selected_activities:
             selected_activities = json.loads(selected_activities)
+        else:
+            selected_activities = []
             
         # Obtener los miembros asignados
         assigned_members = request.form.get('assigned_members')
         if assigned_members:
             assigned_members = json.loads(assigned_members)
+        else:
+            assigned_members = []
             
         # Crear el caballo
         horse = equestrian.horse_new(
             name=name,
             birth_date=birth_date,
             entry_date=entry_date,
-            gender=gender,
-            origin=origin,
+            gender="Macho" if gender == 0 else "Hembra",
+            donation=origin == 1,
             race=race,
             coat=coat,
             assigned_location=assigned_location
         )    
-            
+
         # Asignar actividades al caballo
         for activity_id in selected_activities:
             activity = equestrian.get_activity_by_id(activity_id)
@@ -103,40 +102,13 @@ def destroy(id: int):
     horse = equestrian.horse_delete(id)
     return redirect(url_for('ecuestre.index'))
 
-def allowed_file(filename):
-    """Verifica si la extensión del archivo es válida"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@bp.route('/upload', methods=['POST'])
-def upload_file():
-    """Subir un archivo de ecuestre a Minio"""
+@bp.route('/<int:id>/add_document', methods=['POST'])
+def upload(id: int):
+    """Recibe el ID de un caballo y agrega un documento a su lista de documentos"""
     if 'file' not in request.files:
-        # No se seleccionó archivo
-        return jsonify(success=False, message='No file part')
-    file = request.files['file']
-    if file.filename == '':
-        # No se seleccionó archivo
-        return jsonify(success=False, message='No selected file')
-    if file and allowed_file(file.filename):
-        # Sanitizar nombre de archivo
-        filename = secure_filename(file.filename)
+        equestrian.horse_attach_document(id, request.form['doc-type'], request.form['document-url'])
+    else:
+        equestrian.horse_add_document(id, request.form['doc-type'], request.files['file'])
         
-        # Obtengo cliente de Minio
-        client = current_app.storage._client
-        
-        # Obtengo el size del archivo para poder subirlo
-        size = fstat(file.fileno()).st_size
-        
-        # Creo un ULID para el nombre del archivo
-        ulid = ULID()
-        
-        # Subo el archivo a Minio
-        client.put_object('grupo04', f'${ulid}-{filename}', file, size, content_type=file.content_type)
-        
-        # Devuelvo la URL del archivo
-        file_path = os.path.join(UPLOAD_FOLDER, f'${ulid}-{filename}')
-        return jsonify(success=True, filePath=file_path)
-    
-    # Devuelvo un error si el archivo no es válido
-    return jsonify(success=False, message='File not allowed')
+    return redirect(url_for('ecuestre.show', id=id))
