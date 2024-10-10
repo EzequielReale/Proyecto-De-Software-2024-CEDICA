@@ -73,11 +73,34 @@ def horse_new(**kwargs)->Horse:
     db.session.commit()
     return horse
 
-def horse_update(horse_id:int, **kwargs)->Horse:
+def horse_update(horse_id: int, **kwargs) -> Horse:
     """Actualiza un caballo por ID y lo devuelve"""
     horse = get_horse_by_id(horse_id)
+    
+    # Actualizar atributos del caballo
     for attr, value in kwargs.items():
-        setattr(horse, attr, value)
+        if attr not in ['activities', 'members']:
+            setattr(horse, attr, value)
+    
+    # Limpiar listas de actividades y miembros asignados
+    horse.activities.clear()
+    horse.assigned_members.clear()
+    
+    # Verificar y agregar actividades
+    if 'activities' in kwargs:
+        for activity_id in kwargs['activities']:
+            activity = Activity.query.filter_by(id=activity_id).first()
+            if activity:
+                horse.activities.append(activity)
+    
+    # Verificar y agregar miembros
+    if 'members' in kwargs:
+        for member_id in kwargs['members']:
+            member = Member.query.filter_by(id=member_id).first()
+            if member:
+                horse.assigned_members.append(member)
+    
+    # Confirmar cambios en la base de datos
     db.session.commit()
     return horse
 
