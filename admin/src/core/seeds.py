@@ -144,72 +144,6 @@ def run():
         name = "Ensenada",
         province = province1
     )
-    member1 = people.member_new(
-            name="Giuliana",
-            last_name="Rossi",
-            dni="12345678",
-            phone="123456789",
-            emergency_phone=987654321,
-            street="Calle Falsa",
-            number=123,
-            locality=locality1,
-            email="giuliana@gmail.com",
-            start_date="2023-01-01",
-            end_date="2023-12-31",
-            health_insurance="Health Inc",
-            health_insurance_number=987654321,
-            condition="Voluntario",
-            active=True,
-            profession_id=1,
-            job_id=1
-    )
-    disability_type1 = disabilities.disability_type_new(
-        name="Mental"
-    )
-    disability1 = disabilities.disability_diagnosis_new(
-        name="Autismo",
-        type_id=disability_type1.id  # Ensure the ID is used
-    )
-    # Creo 30 miembros para poder probar la paginación del index
-    for i in range(30):
-        people.member_new(
-            name=f"Giuliana_{i}",
-            last_name="Rossi",
-            dni=f"{12345678 + i}",
-            phone=f"123456789{i}",
-            emergency_phone=f"987654321{i}",
-            street="Calle Falsa",
-            number=f"{123 + i}",
-            locality=locality1,
-            email=f"giuliana_{i}@gmail.com",
-            start_date="2023-01-01",
-            end_date="2023-12-31",
-            health_insurance="Health Inc",
-            health_insurance_number=f"987654321{i}",
-            condition="Voluntario",
-            active=True,
-            profession_id=1,
-            job_id=1
-        )
-        people.rider_new(
-            name=f"Fernando_{i}",
-            last_name="Alonso",
-            dni=f"{22345678 + i}",
-            phone=f"223456789{i}",
-            emergency_phone=f"287654321{i}",
-            street="Calle Verdadera",
-            number=f"{223 + i}",
-            health_insurance="Health Inc",
-            health_insurance_number=f"287654321{i}",
-            locality_id=locality1.id,
-            birth_date="2002-01-01",
-            grant_percentage=20,
-            disability_id=disability1.id,
-            family_allowance="Asignación universal por hijo",
-            pension_benefit="Nacional",
-            has_guardianship=True,
-            city_of_birth=locality1
-        )
     activity1 = equestrian.activity_new(
         name="Hipoterapia"
     )
@@ -224,6 +158,25 @@ def run():
     )
     activity5 = equestrian.activity_new(
         name="Equitación"
+    )
+    member1 = people.member_new(
+        name="Giuliana",
+        last_name="Rossi",
+        dni="12345678",
+        phone="123456789",
+        emergency_phone=987654321,
+        street="Calle Falsa",
+        number=123,
+        locality=locality1,
+        email="giuliana@gmail.com",
+        start_date="2023-01-01",
+        end_date="2023-12-31",
+        health_insurance="Health Inc",
+        health_insurance_number=987654321,
+        condition="Voluntario",
+        active=True,
+        profession_id=1,
+        job_id=1
     )
     horse1 = equestrian.horse_new(
         name="Canelo",
@@ -249,3 +202,96 @@ def run():
         activities=[activity3, activity2],
         assigned_location="Sede Winterfell"
     )
+    disability_type1 = disabilities.disability_type_new(
+        name="Mental"
+    )
+    disability1 = disabilities.disability_diagnosis_new(
+        name="Autismo",
+        type_id=disability_type1.id
+    )
+    parent1 = people.tutor_new(
+        relationship="Padre",
+        name="Juan",
+        last_name="Perez",
+        dni="12345678",
+        address="Calle Falsa 123",
+        phone="123456789",
+        email="juanperez@gmail.com",
+        education_level="Primario",
+        job="Docente"
+    )
+    parent2 = people.tutor_new(
+        relationship="Madre",
+        name="Maria",
+        last_name="Gomez",
+        dni="22345678",
+        address="Calle Verdadera 456",
+        phone="223456789",
+        email="mariagomez@gmail.com",
+        education_level="Secundario",
+        job="Enfermera"
+    )
+    # Creo 30 miembros para poder probar la paginación del index
+    for i in range(30):
+        member = people.member_new(
+            name=f"Giuliana_{i}",
+            last_name="Rossi",
+            dni=f"{12345678 + i}",
+            phone=f"123456789{i}",
+            emergency_phone=f"987654321{i}",
+            street="Calle Falsa",
+            number=f"{123 + i}",
+            locality=locality1,
+            email=f"giuliana_{i}@gmail.com",
+            start_date="2023-01-01",
+            end_date="2023-12-31",
+            health_insurance="Health Inc",
+            health_insurance_number=f"987654321{i}",
+            condition="Voluntario",
+            active=True,
+            profession_id=1,
+            job_id=1
+        )
+        jya = people.rider_new(
+            name=f"Fernando_{i}",
+            last_name="Alonso",
+            dni=f"{22345678 + i}",
+            phone=f"223456789{i}",
+            emergency_phone=f"287654321{i}",
+            street="Calle Verdadera",
+            number=f"{223 + i}",
+            health_insurance="Health Inc",
+            health_insurance_number=f"287654321{i}",
+            locality_id=locality1.id,
+            birth_date="2002-01-01",
+            grant_percentage=20,
+            disability_id=disability1.id,
+            family_allowance="Asignación universal por hijo",
+            pension_benefit="Nacional",
+            has_guardianship=True,
+            city_of_birth=locality1,
+            tutor_1_id=parent1.id,
+            tutor_2_id=parent2.id,
+            members=[member, member1]
+        )
+        school = professions.school_new(
+            school_name=f"Escuela_{i}",
+            school_address=f"Calle Falsa 12{i}",
+            school_phone=f"12345678{i}",
+            school_level="Primario",
+            school_year=5,
+            school_observations=f"Observaciones de la escuela {i}",
+            rider_id=jya.id
+        )
+        job_proposal = professions.job_proposal_new(
+            institutional_work_proposal="Hipoterapia",
+            condition="REGULAR",
+            headquarters="CASJ",
+            days=["Lunes", "Miércoles", "Viernes"],
+            rider_id=jya.id,
+            professor_id=member1.id,
+            member_horse_rider_id=member1.id,
+            horse_id=horse1.id,
+            assistant_id=member1.id
+        )
+

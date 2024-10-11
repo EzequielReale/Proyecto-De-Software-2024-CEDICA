@@ -1,6 +1,8 @@
 from src.core.database import db
 from src.core.professions.profession import Profession
 from src.core.professions.job import Job
+from src.core.professions.job_proposal import JobProposal
+from src.core.professions.school import School
 
 
 """Módulo de profesiones"""
@@ -41,3 +43,21 @@ def job_new(**kwargs) -> Job:
     db.session.add(job)
     db.session.commit()
     return job
+
+
+"""Módulo de jya"""
+
+def job_proposal_new(**kwargs) -> JobProposal:
+    """Crea una propuesta de trabajo, la guarda en la BD y la devuelve"""
+    job_proposal = JobProposal(**kwargs)
+    db.session.add(job_proposal)
+    db.session.commit()
+    return job_proposal
+
+
+def school_new(**kwargs) -> School:
+    """Crea una escuela, la guarda en la BD y la devuelve"""
+    school = School(**kwargs)
+    db.session.add(school)
+    db.session.commit()
+    return school

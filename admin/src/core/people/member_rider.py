@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from src.core.database import db
 from src.core.people.person import Person
 
-# Este import no se usa, pero sqlalchemy lo necesita para crear 1ro la tabla de disability_diagnosis
+# Estos imports no se usan, pero sqlalchemy lo necesita para crear 1ro las tablas referenciadas
 from src.core.disabilities.disability_diagnosis import DisabilityDiagnosis
+from src.core.people.tutor import Tutor
 
 
 class RiderMember(db.Model):
@@ -10,6 +13,8 @@ class RiderMember(db.Model):
 
     rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), primary_key=True)
     member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now)
 
 
 class Member(Person):
@@ -46,6 +51,7 @@ class Rider(Person):
 
     __mapper_args__ = {"polymorphic_identity": "rider"}  # Identificador de la subclase
 
+    # personal data
     id = db.Column(db.Integer, db.ForeignKey("persons.id"), primary_key=True)
     birth_date = db.Column(db.Date, nullable=False)
     grant_percentage = db.Column(db.Float, default=0.0, nullable=True)
@@ -58,16 +64,29 @@ class Rider(Person):
         ),
         nullable=True,
     )
-    pension_benefit = db.Column(
-        db.Enum("Nacional", "Provincial", name="pension_benefits"), nullable=True
-    )
+    pension_benefit = db.Column(db.Enum("Nacional", "Provincial", name="pension_benefits"), nullable=True)
     has_guardianship = db.Column(db.Boolean, default=False)
 
     disability_id = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
     disability = db.relationship("DisabilityDiagnosis", backref="riders", lazy=True)
     city_of_birth = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
     city_of_birth = db.relationship("Locality", back_populates="riders", lazy=True, overlaps="locality,persons")
+    
+    # members assigned
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
+    # school
+    school = db.relationship("School", back_populates="rider", lazy=True, overlaps="rider_school,school")
+
+    # tutors
+    tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
+    tutor_1 = db.relationship("Tutor", backref="rider_tutor_1", lazy=True, foreign_keys=[tutor_1_id])
+    tutor_2_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
+    tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
+
+    # job
+    job_proposal = db.relationship("JobProposal", back_populates="rider", lazy=True)
+
+    
     def __repr__(self):
         return f"Rider {self.id}"

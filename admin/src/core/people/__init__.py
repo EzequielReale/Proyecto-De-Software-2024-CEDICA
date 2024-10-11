@@ -8,6 +8,8 @@ from sqlalchemy.types import String, Text
 from src.core.database import db
 from src.core.people.member_rider import Member
 from src.core.people.member_rider import Rider
+from src.core.people.tutor import Tutor
+from src.core.people.member_rider import RiderMember
 from src.core.people.person_document import PersonDocument as Document
 
 
@@ -155,7 +157,7 @@ def member_add_document(member_id: int, file: bytes) -> Document:
     return _add_document(member_id, file, path)
 
 
-"""Funciones de jinetes"""
+"""Funciones de j/a"""
 
 def list_riders(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve los jinetes paginados de la BD"""
@@ -187,3 +189,20 @@ def rider_add_document(rider_id: int, file: bytes) -> Document:
     ulid = uuid.uuid4().hex
     path = f"riders/{rider_id}/{ulid}_{file.filename}"
     return _add_document(rider_id, file, path)
+
+def tutor_new(**kwargs) -> Tutor:
+    """Crea un tutor, lo guarda en la BD y lo devuelve"""
+    return _new(Tutor, **kwargs)
+
+# def rider_member_new(rider_id: int, member_id: int) -> Rider:
+#     """Crea una relación entre un jinete y un miembro"""
+#     rider = _get_by_field(Rider, "id", rider_id)
+#     member = _get_by_field(Member, "id", member_id)
+#     rider.members.append(member)
+#     member.riders.append(rider)
+#     db.session.commit()
+#     return rider
+
+def rider_member_new(**kwargs) -> Rider:
+    """Crea una relación entre un jinete y un miembro"""
+    return _new(RiderMember, **kwargs)
