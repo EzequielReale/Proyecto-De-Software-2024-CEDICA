@@ -56,6 +56,13 @@
         color: white !important;
     }
 
+    /* Acomodar filtros en fila */
+    .form-filter-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+
     @media screen and (max-width: 768px) {
         header {
             flex-direction: column;
@@ -160,12 +167,57 @@
         </section>
         <section class="{{ 'visually-hidden' if initial_page != 1 }} d-flex flex-column">
             <h5 class="border-bottom border-dark pb-2">Documentación complementaria</h5>
-            <table class="table table-striped overflow-auto">
+
+            <!-- Formulario de búsqueda y filtros -->
+            <form method="get" class="d-flex flex-row align-items-end gap-3 mt-3"
+                action="{{ url_for('ecuestre.show', id=horse.id) }}">
+                <div class="form-filter-container" style="flex-grow: 1;">
+                    <div class="form-group" style="flex-grow: 1;">
+                        <label class="mb-1" for="search">Buscar por nombre:</label>
+                        <input type="text" id="search" name="search" value="{{ search }}" class="form-control">
+                    </div>
+                    <div class="form-group" style="flex-grow: 1;">
+                        <label class="mb-1" for="document_type_id">Filtrar por tipo de documento:</label>
+                        <select id="document_type_id" name="document_type_id" class="form-select">
+                            <option value="">Todos los documentos</option>
+                            {% for doc_type in document_types %}
+                            <option value="{{ doc_type.id }}" {% if doc_type.id==document_type_id %}selected{% endif %}>
+                                {{ doc_type.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="text" name="initial_page" value="1" class="visually-hidden">
+                </div>
+                <div class="form-filter-container">
+                    <a href="{{ url_for('ecuestre.show', id=horse.id, initial_page=1) }}"
+                        class="btn btn-outline-secondary d-flex align-items-center">
+                        Limpiar filtros
+                    </a>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped overflow-auto mt-4 mb-4">
                 <thead>
                     <tr>
                         <th>
                             <a
-                                href="{{ url_for('ecuestre.show', id=horse.id, order_by='document_type_id', order='asc' if order_by != 'document_type_id' or order == 'desc' else 'desc') }}">
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc') }}">
+                                Nombre
+                                {% if order_by == 'name' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='document_type_id', order='asc' if order_by != 'document_type_id' or order == 'desc' else 'desc') }}">
                                 Tipo de documento
                                 {% if order_by == 'document_type_id' %}
                                 {% if order == 'asc' %}
@@ -180,7 +232,7 @@
                         </th>
                         <th>
                             <a
-                                href="{{ url_for('ecuestre.show', id=horse.id, order_by='upload_date', order='asc' if order_by != 'upload_date' or order == 'desc' else 'desc') }}">
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='upload_date', order='asc' if order_by != 'upload_date' or order == 'desc' else 'desc') }}">
                                 Fecha de subida
                                 {% if order_by == 'upload_date' %}
                                 {% if order == 'asc' %}
@@ -200,8 +252,9 @@
                     {% if documents %}
                     {% for document in documents %}
                     <tr>
+                        <td>{{ document.name }}</td>
                         <td>{{ document.type }}</td>
-                        <td>{{ document.upload_date }}</td>
+                        <td>{{ document.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>
                             <div class="action-icons">
                                 <!-- Icono de vista / descarga -->
@@ -224,7 +277,7 @@
                     {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="3">Todavía no se adjuntó documentación</td>
+                        <td colspan="4">No hay documentación para mostrar</td>
                     </tr>
                     {% endif %}
 
@@ -291,6 +344,14 @@
                         <div class="modal-body">
                             <div>
                                 <div class="form-group">
+                                    <label class="mb-1" for="doc-name">Nombre</label><span class="form-text"></span>
+                                    (Opcional)</span>
+                                    <input class="form-control" type="text" name="doc-name" id="doc-name"
+                                        placeholder="Nombre del documento">
+                                    <p class="form-text">Si no se especifica se utilizará la URL como nombre
+                                        para reconocer el documento.</p>
+                                </div>
+                                <div class="form-group">
                                     <label class="mb-1" for="doc-type">Tipo de documentación</label>
                                     <select class="form-select" name="doc-type" id="doc-type" required>
                                         <option selected>Seleccione una opción...</option>
@@ -302,8 +363,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group mt-3">
-                                    <label class="mb-1" for="document-url">URL del documento</label>
-                                    <input type="url" class="form-control" name="document-url" id="document-url"
+                                    <label class="mb-1" for="doc-url">URL del documento</label>
+                                    <input type="url" class="form-control" name="doc-url" id="doc-url"
                                         placeholder="Ingrese la URL del documento" required>
                                 </div>
                             </div>

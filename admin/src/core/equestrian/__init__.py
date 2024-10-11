@@ -52,11 +52,15 @@ def get_document_types()->list:
     """Devuelve todos los tipos de documentos"""
     return HorseDocumentType.query.all()
 
-def get_horse_documents(horse_id: int, document_type_id: int = None, order_by: str = 'id', order: str = 'asc')->list:
+def get_horse_documents(horse_id: int, document_type_id: int = None, search: str = '', order_by: str = 'id', order: str = 'asc')->list:
     """Devuelve los documentos de un caballo por ID con URLs descargables"""
     docs_db = HorseDocument.query.filter_by(horse_id=horse_id)
     if document_type_id:
         docs_db = docs_db.filter_by(document_type_id=document_type_id)
+    
+    # Filtro de búsqueda por nombre
+    if search:
+        docs_db = docs_db.filter(HorseDocument.name.ilike(f'%{search}%'))
         
     # Ordenamiento
     order_column = getattr(HorseDocument, order_by)
@@ -69,6 +73,7 @@ def get_horse_documents(horse_id: int, document_type_id: int = None, order_by: s
         doc_url = current_app.storage._client.presigned_get_object("grupo04", doc.file_path) if doc.file_path else doc.url
         docs.append({
             'id': doc.id,
+            'name': doc.name,
             'type': doc.document_type.name,
             'upload_date': doc.upload_date,
             'url': doc_url
@@ -145,9 +150,9 @@ def horse_add_document(horse_id:int, document_type:int, file:bytes)->HorseDocume
     file_path = os.path.join(UPLOAD_FOLDER, f'${ulid}-{filename}')
     return _add_document(horse_id, document_type, file, file_path)
 
-def horse_attach_document(horse_id:int, document_type:int, url:str)->HorseDocument:
+def horse_attach_document(horse_id:int, document_type:int, url:str, name: str = None)->HorseDocument:
     """Añade un documento a un caballo por ID y lo guarda en la BD"""
-    return _attach_document(horse_id, document_type, url)
+    return _attach_document(horse_id, document_type, url, name)
 
 
 def _allowed_file(filename):
@@ -155,9 +160,10 @@ def _allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_DOC_EXTENSIONS
 
-def _attach_document(horse_id: int, document_type_id: int, url: str)->HorseDocument:
+def _attach_document(horse_id: int, document_type_id: int, url: str, name: str = None)->HorseDocument:
     """Añade una URL como documento a un caballo y lo guarda en la BD"""
     document = HorseDocument(
+        name=name if name else url,
         horse_id=horse_id,
         document_type_id=document_type_id,
         url=url
@@ -181,10 +187,12 @@ def _add_document(horse_id: int, document_type_id: int, file: bytes, path: str)-
         raise RuntimeError(f"Error subiendo el documento: {e}")
 
     document = HorseDocument(
+        name = file.filename,
         horse_id=horse_id,
         document_type_id=document_type_id,
         file_path=path
     )
+    
     db.session.add(document)
     db.session.commit()
     return document
@@ -192,7 +200,10 @@ def _add_document(horse_id: int, document_type_id: int, file: bytes, path: str)-
 def delete_document(document_id: int):
     """Elimina un documento por ID"""
     document = HorseDocument.query.filter_by(id=document_id).first()
-    current_app.storage.client.remove_object("grupo04", document.file_path)
+    
+    if document.file_path:
+        current_app.storage.client.remove_object("grupo04", document.file_path)
+        
     db.session.delete(document)
     db.session.commit()
     return document

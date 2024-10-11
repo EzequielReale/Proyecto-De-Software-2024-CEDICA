@@ -30,16 +30,14 @@ def index():
 @login_required
 def show(id: int):
     """Detalle de un caballo en específico"""
-    order_by = request.args.get('order_by', 'document_type')
+    order_by = request.args.get('order_by', 'document_type_id')
     order = request.args.get('order', 'asc')
+    search = request.args.get('search', '')
     initial_page = request.args.get('initial_page', 0, type=int)
-    document_type_id = request.args.get('document_type', type=int)
-    
-    if order_by == 'document_type':
-        order_by = 'document_type_id'
+    document_type_id = request.args.get('document_type_id', type=int)
         
     horse = equestrian.get_horse_by_id(id)
-    return render_template('ecuestre/show.html', horse=horse, order_by=order_by, order=order, initial_page=1 if document_type_id else initial_page, document_types=equestrian.get_document_types(), documents=equestrian.get_horse_documents(id, document_type_id=document_type_id, order_by=order_by, order=order))
+    return render_template('ecuestre/show.html', horse=horse, document_type_id=document_type_id, order_by=order_by, order=order, search=search, initial_page=1 if document_type_id else initial_page, document_types=equestrian.get_document_types(), documents=equestrian.get_horse_documents(id, document_type_id=document_type_id, search=search, order_by=order_by, order=order))
 
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required
@@ -182,7 +180,7 @@ def destroy(id: int):
 def upload(id: int):
     """Recibe el ID de un caballo y agrega un documento a su lista de documentos"""
     if 'file' not in request.files:
-        equestrian.horse_attach_document(id, request.form['doc-type'], request.form['document-url'])
+        equestrian.horse_attach_document(id, request.form['doc-type'], request.form['doc-url'], request.form['doc-name'])
     else:
         equestrian.horse_add_document(id, request.form['doc-type'], request.files['file'])
     

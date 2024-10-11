@@ -6,6 +6,7 @@ class HorseDocument(db.Model):
     __tablename__ = 'horse_documents'
 
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
     horse_id = db.Column(db.Integer, db.ForeignKey('horses.id'), nullable=False)
     document_type_id = db.Column(db.Integer, db.ForeignKey('horse_document_types.id'), nullable=False)
     upload_date = db.Column(db.DateTime, default=datetime.now, nullable=False)
