@@ -5,6 +5,7 @@ from flask import request,redirect
 from flask import url_for
 from flask import json
 from flask import flash
+from datetime import datetime
 from src.core.database import db
 from src.web.handlers.autenticacion import login_required
 from src.core import equestrian
@@ -45,14 +46,18 @@ def create():
     # Si se envía el formulario
     if request.method == 'POST':
         # Obtener los datos del formulario
-        name = request.form['name']
-        birth_date = request.form['birth_date']
-        entry_date = request.form['entry_date']
-        gender = request.form['gender']
-        origin = request.form['origin']
-        race = request.form['race']
-        coat = request.form['coat']
-        assigned_location = request.form['assigned_location']
+        form_data = {
+            'name': request.form['name'],
+            'birth_date': request.form['birth_date'],
+            'entry_date': request.form['entry_date'],
+            'gender': request.form['gender'],
+            'origin': request.form['origin'],
+            'race': request.form['race'],
+            'coat': request.form['coat'],
+            'assigned_location': request.form['assigned_location'],
+            'selected_activities': request.form.get('selected_activities'),
+            'assigned_members': request.form.get('assigned_members')
+        }
         
         # Obtener las actividades seleccionadas
         selected_activities = request.form.get('selected_activities')
@@ -68,17 +73,26 @@ def create():
         else:
             assigned_members = []
             
+        # Validar los datos del formulario
+        errors = validate_horse_form(form_data)
+
+        # Si hay errores, mostrar mensajes de error y renderizar el formulario nuevamente
+        if errors:
+            for error in errors:
+                flash(error, 'danger')
+            return render_template('ecuestre/create.html', form_data=form_data, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
+        
         # Crear el caballo
         horse = equestrian.horse_new(
-            name=name,
-            birth_date=birth_date,
-            entry_date=entry_date,
-            gender="Macho" if gender == 0 else "Hembra",
-            donation=origin == 1,
-            race=race,
-            coat=coat,
-            assigned_location=assigned_location
-        )    
+            name=form_data['name'],
+            birth_date=form_data['birth_date'],
+            entry_date=form_data['entry_date'],
+            gender="Macho" if form_data['gender'] == '0' else "Hembra",
+            donation=form_data['origin'] == '1',
+            race=form_data['race'],
+            coat=form_data['coat'],
+            assigned_location=form_data['assigned_location']
+        ) 
 
         # Asignar actividades al caballo
         for activity_id in selected_activities:
@@ -95,7 +109,7 @@ def create():
         db.session.commit()
         
         flash(f"Caballo creado exitosamente", "success")
-        return redirect(url_for('ecuestre.index'))
+        return redirect(url_for('ecuestre.show', id=horse.id))
     
     return render_template('ecuestre/create.html', activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
 
@@ -122,14 +136,18 @@ def update(id: int)->str:
     # Si se envía el formulario
     if request.method == 'POST':
         # Obtener los datos del formulario
-        name = request.form['name']
-        birth_date = request.form['birth_date']
-        entry_date = request.form['entry_date']
-        gender = request.form['gender']
-        origin = request.form['origin']
-        race = request.form['race']
-        coat = request.form['coat']
-        assigned_location = request.form['assigned_location']
+        form_data = {
+            'name': request.form['name'],
+            'birth_date': request.form['birth_date'],
+            'entry_date': request.form['entry_date'],
+            'gender': request.form['gender'],
+            'origin': request.form['origin'],
+            'race': request.form['race'],
+            'coat': request.form['coat'],
+            'assigned_location': request.form['assigned_location'],
+            'selected_activities': request.form.get('selected_activities'),
+            'assigned_members': request.form.get('assigned_members')
+        }
         
         # Obtener las actividades seleccionadas
         selected_activities = request.form.get('selected_activities')
@@ -146,17 +164,27 @@ def update(id: int)->str:
         else:
             assigned_members = []
             
+        # Validar los datos del formulario
+        errors = validate_horse_form(form_data)
+
+        # Si hay errores, mostrar mensajes de error y renderizar el formulario nuevamente
+        if errors:
+            for error in errors:
+                flash(error, 'danger')
+            return render_template('ecuestre/update.html', horse=horse_dict, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
+
+            
         # Editar el caballo
         equestrian.horse_update(
             horse.id,
-            name=name,
-            birth_date=birth_date,
-            entry_date=entry_date,
-            gender="Macho" if gender == 0 else "Hembra",
-            donation=origin == 1,
-            race=race,
-            coat=coat,
-            assigned_location=assigned_location,
+            name=form_data['name'],
+            birth_date=form_data['birth_date'],
+            entry_date=form_data['entry_date'],
+            gender="Macho" if form_data['gender'] == 0 else "Hembra",
+            donation=form_data['origin'] == 1,
+            race=form_data['race'],
+            coat=form_data['coat'],
+            assigned_location=form_data['assigned_location'],
             activities=selected_activities,
             members=assigned_members
         )
@@ -194,3 +222,49 @@ def delete_document(id: int, document_id: int)->str:
     equestrian.delete_document(document_id)
     flash(f"Documento eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.show', id=id, initial_page=1))
+
+
+def validate_horse_form(data):
+    errors = []
+
+    # Validar nombre
+    if not data.get('name') or len(data['name']) > 100:
+        errors.append("El nombre es obligatorio y debe tener menos de 100 caracteres.")
+    
+    # Validar fecha de nacimiento
+    try:
+        datetime.strptime(data['birth_date'], '%Y-%m-%d')
+    except ValueError:
+        errors.append("La fecha de nacimiento es obligatoria y debe tener el formato YYYY-MM-DD.")
+    
+    # Validar fecha de entrada
+    try:
+        datetime.strptime(data['entry_date'], '%Y-%m-%d')
+    except ValueError:
+        errors.append("La fecha de entrada es obligatoria y debe tener el formato YYYY-MM-DD.")
+        
+    # Validar que la fecha de nacimiento sea anterior a la fecha de entrada
+    if data['birth_date'] >= data['entry_date']:
+        errors.append("La fecha de nacimiento debe ser anterior a la fecha de entrada.")
+    
+    # Validar género
+    if data.get('gender') not in ['0', '1']:
+        errors.append("El género es obligatorio y debe ser Macho o Hembra.")
+    
+    # Validar origen
+    if data.get('origin') not in ['0', '1']:
+        errors.append("El origen es obligatorio y debe ser Compra o Donación.")
+    
+    # Validar raza
+    if not data.get('race') or len(data['race']) > 100:
+        errors.append("La raza es obligatoria y debe tener menos de 100 caracteres.")
+    
+    # Validar pelaje
+    if not data.get('coat') or len(data['coat']) > 100:
+        errors.append("El pelaje es obligatorio y debe tener menos de 100 caracteres.")
+    
+    # Validar ubicación asignada
+    if not data.get('assigned_location') or len(data['assigned_location']) > 100:
+        errors.append("La ubicación asignada es obligatoria y debe tener menos de 100 caracteres.")
+
+    return errors

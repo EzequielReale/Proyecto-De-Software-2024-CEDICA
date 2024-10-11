@@ -99,17 +99,20 @@
                 <div class="form-group">
                     <label class="mb-1" for="name">Nombre</label>
                     <input class="form-control" type="text" id="name" name="name"
-                        placeholder="Ingrese el nombre del caballo" required maxlength="64" pattern="[A-Za-z\s]+">
+                        placeholder="Ingrese el nombre del caballo" value="{{ form_data.name if form_data else '' }}"
+                        required maxlength="64" pattern="[A-Za-z\s]+">
                 </div>
 
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label class="mb-1" for="birth_date">Nacimiento</label>
-                        <input class="form-control" type="date" id="birth_date" name="birth_date" required>
+                        <input class="form-control" type="date" id="birth_date" name="birth_date"
+                            value="{{ form_data.birth_date if form_data else '' }}" required>
                     </div>
                     <div class="form-group w-50">
                         <label class="mb-1" for="entry_date">Fecha de ingreso</label>
-                        <input class="form-control" type="date" id="entry_date" name="entry_date" required>
+                        <input class="form-control" type="date" id="entry_date" name="entry_date"
+                            value="{{ form_data.entry_date if form_data else '' }}" required>
                     </div>
                 </div>
 
@@ -117,17 +120,19 @@
                     <div class="form-group w-50">
                         <label class="mb-1" for="gender">Sexo</label>
                         <select class="form-select" name="gender" id="gender" required>
-                            <option disabled selected>Seleccione una opción...</option>
-                            <option value="0">Macho</option>
-                            <option value="1">Hembra</option>
+                            <option {% if form_data and form_data.gender==0 %}selected{% endif %} value="0">Macho
+                            </option>
+                            <option {% if form_data and form_data.gender==1 %}selected{% endif %} value="1">Hembra
+                            </option>
                         </select>
                     </div>
                     <div class="form-group w-50">
                         <label class="mb-1" for="origin">Origen</label>
                         <select class="form-select" name="origin" id="origin" required>
-                            <option disabled selected>Seleccione una opción...</option>
-                            <option value="0">Compra</option>
-                            <option value="1">Donación</option>
+                            <option {% if form_data and form_data.origin==0 %}selected{% endif %} value="0">Compra
+                            </option>
+                            <option {% if form_data and form_data.origin==1 %}selected{% endif %} value="1">Donación
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -136,18 +141,21 @@
                     <div class="w-50">
                         <label class="mb-1" for="race">Raza</label>
                         <input id="race" name="race" placeholder="Ingrese la raza del caballo" type="text"
-                            class="form-control" required maxlength="32">
+                            value="{{ form_data.race if form_data else '' }}" class="form-control" required
+                            maxlength="32">
                     </div>
                     <div class="w-50">
                         <label class="mb-1" for="coat">Pelaje</label>
                         <input id="coat" name="coat" placeholder="Ingrese el pelaje del caballo" type="text"
-                            class="form-control" required maxlength="32">
+                            value="{{ form_data.coat if form_data else '' }}" class="form-control" required
+                            maxlength="32">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="mb-1" for="assigned_location">Sede asignada</label>
                     <input type="text" name="assigned_location" id="assigned_location" class="form-control"
+                        value="{{ form_data.assigned_location if form_data else '' }}"
                         placeholder="Ingrese el nombre de la sede asignada" required>
                 </div>
             </section>
@@ -223,20 +231,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <!--
-                    <div class="d-flex flex-row gap-2 justify-content-end w-100">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#modal-attach-url">
-                            <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
-                            Enlace
-                        </button>
-                        <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
-                            data-bs-target="#modal-upload-file">
-                            <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
-                            Subir archivo
-                        </button>
-                    </div>
-                -->
             </section>
 
             <div class="modal fade" id="modal-activities" tabindex="-1" aria-hidden="true">
@@ -332,80 +326,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 
-                <div class="modal fade" id="modal-upload-file" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Subir archivo</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="upload-file-form">
-                                    <div class="form-group">
-                                        <label class="mb-1" for="file-type">Tipo de documentación</label>
-                                        <select class="form-select" id="file-type" required>
-                                            <option selected>Seleccione una opción...</option>
-                                            <option value="Ficha general">Ficha general del caballo</option>
-                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                            </option>
-                                            <option value="Informe de Evolución">Informe de Evolución</option>
-                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                            <option value="Registro veterinario">Registro veterinario</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label class="mb-1" for="file-upload">Subir archivo</label>
-                                        <input type="file" class="form-control" id="file-upload"
-                                            accept=".pdf,.doc,.xls,.jpeg" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" onclick="uploadFile()">Subir archivo</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="modal fade" id="modal-attach-url" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Adjuntar URL</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="attach-url-form">
-                                    <div class="form-group">
-                                        <label class="mb-1" for="url-type">Tipo de documentación</label>
-                                        <select class="form-select" id="url-type" required>
-                                            <option selected>Seleccione una opción...</option>
-                                            <option value="Ficha general">Ficha general del caballo</option>
-                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                            </option>
-                                            <option value="Informe de Evolución">Informe de Evolución</option>
-                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                            <option value="Registro veterinario">Registro veterinario</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label class="mb-1" for="document-url">URL del documento</label>
-                                        <input type="url" class="form-control" id="document-url"
-                                            placeholder="Ingrese la URL del documento" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" onclick="attachUrl()">Adjuntar URL</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            -->
 
             <!-- Campo oculto para enviar las actividades seleccionadas al form -->
             <input type="hidden" name="selected_activities" id="selected-activities-input">
