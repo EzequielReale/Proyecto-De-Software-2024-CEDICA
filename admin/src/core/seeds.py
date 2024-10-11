@@ -144,6 +144,21 @@ def run():
         name = "Ensenada",
         province = province1
     )
+    horse_document_type1 = equestrian.horse_document_type_new(
+        name="Ficha general"
+    )
+    horse_document_type2 = equestrian.horse_document_type_new(
+        name="Planificación de Entrenamiento"
+    )
+    horse_document_type3 = equestrian.horse_document_type_new(
+        name="Informe de Evolución"
+    )
+    horse_document_type4 = equestrian.horse_document_type_new(
+        name="Imágenes"
+    )
+    horse_document_type5 = equestrian.horse_document_type_new(
+        name="Registro veterinario"
+    )
     member1 = people.member_new(
             name="Giuliana",
             last_name="Rossi",

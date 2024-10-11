@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Registro de caballos{% endblock %}
+{% block title %}Edición de caballos{% endblock %}
 {% block head %}
 {{ super() }}
 <style>
@@ -75,9 +75,9 @@
 
 {% block content %}
 <div class="container">
-    <h2>🐎 Registro de caballos</h2>
-    <p>Formulario para registrar un nuevo caballo en la institución</p>
-    <form action="{{ url_for('ecuestre.create') }}" method="POST">
+    <h2>🐎 Edición de caballos</h2>
+    <p>Formulario para editar un caballo registrado en la institución</p>
+    <form id="horse-form" action="{{ url_for('ecuestre.update', id=horse.id) }}" method="POST">
         <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
             <li class="nav-item">
                 <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información
@@ -117,7 +117,7 @@
                     <div class="form-group w-50">
                         <label class="mb-1" for="gender">Sexo</label>
                         <select class="form-select" name="gender" id="gender" required>
-                            <option disabled selected>Seleccione una opción...</option>
+                            <option disabled>Seleccione una opción...</option>
                             <option value="0">Macho</option>
                             <option value="1">Hembra</option>
                         </select>
@@ -125,7 +125,7 @@
                     <div class="form-group w-50">
                         <label class="mb-1" for="origin">Origen</label>
                         <select class="form-select" name="origin" id="origin" required>
-                            <option disabled selected>Seleccione una opción...</option>
+                            <option disabled>Seleccione una opción...</option>
                             <option value="0">Compra</option>
                             <option value="1">Donación</option>
                         </select>
@@ -203,40 +203,6 @@
                         </button>
                     </div>
                 </div>
-            </section>
-
-            <section class="visually-hidden d-flex flex-column">
-                <h5 class="border-bottom border-dark pb-2">Documentación complementaria</h5>
-                <p>Pestaña para adjuntar documentación acerca del caballo. Como su ficha general, registros
-                    veterinarios, etc.</p>
-                <table class="table table-striped overflow-auto">
-                    <thead>
-                        <tr>
-                            <th>Tipo</th>
-                            <th>Documento</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="documents-table-body">
-                        <tr>
-                            <td colspan="3">Todavía no adjuntaste documentación</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <!--
-                    <div class="d-flex flex-row gap-2 justify-content-end w-100">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                            data-bs-target="#modal-attach-url">
-                            <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
-                            Enlace
-                        </button>
-                        <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
-                            data-bs-target="#modal-upload-file">
-                            <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
-                            Subir archivo
-                        </button>
-                    </div>
-                -->
             </section>
 
             <div class="modal fade" id="modal-activities" tabindex="-1" aria-hidden="true">
@@ -333,80 +299,6 @@
                 </div>
             </div>
 
-            <!-- 
-                <div class="modal fade" id="modal-upload-file" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Subir archivo</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="upload-file-form">
-                                    <div class="form-group">
-                                        <label class="mb-1" for="file-type">Tipo de documentación</label>
-                                        <select class="form-select" id="file-type" required>
-                                            <option selected>Seleccione una opción...</option>
-                                            <option value="Ficha general">Ficha general del caballo</option>
-                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                            </option>
-                                            <option value="Informe de Evolución">Informe de Evolución</option>
-                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                            <option value="Registro veterinario">Registro veterinario</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label class="mb-1" for="file-upload">Subir archivo</label>
-                                        <input type="file" class="form-control" id="file-upload"
-                                            accept=".pdf,.doc,.xls,.jpeg" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" onclick="uploadFile()">Subir archivo</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="modal fade" id="modal-attach-url" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5 fw-bolder text-uppercase">Adjuntar URL</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="attach-url-form">
-                                    <div class="form-group">
-                                        <label class="mb-1" for="url-type">Tipo de documentación</label>
-                                        <select class="form-select" id="url-type" required>
-                                            <option selected>Seleccione una opción...</option>
-                                            <option value="Ficha general">Ficha general del caballo</option>
-                                            <option value="Planificación de Entrenamiento">Planificación de Entrenamiento
-                                            </option>
-                                            <option value="Informe de Evolución">Informe de Evolución</option>
-                                            <option value="Carga de Imágenes">Carga de Imágenes</option>
-                                            <option value="Registro veterinario">Registro veterinario</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label class="mb-1" for="document-url">URL del documento</label>
-                                        <input type="url" class="form-control" id="document-url"
-                                            placeholder="Ingrese la URL del documento" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button type="button" class="btn btn-primary" onclick="attachUrl()">Adjuntar URL</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            -->
-
             <!-- Campo oculto para enviar las actividades seleccionadas al form -->
             <input type="hidden" name="selected_activities" id="selected-activities-input">
 
@@ -419,7 +311,7 @@
                 <i style="transform: scale(0.6);" class="fa fa-chevron-left me-1"></i>
                 Volver
             </a>
-            <button class="btn btn-primary" type="submit">Registrar caballo</button>
+            <button class="btn btn-primary" type="submit">Actualizar caballo</button>
         </div>
     </form>
 </div>
@@ -431,6 +323,55 @@
         var today = new Date().toISOString().split('T')[0];
         // Establecer el atributo max del campo de fecha de nacimiento
         document.getElementById('birth_date').setAttribute('max', today);
+
+        // Datos del caballo
+        const horse = {{ horse | tojson
+    }};
+
+    // Asignar valores a los campos del formulario
+    document.getElementById('name').value = horse.name;
+    document.getElementById('birth_date').value = horse.birth_date;
+    document.getElementById('entry_date').value = horse.entry_date;
+    document.getElementById('gender').value = horse.gender === 'Macho' ? 0 : 1;
+    document.getElementById('origin').value = horse.donation ? 1 : 0;
+    document.getElementById('race').value = horse.race;
+    document.getElementById('coat').value = horse.coat;
+    document.getElementById('assigned_location').value = horse.assigned_location;
+
+    // Asignar actividades seleccionadas
+    horse.activities.forEach(activity => {
+        const element = document.getElementById('activity-' + activity.id);
+        if (element) {
+            element.classList.add('selected');
+            selectedActivities.push(activity.id);
+        }
+    });
+
+    // Asignar miembros asignados
+    horse.members.forEach(member => {
+        assignedMembers.push(member.id);
+        const tableBody = document.getElementById('members-table-body');
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+                <td>${member.name}</td>
+                <td>${member.job}</td>
+                <td>
+                    <span class="text-danger" role="button" onclick="removeMember(this, ${member.id})">
+                        <i style="transform: scale(0.9);" class="fa fa-trash me-1"></i>
+                        Eliminar
+                    </span>
+                </td>
+            `;
+        tableBody.appendChild(newRow);
+    });
+
+    // Elimina la fila "No hay miembros asignados" si existen miembros asignados
+    if (horse.members.length > 0) {
+        const noMembersRow = document.getElementById('no-members-row');
+        if (noMembersRow) {
+            noMembersRow.remove();
+        }
+    }
     });
 
     // Lista de actividades seleccionadas
@@ -479,17 +420,6 @@
         document.getElementById('selected-activities-input').value = JSON.stringify(selectedActivities);
         document.getElementById('assigned-members-input').value = JSON.stringify(assignedMembers);
     });
-
-    // Función para validar URL
-    function isValidUrl(url) {
-        try {
-            new URL(url);
-            return true;
-        }
-        catch (_) {
-            return false;
-        }
-    }
 
     // Función para agregar un miembro a la tabla
     function assignMember(type) {
