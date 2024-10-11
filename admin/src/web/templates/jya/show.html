@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}CEDICA - Ver rider{% endblock %}
+{% block title %}CEDICA - Ver j/a{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block content %}
-<h1 style="color: #007bff; margin-bottom: 20px;">Detalle del rider</h1>
-<p class="lead mb-4">Información detallada del rider</p>
+<h1 style="color: #007bff; margin-bottom: 20px;">Detalle del jinete/amazona</h1>
+<p class="lead mb-4">Información detallada del jinete/amazona</p>
 
 <div class="button-group">
     <a href="{{ url_for('team.update', id=rider.id) }}" class="btn btn-warning btn-icon">
@@ -26,17 +26,76 @@
     <div class="card-body">
         <h5 class="card-title">{{ rider.name }} {{ rider.last_name }}</h5>
         <p class="card-text">
-            <strong>DNI:</strong> {{ rider.dni }}<br>
-            <strong>Teléfono:</strong> {{ rider.phone }}<br>
-            <strong>Teléfono de emergencia:</strong> {{ rider.emergency_phone }}<br>
-            <strong>Domicilio:</strong> {{ rider.street }} {{ rider.number }}, {{ rider.locality.name }}, provincia de {{ rider.locality.province.name }}<br>
-            <strong>Fecha de nacimiento:</strong> {{ rider.birth_date.strftime('%d-%m-%Y') }} ({{(current_year - rider.birth_date.year)}} años)<br>
-            <strong>Lugar de nacimiento:</strong> {{ rider.city_of_birth.name }}, provincia de {{rider.city_of_birth.province.name}}<br>
-            <strong>Tiene certificado de discapacidad:</strong> {% if rider.disability_id %}Sí. {{ rider.disability.name }}{% else %}No{% endif %}<br>
-            <strong>Tiene pensión:</strong> {% if rider.pension_benefit %}Sí. {{ rider.pension_benefit }}{% else %}No{% endif %}<br>
-            <strong>Tiene tutela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{% endif %}<br>
-            <strong>Recibe asignación familiar:</strong> {% if rider.family_allowance %}{{ rider.family_allowance }}{% else %}No{% endif %}<br>
-            <strong>Está becado:</strong> {% if rider.grant_percentage %}Sí. Porcentaje: {{ rider.grant_percentage }}%{% else %}No{% endif %}<br>
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos personales:</strong>
+                <strong style="margin-left: 20px;">DNI:</strong> {{ rider.dni }}<br>
+                <strong style="margin-left: 20px;">Teléfono:</strong> {{ rider.phone }}<br>
+                <strong style="margin-left: 20px;">Teléfono de emergencia:</strong> {{ rider.emergency_phone }}<br>
+                <strong style="margin-left: 20px;">Domicilio:</strong> {{ rider.street }} {{ rider.number }}, {{ rider.locality.name }}, provincia de {{ rider.locality.province.name }}<br>
+                <strong style="margin-left: 20px;">Fecha de nacimiento:</strong> {{ rider.birth_date.strftime('%d-%m-%Y') }} ({{(current_year - rider.birth_date.year)}} años)<br>
+                <strong style="margin-left: 20px;">Lugar de nacimiento:</strong> {{ rider.city_of_birth.name }}, provincia de {{rider.city_of_birth.province.name}}<br>
+                <strong style="margin-left: 20px;">Tiene certificado de discapacidad:</strong> {% if rider.disability_id %}Sí. {{ rider.disability.name }}{% else %}No{% endif %}<br>
+                <strong style="margin-left: 20px;">Tiene pensión:</strong> {% if rider.pension_benefit %}Sí. {{ rider.pension_benefit }}{% else %}No{% endif %}<br>
+                <strong style="margin-left: 20px;">Recibe asignación familiar:</strong> {% if rider.family_allowance %}{{ rider.family_allowance }}{% else %}No{% endif %}<br>
+                <strong style="margin-left: 20px;">Está becado:</strong> {% if rider.grant_percentage %}Sí. Porcentaje: {{ rider.grant_percentage }}%{% else %}No{% endif %}<br>
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Situación previsional:</strong>
+                <strong style="margin-left: 20px;">Obra social:</strong> {{ rider.health_insurance }}<br>
+                <strong style="margin-left: 20px;">Número de obra social:</strong> {{ rider.health_insurance_number }}<br>
+                <strong style="margin-left: 20px;">Tiene tutela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{% endif %}<br>
+            {% if rider.school %}
+                {% for school in rider.school %}
+                    <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Institución escolar a la que concurre:</strong>
+                    <strong style="margin-left: 20px;">Nombre:</strong> {{ school.name }}<br>
+                    <strong style="margin-left: 20px;">Dirección:</strong> {{ school.address }}<br>
+                    <strong style="margin-left: 20px;">Teléfono:</strong> {{ school.phone }}<br>
+                    <strong style="margin-left: 20px;">Nivel educativo:</strong> {{ school.level }}<br>
+                    <strong style="margin-left: 20px;">Año lectivo:</strong> {{ school.year }}°<br>
+                    <strong style="margin-left: 20px;">Observaciones:</strong> {{ school.observations }}<br>
+                {% endfor %}
+            {% endif %}
+            {% if rider.tutor_1_id or rider.tutor_2_id %}
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos del tutor:</strong>
+                {% if rider.tutor_1_id %}
+                    <strong style="margin-left: 20px;">Tutor 1:</strong><br>
+                    <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_1.relationship }}<br>
+                    <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_1.name }} {{ rider.tutor_1.last_name }}<br>
+                    <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_1.dni }}<br>
+                    <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_1.address }}<br>
+                    <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_1.phone }}<br>
+                    <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_1.email }}<br>
+                    <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_1.education_level }}<br>
+                    <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_1.job }}<br>
+                {% endif %}
+                {% if rider.tutor_2_id %}
+                    <strong style="margin-left: 20px;">Tutor 2:</strong><br>
+                    <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_2.relationship }}<br>
+                    <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_2.name }} {{ rider.tutor_2.last_name }}<br>
+                    <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_2.dni }}<br>
+                    <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_2.address }}<br>
+                    <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_2.phone }}<br>
+                    <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_2.email }}<br>
+                    <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_2.education_level }}<br>
+                    <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_2.job }}<br>
+                {% endif %}
+            {% endif %}
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Profesionales que lo atienden:</strong>
+            {% for member in rider.members %}
+                <strong style="margin-left: 20px;">Profesional {{ loop.index }}:</strong><br>
+                <strong style="margin-left: 40px;">Nombre completo:</strong> {{ member.name }} {{ member.last_name }}<br>
+                <strong style="margin-left: 40px;">DNI:</strong> {{ member.dni }}<br>
+            {% endfor %}
+            {% if rider.job_proposal %}
+                <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Trabajo en CEDICA:</strong>
+                    {% for job in rider.job_proposal %}
+                        <strong style="margin-left: 20px;">Propuesta de trabajo institucional:</strong> {{ job.institutional_work_proposal }}<br>
+                        <strong style="margin-left: 20px;">Condición:</strong> {{ job.condition }}<br>
+                        <strong style="margin-left: 20px;">Sede:</strong> {{ job.headquarters }}<br>
+                        <strong style="margin-left: 20px;">Días:</strong> {{ job.days | join(', ') }}<br>
+                        <strong style="margin-left: 20px;">Profesor:</strong> {{ job.professor.name }} {{ job.professor.last_name }}<br>
+                        <strong style="margin-left: 20px;">Miembro jinete:</strong> {{ job.member_horse_rider.name }} {{ job.member_horse_rider.last_name }}<br>
+                        <strong style="margin-left: 20px;">Caballo:</strong> {{ job.horse.name }}<br>
+                        <strong style="margin-left: 20px;">Asistente:</strong> {{ job.assistant.name }} {{ job.assistant.last_name }}<br>
+                    {% endfor %}
+            {% endif %}
         </p>
     </div>
 </div>
@@ -45,7 +104,7 @@
 
 <div class="button-group">
     <a href="{{ url_for('jya.index') }}" class="btn btn-primary btn-icon">
-        <i class="fas fa-arrow-left"></i> Volver al listado de riders
+        <i class="fas fa-arrow-left"></i> Volver al listado de jinetes y amazonas
     </a>
     <a href="{{ url_for('jya.add_document', id=rider.id) }}" class="btn btn-success btn-icon">
         <i class="fas fa-file-alt"></i> Agregar documento

@@ -5,10 +5,10 @@ class School(db.Model):
     __tablename__ = "schools"
 
     id = db.Column(db.Integer, primary_key=True)
-    school_name = db.Column(db.String(64), nullable=False)
-    school_address = db.Column(db.String(128), nullable=False)
-    school_phone = db.Column(db.String(16), nullable=False)
-    school_level = db.Column(
+    name = db.Column(db.String(64), nullable=False)
+    address = db.Column(db.String(128), nullable=False)
+    phone = db.Column(db.String(16), nullable=False)
+    level = db.Column(
         db.Enum(
             "Inicial",
             "Primario",
@@ -19,7 +19,7 @@ class School(db.Model):
         ),
         nullable=False,
     )
-    school_year = db.Column(db.Integer, nullable=False)
-    school_observations = db.Column(db.Text, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
+    observations = db.Column(db.Text, nullable=False)
     rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), nullable=False)
     rider = db.relationship("Rider", back_populates="school", lazy=True, overlaps="rider_school,school")

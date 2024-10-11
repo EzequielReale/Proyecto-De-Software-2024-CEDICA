@@ -275,12 +275,12 @@ def run():
             members=[member, member1]
         )
         school = professions.school_new(
-            school_name=f"Escuela_{i}",
-            school_address=f"Calle Falsa 12{i}",
-            school_phone=f"12345678{i}",
-            school_level="Primario",
-            school_year=5,
-            school_observations=f"Observaciones de la escuela {i}",
+            name=f"Escuela_{i}",
+            address=f"Calle Falsa 12{i}",
+            phone=f"12345678{i}",
+            level="Primario",
+            year=5,
+            observations=f"Observaciones de la escuela {i}",
             rider_id=jya.id
         )
         job_proposal = professions.job_proposal_new(
