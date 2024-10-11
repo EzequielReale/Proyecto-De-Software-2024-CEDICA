@@ -3,11 +3,13 @@ from flask import render_template
 from flask import redirect
 from flask import flash
 from flask import request
+from flask import session
 from src.core.user_role_permission.operations.user_operations import *
 from src.core.user_role_permission.operations.role_operations import *
 from src.web.controllers.user_controller.user_forms.user_register_form import RegistrationForm
 from src.web.controllers.user_controller.user_forms.user_update_form import UpdateForm
-from src.web.handlers.autenticacion import login_required
+from src.web.handlers.autenticacion import check_permission,login_required
+from src.web.handlers.error import unauthorized
 
 
 bp= Blueprint("user",__name__, url_prefix="/user")
@@ -18,6 +20,8 @@ bp= Blueprint("user",__name__, url_prefix="/user")
 def index():
     """Recibe los parametros de busqueda (email, estado, rol),
     filtra los registros, realiza la busqueda en la BD y retorna los resultados"""
+    if  not check_permission(session,"user_index"):
+         return unauthorized()
     page = request.args.get('page', 1, type=int)
     per_page = 10
 
@@ -44,6 +48,8 @@ def index():
 @bp.get("/<string:email>")
 def show(email: str)->str:
     """Recibe el email de un usuario y muestra su información"""
+    if  not check_permission(session,"user_show"):
+         return unauthorized()
     user = get_user_by_email(email)
     return render_template('user/show.html', user=user)
 
@@ -51,6 +57,8 @@ def show(email: str)->str:
 @bp.route("/new" , methods=["GET", "POST"])
 def create():
     """Formulario para crear un nuevo usuario"""
+    if  not check_permission(session,"user_new"):
+         return unauthorized()
     form = RegistrationForm()
 
     if form.validate_on_submit():
@@ -84,6 +92,8 @@ def create():
 @bp.post("/delete/<string:email>")
 def delete(email: str):
     """Eliminar un usuario"""
+    if  not check_permission(session,"user_destroy"):
+         return unauthorized()
     if( user_exists(email)):
         delete_user(email)
         flash("Usuario eliminado exitosamente.", "success")
@@ -97,6 +107,8 @@ def delete(email: str):
 @bp.route("/update/<string:email>", methods=['GET', 'POST'])
 def update(email: str):
     """Formulario para editar un usuario"""
+    if  not check_permission(session,"user_update"):
+         return unauthorized()
     user = get_user_by_email(email)
     form = UpdateForm()
 

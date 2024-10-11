@@ -5,13 +5,16 @@ from flask import (
     render_template,
     Request,
     request,
+    session,
     url_for
 )
 
 from src.core import adressing, people, professions
 from web.forms.member_form import MemberForm
 from web.forms.person_document_form import PersonDocumentForm as DocumentForm
-from src.web.handlers.autenticacion import login_required
+from src.web.handlers.autenticacion import check_permission,login_required
+from src.web.handlers.error import unauthorized
+
 
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
@@ -20,6 +23,8 @@ bp = Blueprint("team", __name__, url_prefix ="/team")
 @login_required
 def index() -> str:
     """Listado de miembros del equipo usando filtros, ordenación y paginación"""
+    if  not check_permission(session,"team_index"):
+         return unauthorized()
     page = request.args.get('page', 1, type=int)
     per_page = 25
 
@@ -49,6 +54,8 @@ def index() -> str:
 @bp.get("/<int:id>")
 def show(id: int)->str:
     """Recibe el id de un miembro del equipo y muestra su información"""
+    if  not check_permission(session,"team_show"):
+         return unauthorized()
     member = people.get_member_by_field('id', id)
     documents = people.list_documents(id)
     return render_template('team/show.html', member=member, documents=documents)
@@ -83,6 +90,8 @@ def _validate_request(req:Request, profession_list:list, jobs:list, provinces:li
 @bp.route("/new" , methods=['GET', 'POST'])
 def create()->str:
     """Muestra el formulario para crear un nuevo miembro del equipo y lo guarda en la BD"""
+    if  not check_permission(session,"team_new"):
+         return unauthorized()
     member = {}
     profession_list, jobs, provinces, localities = _get_data_from_db()
     
@@ -101,6 +110,8 @@ def create()->str:
 @bp.route("/<int:id>/edit", methods=['GET', 'POST'])
 def update(id: int)->str:
     """Recibe el id de un miembro del equipo y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
+    if  not check_permission(session,"team_update"):
+         return unauthorized()
     member = people.get_member_by_field('id', id)
     profession_list, jobs, provinces, localities = _get_data_from_db()
     
@@ -120,6 +131,8 @@ def update(id: int)->str:
 @bp.post("/<int:id>/delete")
 def destroy(id: int)->str:
     """Recibe el id de un miembro del equipo y lo elimina fisicamente de la BD"""
+    if  not check_permission(session,"team_destroy"):
+         return unauthorized()
     documents = people.list_documents(id)
     for document in documents:
         people.delete_document(document['id'])

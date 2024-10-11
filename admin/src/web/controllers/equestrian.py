@@ -2,11 +2,13 @@ from flask import Blueprint
 from flask import request
 from flask import render_template
 from flask import request,redirect
+from flask import session
 from flask import url_for
 from flask import json
 from flask import flash
 from src.core.database import db
-from src.web.handlers.autenticacion import login_required
+from src.web.handlers.autenticacion import check_permission,login_required
+from src.web.handlers.error import unauthorized
 from src.core import equestrian
 from src.core import people
 
@@ -15,6 +17,8 @@ bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 @bp.get("/")
 @login_required
 def index():
+    if  not check_permission(session,"encuestre_index"):
+         return unauthorized()
     order_by = request.args.get('order_by', 'name')
     order = request.args.get('order', 'asc')
     limit = int(request.args.get('limit', 10))
@@ -30,6 +34,8 @@ def index():
 @login_required
 def show(id: int):
     """Detalle de un caballo en específico"""
+    if  not check_permission(session,"encuestre_show"):
+         return unauthorized()
     order_by = request.args.get('order_by', 'document_type_id')
     order = request.args.get('order', 'asc')
     search = request.args.get('search', '')
@@ -42,6 +48,8 @@ def show(id: int):
 @bp.route("/create", methods=['GET', 'POST'])
 @login_required
 def create():
+    if  not check_permission(session,"encuestre_new"):
+         return unauthorized()
     # Si se envía el formulario
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -102,6 +110,8 @@ def create():
 @bp.route("/<int:id>/update", methods=['GET', 'POST'])
 def update(id: int)->str:
     """Recibe el id de un caballo y muestra el formulario para editarlo, o lo actualiza en caso de que se envíe el formulario"""
+    if  not check_permission(session,"encuestre_update"):
+         return unauthorized()
     horse = equestrian.get_horse_by_id(id)
 
     # Convertir el objeto horse a un diccionario
@@ -171,6 +181,8 @@ def update(id: int)->str:
 @login_required
 def destroy(id: int):
     """Eliminar un caballo de la institución"""
+    if  not check_permission(session,"encuestre_destroy"):
+         return unauthorized()
     horse = equestrian.horse_delete(id)
     flash(f"Caballo {horse.name} eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.index'))
