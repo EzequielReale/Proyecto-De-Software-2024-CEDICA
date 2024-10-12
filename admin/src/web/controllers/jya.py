@@ -4,6 +4,7 @@ from flask import Blueprint, flash, redirect, render_template, Request, request,
 
 from src.core import adressing, disabilities, people
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
+from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
 from src.web.handlers.autenticacion import login_required
 
@@ -161,12 +162,29 @@ def add_document(id: int) -> str:
         flash("Documento agregado exitosamente", "success")
         return redirect(url_for("jya.show", id=id))
     elif form.errors:
-        error_messages = [
-            f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()
-        ]
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
         flash(f"Error en el formulario: {error_messages}", "danger")
 
     return render_template("jya/add_document.html", rider_id=id, form=form)
+
+
+@bp.route("/<int:id>/add_link", methods=["GET", "POST"])
+@login_required
+def add_link(id: int) -> str:
+    """Recibe el id de un j/a y agrega un enlace a su lista de documentos"""
+    form = LinkForm()
+    if form.validate_on_submit():
+        name = form.document_name.data
+        path = form.document_path.data
+        type = form.document_type.data
+        people.document_new(id, path, name, type, link=True)
+        flash("Enlace cargado exitosamente", "success")
+        return redirect(url_for("jya.show", id=id))
+    elif form.errors:
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+        flash(f"Error en el formulario: {error_messages}", "danger")
+
+    return render_template("jya/add_link.html", rider_id=id, form=form)
 
 
 @bp.post("/<int:id>/delete_document/<int:document_id>")
@@ -176,9 +194,3 @@ def destroy_document(id: int, document_id: int) -> str:
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")
     return redirect(url_for("jya.show", id=id))
-
-
-def download_document(id: int, document_id: int) -> str:
-    """Recibe el id de un j/a y el id de un documento y lo descarga"""
-    document, name = people.download_document(document_id)
-    return redirect(document.document_path)

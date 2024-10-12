@@ -12,6 +12,9 @@
 <p class="lead mb-4">Información detallada del jinete/amazona</p>
 
 <div class="button-group">
+    <a href="{{ url_for('jya.index') }}" class="btn btn-primary btn-icon">
+        <i class="fas fa-arrow-left"></i> Volver al listado de jinetes y amazonas
+    </a>
     <a href="{{ url_for('team.update', id=rider.id) }}" class="btn btn-warning btn-icon">
         <i class="fas fa-edit"></i> Editar
     </a>
@@ -25,7 +28,7 @@
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">{{ rider.name }} {{ rider.last_name }}</h5>
+        <h5 class="card-title" style="font-size: 2rem;">{{ rider.name }} {{ rider.last_name }}</h5>
         <p class="card-text">
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos
                 personales:</strong>
@@ -124,11 +127,11 @@
 <br>
 
 <div class="button-group">
-    <a href="{{ url_for('jya.index') }}" class="btn btn-primary btn-icon">
-        <i class="fas fa-arrow-left"></i> Volver al listado de jinetes y amazonas
-    </a>
     <a href="{{ url_for('jya.add_document', id=rider.id) }}" class="btn btn-success btn-icon">
         <i class="fas fa-file-alt"></i> Agregar documento
+    </a>
+    <a href="{{ url_for('jya.add_link', id=rider.id) }}" class="btn btn-success btn-icon">
+        <i class="fas fa-link"></i> Agregar enlace
     </a>
 </div>
 

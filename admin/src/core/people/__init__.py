@@ -97,6 +97,20 @@ def _delete(model, item_id: int) -> object:
     return item
 
 
+def document_new(person_id: int, path: str, name: str, type:str=None, link:bool=False) -> Document:
+    """Crea un documento, lo guarda en la BD y lo devuelve"""
+    document = Document(
+        person_id=person_id,
+        document_path=path,
+        document_name=name,
+        document_type=type,
+        its_a_link=link
+    )
+    db.session.add(document)
+    db.session.commit()
+    return document
+
+
 def _add_document(person_id: int, file: bytes, path: str, type:str=None) -> Document:
     """Añade un documento a un elemento por ID y lo guarda en MinIO"""
     size = fstat(file.fileno()).st_size
@@ -107,24 +121,19 @@ def _add_document(person_id: int, file: bytes, path: str, type:str=None) -> Docu
     except S3Error as e:
         raise RuntimeError(f"Error subiendo el documento: {e}")
 
-    document = Document(
-        person_id=person_id,
-        document_path=path,
-        document_name=file.filename,
-        document_type=type
-    )
-    db.session.add(document)
-    db.session.commit()
-    return document
+    return document_new(person_id, path, file.filename, type)
 
 
 def _get_files_associated(docs:tuple) -> list:
     """Devuelve los documentos reales asociados a los documentos de la BD"""
     files = []
     for doc in docs:
-        file_url = current_app.storage.client.presigned_get_object(
-            "grupo04", doc.document_path
-        )
+        if doc.its_a_link:
+            file_url = doc.document_path
+        else:
+            file_url = current_app.storage.client.presigned_get_object(
+                "grupo04", doc.document_path
+            )
         files.append({"id": doc.id, "name": doc.document_name, "url": file_url, "type": doc.document_type, "created_at": doc.created_at,})
     return files
 
@@ -138,7 +147,8 @@ def list_documents(person_id: int) -> list:
 def delete_document(document_id: int) -> Document:
     """Elimina un documento por ID"""
     document = _get_by_field(Document, "id", document_id)
-    current_app.storage.client.remove_object("grupo04", document.document_path)
+    if not document.its_a_link:
+        current_app.storage.client.remove_object("grupo04", document.document_path)
     db.session.delete(document)
     db.session.commit()
     return document

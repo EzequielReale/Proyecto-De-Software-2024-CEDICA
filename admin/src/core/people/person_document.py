@@ -15,6 +15,7 @@ class PersonDocument(db.Model):
         db.Enum("Entrevista", "Evaluación", "Planificaciones", "Evolución", "Crónicas", "Documental", name="document_type_enum"),
         nullable=True
     )
+    its_a_link = db.Column(db.Boolean, default=False)
 
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"), nullable=False)
     person = db.relationship("Person", back_populates="documents")
