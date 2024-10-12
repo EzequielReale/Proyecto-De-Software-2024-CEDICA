@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from src.core.database import db
 
 
@@ -17,10 +19,8 @@ class PersonDocument(db.Model):
     person_id = db.Column(db.Integer, db.ForeignKey("persons.id"), nullable=False)
     person = db.relationship("Person", back_populates="documents")
 
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(
-        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
-    )
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self):
         return f"<PersonDocument {self.id}>"

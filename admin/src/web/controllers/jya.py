@@ -48,10 +48,17 @@ def index() -> str:
 @bp.get("/<int:id>")
 @login_required
 def show(id: int) -> str:
-    """Recibe el id de un j/a y muestra su información"""
+    """Recibe el id de un j/a y muestra su información y documentos asociados"""
+    filters = {
+        "document_name": request.args.get("document_name"),
+        "document_type": request.args.get("document_type"),
+        "person_id": id,
+    }
+    sort_by = request.args.get("sort_by", "document_name")
+    sort_direction = request.args.get("sort_direction", "asc")
     rider = people.get_rider_by_field("id", id)
-    documents = people.list_documents(id)
-    return render_template("jya/show.html", rider=rider, documents=documents, current_year=datetime.now().year,)
+    documents = people.list_filtered_documents(id, filters, sort_by, sort_direction) 
+    return render_template("jya/show.html", rider=rider, documents=documents, filters=filters, sort_by=sort_by, sort_direction=sort_direction, current_year=datetime.now().year,)
 
 
 def _get_validator(localities: list, rider_id=None) -> RiderForm:
@@ -70,9 +77,7 @@ def _validate_request(
     form = _get_validator(localities, rider_id)
     form.process(req.form)
     if not form.validate():
-        error_messages = [
-            f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()
-        ]
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
         flash(f"Error en el formulario -> {'; '.join(error_messages)}", "danger")
         return form, False
 
@@ -87,9 +92,7 @@ def create() -> str:
 
     # Si se envia el formulario
     if request.method == "POST":
-        form, valid = _validate_request(
-            request
-        )
+        form, valid = _validate_request(request)
         if valid:
             rider = people.rider_new(**form.data)
             flash(
@@ -153,7 +156,8 @@ def add_document(id: int) -> str:
     form = DocumentForm()
     if form.validate_on_submit():
         document = form.document.data
-        people.rider_add_document(id, document)
+        type = form.document_type.data
+        people.rider_add_document(id, document, type)
         flash("Documento agregado exitosamente", "success")
         return redirect(url_for("jya.show", id=id))
     elif form.errors:
@@ -172,3 +176,9 @@ def destroy_document(id: int, document_id: int) -> str:
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")
     return redirect(url_for("jya.show", id=id))
+
+
+def download_document(id: int, document_id: int) -> str:
+    """Recibe el id de un j/a y el id de un documento y lo descarga"""
+    document, name = people.download_document(document_id)
+    return redirect(document.document_path)

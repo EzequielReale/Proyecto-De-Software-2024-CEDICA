@@ -3,7 +3,7 @@ import uuid
 
 from flask import current_app
 from minio.error import S3Error
-from sqlalchemy.types import String, Text, Integer
+from sqlalchemy.types import Enum, Integer, String, Text
 from sqlalchemy.orm import RelationshipProperty
 
 from src.core.database import db
@@ -14,7 +14,7 @@ from src.core.people.member_rider import RiderMember
 from src.core.people.person_document import PersonDocument as Document
 
 
-def __apply_filters(model, query:tuple, field:any, value:any, filters: dict) -> tuple:
+def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
     """Aplica los filtros respectivos a una consulta"""
     column = getattr(model, field)
             
@@ -27,12 +27,12 @@ def __apply_filters(model, query:tuple, field:any, value:any, filters: dict) -> 
             query = query.filter(getattr(related_model, 'id').in_(value))
         else:
             query = query.filter(getattr(related_model, 'id') == value)
+    # Comprobar si es un entero o un enum
+    elif isinstance(column.type, Integer) or isinstance(column.type, Enum):
+        query = query.filter(column == value)
     # Comprobar si es un tipo de columna string
     elif isinstance(column.type, (String, Text)):
         query = query.filter(column.ilike(f"%{value}%"))
-    # Comprobar si es un entero
-    elif isinstance(column.type, Integer):
-        query = query.filter(column == value)
     
     return query
 
@@ -44,7 +44,7 @@ def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction="asc") -
     # Aplicar filtros
     for field, value in filters.items():
         if value and value != "":
-            query = __apply_filters(model, query, field, value, filters)
+            query = __apply_filters(model, query, field, value)
 
     # Aplicar ordenación
     if sort_by:
@@ -97,7 +97,7 @@ def _delete(model, item_id: int) -> object:
     return item
 
 
-def _add_document(person_id: int, file: bytes, path: str) -> Document:
+def _add_document(person_id: int, file: bytes, path: str, type:str=None) -> Document:
     """Añade un documento a un elemento por ID y lo guarda en MinIO"""
     size = fstat(file.fileno()).st_size
     try:
@@ -108,23 +108,31 @@ def _add_document(person_id: int, file: bytes, path: str) -> Document:
         raise RuntimeError(f"Error subiendo el documento: {e}")
 
     document = Document(
-        person_id=person_id, document_path=path, document_name=file.filename
+        person_id=person_id,
+        document_path=path,
+        document_name=file.filename,
+        document_type=type
     )
     db.session.add(document)
     db.session.commit()
     return document
 
 
-def list_documents(person_id: int) -> list:
-    """Devuelve los documentos de una persona por ID con URLs descargables"""
-    docs_db = Document.query.filter_by(person_id=person_id).all()
+def _get_files_associated(docs:tuple) -> list:
+    """Devuelve los documentos reales asociados a los documentos de la BD"""
     files = []
-    for doc in docs_db:
+    for doc in docs:
         file_url = current_app.storage.client.presigned_get_object(
             "grupo04", doc.document_path
         )
-        files.append({"id": doc.id, "name": doc.document_name, "url": file_url})
+        files.append({"id": doc.id, "name": doc.document_name, "url": file_url, "type": doc.document_type, "created_at": doc.created_at,})
     return files
+
+
+def list_documents(person_id: int) -> list:
+    """Devuelve los documentos de una persona por ID con URLs descargables"""
+    docs_db = Document.query.filter_by(person_id=person_id).all()
+    return _get_files_associated(docs_db)
 
 
 def delete_document(document_id: int) -> Document:
@@ -134,6 +142,19 @@ def delete_document(document_id: int) -> Document:
     db.session.delete(document)
     db.session.commit()
     return document
+
+
+def list_filtered_documents(person_id: int, filters: dict, sort_by=None, sort_direction="asc") -> list:
+    """Devuelve los documentos de una persona por ID y filtros aplicados con URLs descargables"""
+    docs_db = _filter_and_sort(Document, filters, sort_by, sort_direction)
+    return _get_files_associated(docs_db)
+
+
+def download_document(document_id: int) -> tuple:
+    """Descarga un documento por ID"""
+    document = _get_by_field(Document, "id", document_id)
+    file = current_app.storage.client.get_object("grupo04", document.document_path)
+    return file, document.document_name
 
 
 """Funciones de miembros"""
@@ -203,24 +224,17 @@ def rider_delete(rider_id: int) -> Rider:
     return _delete(Rider, rider_id)
 
 
-def rider_add_document(rider_id: int, file: bytes) -> Document:
+def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
     """Añade un documento a un jinete por ID y lo guarda en MinIO"""
     ulid = uuid.uuid4().hex
     path = f"riders/{rider_id}/{ulid}_{file.filename}"
-    return _add_document(rider_id, file, path)
+    return _add_document(rider_id, file, path, type)
+
 
 def tutor_new(**kwargs) -> Tutor:
     """Crea un tutor, lo guarda en la BD y lo devuelve"""
     return _new(Tutor, **kwargs)
 
-# def rider_member_new(rider_id: int, member_id: int) -> Rider:
-#     """Crea una relación entre un jinete y un miembro"""
-#     rider = _get_by_field(Rider, "id", rider_id)
-#     member = _get_by_field(Member, "id", member_id)
-#     rider.members.append(member)
-#     member.riders.append(rider)
-#     db.session.commit()
-#     return rider
 
 def rider_member_new(**kwargs) -> Rider:
     """Crea una relación entre un jinete y un miembro"""
