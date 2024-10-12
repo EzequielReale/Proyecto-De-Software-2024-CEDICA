@@ -3,7 +3,8 @@ import uuid
 
 from flask import current_app
 from minio.error import S3Error
-from sqlalchemy.types import String, Text
+from sqlalchemy.types import String, Text, Integer
+from sqlalchemy.orm import RelationshipProperty
 
 from src.core.database import db
 from src.core.people.member_rider import Member
@@ -13,19 +14,37 @@ from src.core.people.member_rider import RiderMember
 from src.core.people.person_document import PersonDocument as Document
 
 
+def __apply_filters(model, query:tuple, field:any, value:any, filters: dict) -> tuple:
+    """Aplica los filtros respectivos a una consulta"""
+    column = getattr(model, field)
+            
+    # Comprobar si es una relación de muchos a muchos (por ejemplo, members en Rider)
+    if hasattr(column, "property") and isinstance(column.property, RelationshipProperty):
+        related_model = column.property.mapper.class_
+        query = query.join(column)
+        # Si hay más de un valor (o sea, un getlist), convertirlo en una lista
+        if isinstance(value, list):
+            query = query.filter(getattr(related_model, 'id').in_(value))
+        else:
+            query = query.filter(getattr(related_model, 'id') == value)
+    # Comprobar si es un tipo de columna string
+    elif isinstance(column.type, (String, Text)):
+        query = query.filter(column.ilike(f"%{value}%"))
+    # Comprobar si es un entero
+    elif isinstance(column.type, Integer):
+        query = query.filter(column == value)
+    
+    return query
+
+
 def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction="asc") -> tuple:
     """Aplica filtros y ordenación a una consulta"""
     query = model.query
 
     # Aplicar filtros
     for field, value in filters.items():
-        if value is not None and value != "":
-            column = getattr(model, field)
-            # Esto es una comprobación de tipo porque sqlalchemy no puede usar ilike en campos que no sean de texto
-            if isinstance(column.type, (String, Text)):
-                query = query.filter(column.ilike(f"%{value}%"))
-            else:
-                query = query.filter(column == value)
+        if value and value != "":
+            query = __apply_filters(model, query, field, value, filters)
 
     # Aplicar ordenación
     if sort_by:

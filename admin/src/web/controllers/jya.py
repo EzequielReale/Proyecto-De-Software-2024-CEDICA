@@ -23,8 +23,9 @@ def index() -> str:
         "name": request.args.get("name"),
         "last_name": request.args.get("last_name"),
         "dni": request.args.get("dni"),
-        "member": request.args.get("member"),
+        "members": request.args.getlist("members", type=int),
     }
+    
     sort_by = request.args.get("sort_by", "name")
     sort_direction = request.args.get("sort_direction", "asc")
 

@@ -30,7 +30,7 @@
     <input type="text" class="form-control" id="dni" name="dni" value="{{ filters.dni or '' }}" placeholder="DNI"
       style="width: auto; display: inline-block;" pattern="\d+">
   </div>
-  <select multiple class="form-control select2" id="member" name="member" style="width: 100%;">
+  <select multiple class="form-control select2" id="members" name="members" style="width: 100%;">
     {% for member in members %}
     <option value="{{ member.id }}">
       {{ member.name }} {{ member.last_name }}
