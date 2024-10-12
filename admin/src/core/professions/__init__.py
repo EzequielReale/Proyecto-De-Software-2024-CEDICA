@@ -55,9 +55,25 @@ def job_proposal_new(**kwargs) -> JobProposal:
     return job_proposal
 
 
+def job_proposal_delete(id:int) -> JobProposal:
+    """Recibe el id de una propuesta de trabajo, la elimina de la BD y la devuelve"""
+    job_proposal = JobProposal.query.filter_by(id=id).first()
+    db.session.delete(job_proposal)
+    db.session.commit()
+    return job_proposal
+
+
 def school_new(**kwargs) -> School:
     """Crea una escuela, la guarda en la BD y la devuelve"""
     school = School(**kwargs)
     db.session.add(school)
+    db.session.commit()
+    return school
+
+
+def school_delete(id:int) -> School:
+    """Recibe el id de una escuela, la elimina de la BD y la devuelve"""
+    school = School.query.filter_by(id=id).first()
+    db.session.delete(school)
     db.session.commit()
     return school

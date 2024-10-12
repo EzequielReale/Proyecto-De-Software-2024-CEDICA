@@ -285,7 +285,7 @@ def run():
         )
         job_proposal = professions.job_proposal_new(
             institutional_work_proposal="Hipoterapia",
-            condition="REGULAR",
+            condition="Regular",
             headquarters="CASJ",
             days=["Lunes", "Miércoles", "Viernes"],
             rider_id=jya.id,

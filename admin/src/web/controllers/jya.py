@@ -2,7 +2,8 @@ from datetime import datetime
 
 from flask import Blueprint, flash, redirect, render_template, Request, request, url_for
 
-from src.core import adressing, disabilities, people
+from src.core.people.member_rider import Member
+from src.core import adressing, disabilities, people, professions
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
@@ -90,6 +91,11 @@ def _validate_request(
 def create() -> str:
     """Muestra el formulario para crear un nuevo j/a y lo guarda en la BD"""
     rider = {}
+    disability_types_list = disabilities.list_disability_types()
+    disabilities_list = disabilities.list_disability_diagnosis()
+    localities_list = adressing.list_localities()
+    provinces_list = adressing.list_provinces()
+    member_list = Member.query.all()
 
     # Si se envia el formulario
     if request.method == "POST":
@@ -107,6 +113,11 @@ def create() -> str:
     return render_template(
         "jya/create.html",
         rider=rider,
+        disability_types=disability_types_list,
+        disabilities=disabilities_list,
+        localities=localities_list,
+        provinces=provinces_list,
+        members=member_list,
     )
 
 
@@ -142,11 +153,26 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un j/a y lo elimina fisicamente de la BD"""
-    documents = people.list_documents(id)
+    rider = people.get_rider_by_field("id", id)
+
+    documents = people.list_documents(rider.id)
     for document in documents:
         people.delete_document(document["id"])
+
+    if rider.tutor_1:
+        people.tutor_delete(rider.tutor_1.id)
+    if rider.tutor_2:
+        people.tutor_delete(rider.tutor_2.id)
+    if rider.school:
+        for school in rider.school:
+            professions.school_delete(school.id)
+    if rider.job_proposal:
+        for job_proposal in rider.job_proposal:
+            professions.job_proposal_delete(job_proposal.id)
+
     rider = people.rider_delete(id)
     flash(f"{rider.name} {rider.last_name} ha sido eliminado", "success")
+
     return redirect(url_for("jya.index"))
 
 

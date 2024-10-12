@@ -241,9 +241,26 @@ def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
     return _add_document(rider_id, file, path, type)
 
 
+"""Funciones de tutores"""
+
 def tutor_new(**kwargs) -> Tutor:
     """Crea un tutor, lo guarda en la BD y lo devuelve"""
     return _new(Tutor, **kwargs)
+
+
+def tutor_update(tutor_id: int, **kwargs) -> Tutor:
+    """Actualiza un tutor por ID y lo devuelve"""
+    return _update(Tutor, tutor_id, **kwargs)
+
+
+def get_tutor_by_id(id:int) -> Tutor:
+    """Recibe el id de un tutor y lo devuelve"""
+    return _get_by_field(Tutor, "id", id)
+
+
+def tutor_delete(tutor_id:int) -> Tutor:
+    """Recibe el ID de un tutor, lo elimina de la BD y lo devuelve"""
+    return _delete(Tutor, tutor_id)
 
 
 def rider_member_new(**kwargs) -> Rider:

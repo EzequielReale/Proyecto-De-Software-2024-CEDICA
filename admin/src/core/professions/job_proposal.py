@@ -18,7 +18,7 @@ class JobProposal(db.Model):
         nullable=False,
     )
     condition = db.Column(
-        db.Enum("REGULAR", "DE BAJA", name="conditions"),
+        db.Enum("Regular", "De baja", name="conditions"),
         nullable=False,
     )
     headquarters = db.Column(
