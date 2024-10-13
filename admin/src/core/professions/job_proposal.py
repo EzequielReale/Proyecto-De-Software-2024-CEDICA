@@ -41,7 +41,6 @@ class JobProposal(db.Model):
         nullable=False,
     )
     rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), nullable=False)
-    rider = db.relationship("Rider", back_populates="job_proposal", lazy=True)
     professor_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
     professor = db.relationship("Member", foreign_keys=[professor_id], lazy=True)
     member_horse_rider_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)

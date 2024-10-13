@@ -76,7 +76,7 @@ class Rider(Person):
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
     # school
-    school = db.relationship("School", back_populates="rider", lazy=True, overlaps="rider_school,school")
+    school = db.relationship("School", backref="rider", lazy=True, overlaps="rider_school,school")
 
     # tutors
     tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
@@ -85,7 +85,7 @@ class Rider(Person):
     tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
 
     # job
-    job_proposal = db.relationship("JobProposal", back_populates="rider", lazy=True)
+    job_proposal = db.relationship("JobProposal", backref="rider", lazy=True)
 
     
     def __repr__(self):

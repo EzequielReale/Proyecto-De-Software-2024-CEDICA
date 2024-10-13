@@ -142,37 +142,45 @@
                             {% endfor %}
                         </select>
                     </div>
-
+                
                     <div class="form-group w-50">
                         <label for="city_of_birth" class="mb-1">Localidad de nacimiento</label>
-                        <select class="form-select" id="city_of_birth" name="city_of_birth" required>
+                        <select class="form-select" id="city_of_birth" name="city_of_birth" data-selected="{{ rider.city_of_birth_id }}" required>
                             <option disabled selected>Seleccione una localidad...</option>
-                            {% for locality in localities %}
-                            <option value="{{ locality.id }}">{{ locality.name }}</option>
-                            {% endfor %}
                         </select>
                     </div>
                 </div>
-               
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
-                        <select class="form-select" id="disability_type" name="disability_type" required>
-                            <option disabled selected>Seleccione un tipo de discapacidad...</option>
-                            {% for disability_type in disability_types %}
-                            <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>  
-                    
-                    <div class="form-group w-50">
-                        <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
-                        <select class="form-select" id="disability_id" name="disability_id" required>
-                            <option disabled selected>Seleccione una discapacidad...</option>
-                            {% for disability in disabilities %}
-                            <option value="{{ disability.id }}">{{ disability.name }}</option>
-                            {% endfor %}
-                        </select>
+
+                <div class="form-group w-100">
+                    <label for="has_disability_certificate" class="mb-1">¿Tiene certificado de discapacidad?</label>
+                    <select class="form-select" id="has_disability_certificate" name="has_disability_certificate" required>
+                        <option disabled selected>Seleccione una opción...</option>
+                        <option value="True">Sí</option>
+                        <option value="False">No</option>
+                    </select>
+                </div>
+
+                <div id="disability_group" style="display: none;">
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
+                            <select class="form-select" id="disability_type" name="disability_type" required>
+                                <option disabled selected>Seleccione un tipo de discapacidad...</option>
+                                {% for disability_type in disability_types %}
+                                <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>  
+                            
+                        <div class="form-group w-50">
+                            <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
+                            <select class="form-select" id="disability_id" name="disability_id" required>
+                                <option disabled selected>Seleccione una discapacidad...</option>
+                                {% for disability in disabilities %}
+                                <option value="{{ disability.id }}">{{ disability.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -195,7 +203,7 @@
                 </div>
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
-                        <label for="province_id" class="mb-1">Provincia</label>
+                        <label for="province_id" class="mb-1">Provincia de domicilio</label>
                         <select class="form-select" id="province_id" name="province_id" required>
                             <option disabled selected>Seleccione una provincia...</option>
                             {% for province in provinces %}
@@ -205,12 +213,9 @@
                     </div>
                     
                     <div class="form-group w-50">
-                        <label for="locality_id" class="mb-1">Localidad</label>
-                        <select class="form-select" id="locality_id" name="locality_id" required>
+                        <label for="locality_id" class="mb-1">Localidad de domicilio</label>
+                        <select class="form-select" id="locality_id" name="locality_id" data-selected="{{ rider.locality_id }}" required>
                             <option disabled selected>Seleccione una localidad...</option>
-                            {% for locality in localities %}
-                            <option value="{{ locality.id }}">{{ locality.name }}</option>
-                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -227,10 +232,22 @@
                     </div>
                 </div>
 
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="floor" class="mb-1">Piso</label>
+                        <input class="form-control" type="text" id="floor" name="floor" placeholder="Ingrese el piso" maxlength="10">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="apartment" class="mb-1">Departamento</label>
+                        <input class="form-control" type="text" id="apartment" name="apartment" placeholder="Ingrese el departamento" maxlength="10">
+                    </div>
+                </div>
+
                 <div>
                     <br>
                     <h5 class="border-bottom border-dark pb-2">Asignaciones</h5>
-                    <p class="mt-0 mb-3">Ingrese las asignaciones del jinete/amazona.</p>
+                    <p class="mt-0 mb-3">Asignaciones del jinete/amazona.</p>
                 </div>
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
@@ -241,7 +258,7 @@
                             <option value="False">No</option>
                         </select>
                     </div>
-                    <div class="form-group w-50">
+                    <div class="form-group w-50" id="family_allowance_group" style="display: none;">
                         <label for="family_allowance" class="mb-1">Asignación familiar</label>
                         <select class="form-select" id="family_allowance" name="family_allowance">
                             <option disabled selected>Seleccione una asignación...</option>
@@ -261,7 +278,7 @@
                             <option value="False">No</option>
                         </select>
                     </div>
-                    <div class="form-group w-50">
+                    <div class="form-group w-50" id="pension_group" style="display: none;">
                         <label for="pension_benefit" class="mb-1">Tipo de pensión</label>
                         <select class="form-select" id="pension_benefit" name="pension_benefit">
                             <option disabled selected>Seleccione un tipo...</option>
@@ -281,7 +298,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group w-50">
+                    <div class="form-group w-50" id="grant_group" style="display: none;">
                         <label for="grant_percentage" class="mb-1">Porcentaje de beca</label>
                         <input class="form-control" type="number" id="grant_percentage" name="grant_percentage" placeholder="Ingrese el porcentaje de beca" min="0" max="100" step="0.01">
                     </div>
@@ -301,142 +318,164 @@
             <section class="visually-hidden d-flex flex-column gap-3">
                 <div>
                     <h5 class="border-bottom border-dark pb-2">Tutores</h5>
-                    <p class="mt-0 mb-3">Ingrese la información de los tutores del jinete/amazona.</p>
+                    <p class="mt-0 mb-3">Información de los tutores del jinete/amazona.</p>
                 </div>
 
-                <!-- Tutor 1 -->
-                <h5 class="border-bottom border-dark pb-2">1er tutor</h5>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor1_relationship" class="mb-1">Relación</label>
-                        <select class="form-select" id="tutor1_relationship" name="tutor1_relationship" required>
-                            <option disabled selected>Seleccione una relación...</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Madre">Madre</option>
-                            <option value="Tutor">Tutor</option>
-                        </select>
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor1_dni" class="mb-1">DNI</label>
-                        <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
-                    </div>
-                </div>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor1_name" class="mb-1">Nombre</label>
-                        <input class="form-control" type="text" id="tutor1_name" name="tutor1_name" placeholder="Ingrese el nombre" required maxlength="64">
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor1_last_name" class="mb-1">Apellido</label>
-                        <input class="form-control" type="text" id="tutor1_last_name" name="tutor1_last_name" placeholder="Ingrese el apellido" required maxlength="64">
-                    </div>
-                </div>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor1_phone" class="mb-1">Teléfono</label>
-                        <input class="form-control" type="text" id="tutor1_phone" name="tutor1_phone" placeholder="Ingrese el teléfono" required maxlength="32">
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor1_email" class="mb-1">Email</label>
-                        <input class="form-control" type="email" id="tutor1_email" name="tutor1_email" placeholder="Ingrese el email" required maxlength="64">
-                    </div>
-                </div>
-                
                 <div class="form-group w-100">
-                    <label for="tutor1_address" class="mb-1">Dirección</label>
-                    <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" required maxlength="255">
+                    <label for="has_tutor_1" class="mb-1">¿Tiene tutor?</label>
+                    <select class="form-select" id="has_tutor_1" name="has_tutor_1" required>
+                        <option disabled selected>Seleccione una opción...</option>
+                        <option value="True">Sí</option>
+                        <option value="False">No</option>
+                    </select>
                 </div>
+
+                <div id="tutor_1_group" style="display: none;">
+                    <!-- Tutor 1 -->
+                    <h5 class="border-bottom border-dark pb-2">1er tutor</h5>
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="tutor1_relationship" class="mb-1">Relación</label>
+                            <select class="form-select" id="tutor1_relationship" name="tutor1_relationship" required>
+                                <option disabled selected>Seleccione una relación...</option>
+                                <option value="Padre">Padre</option>
+                                <option value="Madre">Madre</option>
+                                <option value="Tutor">Tutor</option>
+                            </select>
+                        </div>
+                    
+                        <div class="form-group w-50">
+                            <label for="tutor1_dni" class="mb-1">DNI</label>
+                            <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
+                        </div>
+                    </div>
+                    
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="tutor1_name" class="mb-1">Nombre</label>
+                            <input class="form-control" type="text" id="tutor1_name" name="tutor1_name" placeholder="Ingrese el nombre" required maxlength="64">
+                        </div>
+                    
+                        <div class="form-group w-50">
+                            <label for="tutor1_last_name" class="mb-1">Apellido</label>
+                            <input class="form-control" type="text" id="tutor1_last_name" name="tutor1_last_name" placeholder="Ingrese el apellido" required maxlength="64">
+                        </div>
+                    </div>
+                    
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="tutor1_phone" class="mb-1">Teléfono</label>
+                            <input class="form-control" type="text" id="tutor1_phone" name="tutor1_phone" placeholder="Ingrese el teléfono" required maxlength="32">
+                        </div>
+                    
+                        <div class="form-group w-50">
+                            <label for="tutor1_email" class="mb-1">Email</label>
+                            <input class="form-control" type="email" id="tutor1_email" name="tutor1_email" placeholder="Ingrese el email" required maxlength="64">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group w-100">
+                        <label for="tutor1_address" class="mb-1">Dirección</label>
+                        <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" required maxlength="255">
+                    </div>
+                    
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="tutor1_education_level" class="mb-1">Nivel educativo</label>
+                            <select class="form-select" id="tutor1_education_level" name="tutor1_education_level" required>
+                                <option disabled selected>Seleccione un nivel educativo...</option>
+                                <option value="Primario">Primario</option>
+                                <option value="Secundario">Secundario</option>
+                                <option value="Terciario">Terciario</option>
+                                <option value="Universitario">Universitario</option>
+                            </select>
+                        </div>
+                    
+                        <div class="form-group w-50">
+                            <label for="tutor1_job" class="mb-1">Trabajo</label>
+                            <input class="form-control" type="text" id="tutor1_job" name="tutor1_job" placeholder="Ingrese el trabajo" required maxlength="64">
+                        </div>
+                    </div>
                 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor1_education_level" class="mb-1">Nivel educativo</label>
-                        <select class="form-select" id="tutor1_education_level" name="tutor1_education_level" required>
-                            <option disabled selected>Seleccione un nivel educativo...</option>
-                            <option value="Primario">Primario</option>
-                            <option value="Secundario">Secundario</option>
-                            <option value="Terciario">Terciario</option>
-                            <option value="Universitario">Universitario</option>
+                    <br>
+                    <!-- Tutor 2 -->
+                    <div class="form-group w-100">  
+                        <label for="has_tutor_2" class="mb-1">¿Tiene otro tutor?</label>
+                        <select class="form-select" id="has_tutor_2" name="has_tutor_2" required>
+                            <option disabled selected>Seleccione una opción...</option>
+                            <option value="True">Sí</option>
+                            <option value="False">No</option>
                         </select>
                     </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor1_job" class="mb-1">Trabajo</label>
-                        <input class="form-control" type="text" id="tutor1_job" name="tutor1_job" placeholder="Ingrese el trabajo" required maxlength="64">
-                    </div>
-                </div>             
-                
-                <!-- Tutor 2 -->
-                <h5 class="border-bottom border-dark pb-2">2do tutor</h5>
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor2_relationship" class="mb-1">Relación</label>
-                        <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" required>
-                            <option disabled selected>Seleccione una relación...</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Madre">Madre</option>
-                            <option value="Tutor">Tutor</option>
-                        </select>
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor2_dni" class="mb-1">DNI</label>
-                        <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
+                    <br>
+                    
+                    <div id="tutor_2_group" style="display: none;">
+                        <h5 class="border-bottom border-dark pb-2">2do tutor</h5>
+                        <div class="w-100 d-flex flex-row gap-3">
+                            <div class="form-group w-50">
+                                <label for="tutor2_relationship" class="mb-1">Relación</label>
+                                <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" required>
+                                    <option disabled selected>Seleccione una relación...</option>
+                                    <option value="Padre">Padre</option>
+                                    <option value="Madre">Madre</option>
+                                    <option value="Tutor">Tutor</option>
+                                </select>
+                            </div>
+                        
+                            <div class="form-group w-50">
+                                <label for="tutor2_dni" class="mb-1">DNI</label>
+                                <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
+                            </div>
+                        </div>
+                        
+                        <div class="w-100 d-flex flex-row gap-3">
+                            <div class="form-group w-50">
+                                <label for="tutor2_name" class="mb-1">Nombre</label>
+                                <input class="form-control" type="text" id="tutor2_name" name="tutor2_name" placeholder="Ingrese el nombre" required maxlength="64">
+                            </div>
+                        
+                            <div class="form-group w-50">
+                                <label for="tutor2_last_name" class="mb-1">Apellido</label>
+                                <input class="form-control" type="text" id="tutor2_last_name" name="tutor2_last_name" placeholder="Ingrese el apellido" required maxlength="64">
+                            </div>
+                        </div>
+                        
+                        <div class="w-100 d-flex flex-row gap-3">
+                            <div class="form-group w-50">
+                                <label for="tutor2_phone" class="mb-1">Teléfono</label>
+                                <input class="form-control" type="text" id="tutor2_phone" name="tutor2_phone" placeholder="Ingrese el teléfono" required maxlength="32">
+                            </div>
+                        
+                            <div class="form-group w-50">
+                                <label for="tutor2_email" class="mb-1">Email</label>
+                                <input class="form-control" type="email" id="tutor2_email" name="tutor2_email" placeholder="Ingrese el email" required maxlength="64">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group w-100">
+                            <label for="tutor2_address" class="mb-1">Dirección</label>
+                            <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección" required maxlength="255">
+                        </div>
+                        
+                        <div class="w-100 d-flex flex-row gap-3">
+                            <div class="form-group w-50">
+                                <label for="tutor2_education_level" class="mb-1">Nivel educativo</label>
+                                <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" required>
+                                    <option disabled selected>Seleccione un nivel educativo...</option>
+                                    <option value="Primario">Primario</option>
+                                    <option value="Secundario">Secundario</option>
+                                    <option value="Terciario">Terciario</option>
+                                    <option value="Universitario">Universitario</option>
+                                </select>
+                            </div>
+                        
+                            <div class="form-group w-50">
+                                <label for="tutor2_job" class="mb-1">Trabajo</label>
+                                <input class="form-control" type="text" id="tutor2_job" name="tutor2_job" placeholder="Ingrese el trabajo" required maxlength="64">
+                            </div>    
+                        </div>
                     </div>
                 </div>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor2_name" class="mb-1">Nombre</label>
-                        <input class="form-control" type="text" id="tutor2_name" name="tutor2_name" placeholder="Ingrese el nombre" required maxlength="64">
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor2_last_name" class="mb-1">Apellido</label>
-                        <input class="form-control" type="text" id="tutor2_last_name" name="tutor2_last_name" placeholder="Ingrese el apellido" required maxlength="64">
-                    </div>
-                </div>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor2_phone" class="mb-1">Teléfono</label>
-                        <input class="form-control" type="text" id="tutor2_phone" name="tutor2_phone" placeholder="Ingrese el teléfono" required maxlength="32">
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor2_email" class="mb-1">Email</label>
-                        <input class="form-control" type="email" id="tutor2_email" name="tutor2_email" placeholder="Ingrese el email" required maxlength="64">
-                    </div>
-                </div>
-                
-                <div class="form-group w-100">
-                    <label for="tutor2_address" class="mb-1">Dirección</label>
-                    <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección" required maxlength="255">
-                </div>
-                
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="tutor2_education_level" class="mb-1">Nivel educativo</label>
-                        <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" required>
-                            <option disabled selected>Seleccione un nivel educativo...</option>
-                            <option value="Primario">Primario</option>
-                            <option value="Secundario">Secundario</option>
-                            <option value="Terciario">Terciario</option>
-                            <option value="Universitario">Universitario</option>
-                        </select>
-                    </div>
-                
-                    <div class="form-group w-50">
-                        <label for="tutor2_job" class="mb-1">Trabajo</label>
-                        <input class="form-control" type="text" id="tutor2_job" name="tutor2_job" placeholder="Ingrese el trabajo" required maxlength="64">
-                    </div>    
-                </div>
-                
                 <!-- Profesionales que lo atienden -->
                 <div>
                     <br>
@@ -444,12 +483,12 @@
                     <p class="mt-0 mb-3">Seleccione los profesionales que atienden al jinete/amazona.</p>
                 </div>
 
-                <div id="assign-buttons-container">
-                    {% for member in members %}
-                    <button type="button" class="btn btn-outline-custom" onclick="assignProfessional({{ member.id }})">
-                        {{ member.name }} {{ member.last_name }}
-                    </button>
-                    {% endfor %}
+                <div class="w-100 d-flex flex-row gap-3">
+                    <select class="form-select" id="assigned_professionals" name="assigned_professionals" multiple required>
+                        {% for member in members %}
+                        <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </section>
 
@@ -457,144 +496,167 @@
             <section class="visually-hidden d-flex flex-column gap-3">
                 <div>
                     <h5 class="border-bottom border-dark pb-2">Escuela</h5>
-                    <p class="mt-0 mb-3">Ingrese la información de la institución escolar a la que concurre actualmente.</p>
+                    <p class="mt-0 mb-3">Información de la institución escolar a la que concurre actualmente.</p>
                 </div>
 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="school_name" class="mb-1">Nombre de la escuela</label>
-                        <input class="form-control" type="text" id="school_name" name="school_name" placeholder="Ingrese el nombre de la escuela" required maxlength="64">
+                <div class="form-group w-100">
+                    <label for="has_school" class="mb-1">¿Asiste a la escuela?</label>
+                    <select class="form-select" id="has_school" name="has_school" required>
+                        <option disabled selected>Seleccione una opción...</option>
+                        <option value="True">Sí</option>
+                        <option value="False">No</option>
+                    </select>
+                </div>
+
+                <div id="school_group" style="display: none;">
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="school_name" class="mb-1">Nombre de la escuela</label>
+                            <input class="form-control" type="text" id="school_name" name="school_name" placeholder="Ingrese el nombre de la escuela" required maxlength="64">
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="school_address" class="mb-1">Dirección de la escuela</label>
+                            <input class="form-control" type="text" id="school_address" name="school_address" placeholder="Ingrese la dirección de la escuela" required maxlength="128">
+                        </div>
                     </div>
 
-                    <div class="form-group w-50">
-                        <label for="school_address" class="mb-1">Dirección de la escuela</label>
-                        <input class="form-control" type="text" id="school_address" name="school_address" placeholder="Ingrese la dirección de la escuela" required maxlength="128">
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="school_phone" class="mb-1">Teléfono de la escuela</label>
+                            <input class="form-control" type="text" id="school_phone" name="school_phone" placeholder="Ingrese el teléfono de la escuela" required maxlength="16">
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="school_level" class="mb-1">Nivel educativo</label>
+                            <select class="form-select" id="school_level" name="school_level" required>
+                                <option disabled selected>Seleccione un nivel educativo...</option>
+                                <option value="Inicial">Inicial</option>
+                                <option value="Primario">Primario</option>
+                                <option value="Secundario">Secundario</option>
+                                <option value="Terciario">Terciario</option>
+                                <option value="Universitario">Universitario</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="school_year" class="mb-1">Año</label>
+                            <input class="form-control" type="number" id="school_year" name="school_year" placeholder="Ingrese el año lectivo" required min="1" max="12">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="school_observations" class="mb-1">Observaciones</label>
+                        <textarea class="form-control" id="school_observations" name="school_observations" placeholder="Ingrese las observaciones" required></textarea>
                     </div>
                 </div>
 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="school_phone" class="mb-1">Teléfono de la escuela</label>
-                        <input class="form-control" type="text" id="school_phone" name="school_phone" placeholder="Ingrese el teléfono de la escuela" required maxlength="16">
-                    </div>
-
-                    <div class="form-group w-50">
-                        <label for="school_level" class="mb-1">Nivel educativo</label>
-                        <select class="form-select" id="school_level" name="school_level" required>
-                            <option disabled selected>Seleccione un nivel educativo...</option>
-                            <option value="Inicial">Inicial</option>
-                            <option value="Primario">Primario</option>
-                            <option value="Secundario">Secundario</option>
-                            <option value="Terciario">Terciario</option>
-                            <option value="Universitario">Universitario</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group w-50">
-                        <label for="school_year" class="mb-1">Año</label>
-                        <input class="form-control" type="number" id="school_year" name="school_year" placeholder="Ingrese el año lectivo" required min="1" max="12">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="school_observations" class="mb-1">Observaciones</label>
-                    <textarea class="form-control" id="school_observations" name="school_observations" placeholder="Ingrese las observaciones" required></textarea>
-                </div>
                 <div>
                     <br>
                     <h5 class="border-bottom border-dark pb-2">Propuesta de trabajo institucional</h5>
-                    <p class="mt-0 mb-3">Ingrese la información de la propuesta de trabajo institucional.</p>
+                    <p class="mt-0 mb-3">Información de la propuesta de trabajo institucional.</p>
                 </div>
 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="institutional_work_proposal" class="mb-1">Propuesta de trabajo institucional</label>
-                        <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal" required>
-                            <option disabled selected>Seleccione una propuesta...</option>
-                            <option value="Hipoterapia">Hipoterapia</option>
-                            <option value="Monta Terapéutica">Monta Terapéutica</option>
-                            <option value="Deporte Ecuestre Adaptado">Deporte Ecuestre Adaptado</option>
-                            <option value="Actividades Recreativas">Actividades Recreativas</option>
-                            <option value="Equitación">Equitación</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group w-50">
-                        <label for="condition" class="mb-1">Condición</label>
-                        <select class="form-select" id="condition" name="condition" required>
-                            <option disabled selected>Seleccione una condición...</option>
-                            <option value="Regular">Regular</option>
-                            <option value="De baja">De baja</option>
-                        </select>
-                    </div>
+                <div class="form-group w-100">
+                    <label for="has_work" class="mb-1">¿Tiene una oferta de trabajo con nosotros?</label>
+                    <select class="form-select" id="has_work" name="has_work" required>
+                        <option disabled selected>Seleccione una opción...</option>
+                        <option value="True">Sí</option>
+                        <option value="False">No</option>
+                    </select>
                 </div>
 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="headquarters" class="mb-1">Sede</label>
-                        <select class="form-select" id="headquarters" name="headquarters" required>
-                            <option disabled selected>Seleccione una sede...</option>
-                            <option value="CASJ">CASJ</option>
-                            <option value="HLP">HLP</option>
-                            <option value="OTRO">OTRO</option>
-                        </select>
+                <div id="job_group" style="display: none;">
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="institutional_work_proposal" class="mb-1">Propuesta de trabajo institucional</label>
+                            <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal" required>
+                                <option disabled selected>Seleccione una propuesta...</option>
+                                <option value="Hipoterapia">Hipoterapia</option>
+                                <option value="Monta Terapéutica">Monta Terapéutica</option>
+                                <option value="Deporte Ecuestre Adaptado">Deporte Ecuestre Adaptado</option>
+                                <option value="Actividades Recreativas">Actividades Recreativas</option>
+                                <option value="Equitación">Equitación</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="condition" class="mb-1">Condición</label>
+                            <select class="form-select" id="condition" name="condition" required>
+                                <option disabled selected>Seleccione una condición...</option>
+                                <option value="Regular">Regular</option>
+                                <option value="De baja">De baja</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group w-50">
-                        <label for="days" class="mb-1">Días</label>
-                        <select class="form-select" id="days" name="days" multiple required>
-                            <option value="Lunes">Lunes</option>
-                            <option value="Martes">Martes</option>
-                            <option value="Miércoles">Miércoles</option>
-                            <option value="Jueves">Jueves</option>
-                            <option value="Viernes">Viernes</option>
-                            <option value="Sábado">Sábado</option>
-                            <option value="Domingo">Domingo</option>
-                        </select>
-                    </div>
-                </div>
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="headquarters" class="mb-1">Sede</label>
+                            <select class="form-select" id="headquarters" name="headquarters" required>
+                                <option disabled selected>Seleccione una sede...</option>
+                                <option value="CASJ">CASJ</option>
+                                <option value="HLP">HLP</option>
+                                <option value="OTRO">OTRO</option>
+                            </select>
+                        </div>
 
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="professor_id" class="mb-1">Profesor</label>
-                        <select class="form-select" id="professor_id" name="professor_id" required>
-                            <option disabled selected>Seleccione un profesor...</option>
-                            {% for member in members %}
-                            <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group w-50">
-                        <label for="assistant_id" class="mb-1">Asistente</label>
-                        <select class="form-select" id="assistant_id" name="assistant_id" required>
-                            <option disabled selected>Seleccione un asistente...</option>
-                            {% for member in members %}
-                            <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="w-100 d-flex flex-row gap-3">
-                    <div class="form-group w-50">
-                        <label for="member_horse_rider_id" class="mb-1">Miembro jinete de caballo</label>
-                        <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id" required>
-                            <option disabled selected>Seleccione un miembro...</option>
-                            {% for member in members %}
-                            <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="form-group w-50">
+                            <label for="days" class="mb-1">Días</label>
+                            <select class="form-select" id="days" name="days" multiple required>
+                                <option value="Lunes">Lunes</option>
+                                <option value="Martes">Martes</option>
+                                <option value="Miércoles">Miércoles</option>
+                                <option value="Jueves">Jueves</option>
+                                <option value="Viernes">Viernes</option>
+                                <option value="Sábado">Sábado</option>
+                                <option value="Domingo">Domingo</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="form-group w-50">
-                        <label for="horse_id" class="mb-1">Caballo</label>
-                        <select class="form-select" id="horse_id" name="horse_id" required>
-                            <option disabled selected>Seleccione un caballo...</option>
-                            {% for horse in horses %}
-                            <option value="{{ horse.id }}">{{ horse.name }}</option>
-                            {% endfor %}
-                        </select>
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="professor_id" class="mb-1">Profesor o terapeuta</label>
+                            <select class="form-select" id="professor_id" name="professor_id" required>
+                                <option disabled selected>Seleccione un profesor o terapeuta...</option>
+                                {% for member in members %}
+                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="assistant_id" class="mb-1">Auxiliar de pista</label>
+                            <select class="form-select" id="assistant_id" name="assistant_id" required>
+                                <option disabled selected>Seleccione un auxiliar de pista...</option>
+                                {% for member in members %}
+                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="member_horse_rider_id" class="mb-1">Conductor del caballo</label>
+                            <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id" required>
+                                <option disabled selected>Seleccione un miembro...</option>
+                                {% for member in members %}
+                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group w-50">
+                            <label for="horse_id" class="mb-1">Caballo</label>
+                            <select class="form-select" id="horse_id" name="horse_id" required>
+                                <option disabled selected>Seleccione un caballo...</option>
+                                {% for horse in horses %}
+                                <option value="{{ horse.id }}">{{ horse.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -607,6 +669,50 @@
 </div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var provinceOfBirthSelect = document.getElementById('province_of_birth');
+        var cityOfBirthSelect = document.getElementById('city_of_birth');
+        var selectedCityOfBirthId = cityOfBirthSelect.getAttribute('data-selected');
+    
+        var provinceIdSelect = document.getElementById('province_id');
+        var localitySelect = document.getElementById('locality_id');
+        var selectedLocalityId = localitySelect.getAttribute('data-selected');
+    
+        function loadLocalities(provinceId, localitySelect, selectedLocalityId) {
+            if (provinceId) {
+                fetch('/localities/get/' + provinceId)
+                    .then(response => response.json())
+                    .then(data => {
+                        localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+                        data.forEach(function (locality) {
+                            var option = document.createElement('option');
+                            option.value = locality.id;
+                            option.text = locality.name;
+                            if (locality.id == selectedLocalityId) {
+                                option.selected = true;
+                            }
+                            localitySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error al cargar localidades:', error));
+            }
+        }
+    
+        // Cargar las localidades al cargar la página
+        loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
+        loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
+    
+        // Cargar las localidades al cambiar la provincia de nacimiento
+        provinceOfBirthSelect.addEventListener('change', function () {
+            loadLocalities(this.value, cityOfBirthSelect, null);
+        });
+    
+        // Cargar las localidades al cambiar la provincia de domicilio
+        provinceIdSelect.addEventListener('change', function () {
+            loadLocalities(this.value, localitySelect, null);
+        });
+    });    
+
     function changePage(pageIndex) {
         const sections = document.querySelectorAll('form section');
         const tabs = document.querySelectorAll('#form-tabs .nav-link');
@@ -621,6 +727,31 @@
             }
         });
     }
+
+    function setupDynamicField(triggerId, targetId, expectedValue) {
+        var triggerElement = document.getElementById(triggerId);
+        var targetElement = document.getElementById(targetId);
+
+        triggerElement.addEventListener('change', function() {
+            if (this.value === expectedValue) {
+                targetElement.style.display = 'block';
+            } else {
+                targetElement.style.display = 'none';
+            }
+        });
+    }
+
+    // Inicializar todos los grupos dinámicos
+    document.addEventListener('DOMContentLoaded', function() {
+        setupDynamicField('has_disability_certificate', 'disability_group', 'True');
+        setupDynamicField('has_family_allowance', 'family_allowance_group', 'True');
+        setupDynamicField('has_pension', 'pension_group', 'True');
+        setupDynamicField('has_grant', 'grant_group', 'True');
+        setupDynamicField('has_tutor_1', 'tutor_1_group', 'True');
+        setupDynamicField('has_tutor_2', 'tutor_2_group', 'True');
+        setupDynamicField('has_school', 'school_group', 'True');
+        setupDynamicField('has_work', 'job_group', 'True');
+    });
 </script>
 
 {% endblock %}
