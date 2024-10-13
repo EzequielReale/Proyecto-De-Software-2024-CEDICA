@@ -187,12 +187,12 @@
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label for="health_insurance" class="mb-1">Obra social</label>
-                        <input class="form-control" type="text" id="health_insurance" name="health_insurance" placeholder="Ingrese la obra social" required>
+                        <input class="form-control" type="text" id="health_insurance" name="health_insurance" placeholder="Ingrese la obra social" required maxlength="32">
                     </div>
 
                     <div class="form-group w-50">
                         <label for="health_insurance_number" class="mb-1">Número de obra social</label>
-                        <input class="form-control" type="text" id="health_insurance_number" name="health_insurance_number" placeholder="Ingrese el número de obra social" pattern="[0-9]" required>
+                        <input class="form-control" type="text" id="health_insurance_number" name="health_insurance_number" placeholder="Ingrese el número de obra social" pattern="[0-9]+" required maxlength="32">
                     </div>
                 </div>
 
@@ -346,7 +346,7 @@
                     
                         <div class="form-group w-50">
                             <label for="tutor1_dni" class="mb-1">DNI</label>
-                            <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
+                            <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="9">
                         </div>
                     </div>
                     
@@ -376,7 +376,7 @@
                     
                     <div class="form-group w-100">
                         <label for="tutor1_address" class="mb-1">Dirección</label>
-                        <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" required maxlength="255">
+                        <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" required maxlength="128">
                     </div>
                     
                     <div class="w-100 d-flex flex-row gap-3">
@@ -424,7 +424,7 @@
                         
                             <div class="form-group w-50">
                                 <label for="tutor2_dni" class="mb-1">DNI</label>
-                                <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="16">
+                                <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="9">
                             </div>
                         </div>
                         
@@ -454,7 +454,7 @@
                         
                         <div class="form-group w-100">
                             <label for="tutor2_address" class="mb-1">Dirección</label>
-                            <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección" required maxlength="255">
+                            <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección" required maxlength="128">
                         </div>
                         
                         <div class="w-100 d-flex flex-row gap-3">
@@ -668,6 +668,7 @@
     </form>
 </div>
 
+{% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var provinceOfBirthSelect = document.getElementById('province_of_birth');
@@ -754,4 +755,5 @@
     });
 </script>
 
+{% endblock %}
 {% endblock %}
