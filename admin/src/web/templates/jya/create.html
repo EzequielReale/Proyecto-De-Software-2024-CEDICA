@@ -78,6 +78,7 @@
     <h2>🧑‍🎤 Registro de jinete/amazona</h2>
     <p>Formulario para registrar un nuevo jinete/amazona en la institución</p>
     <form action="{{ url_for('jya.create') }}" method="POST">
+        {{ csrf_token() }}
         <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
             <li class="nav-item">
                 <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información
@@ -228,7 +229,7 @@
 
                     <div class="form-group w-50">
                         <label for="number" class="mb-1">Número</label>
-                        <input class="form-control" type="text" id="number" name="number" placeholder="Ingrese el número de la calle" required maxlength="10" pattern="[0-9]">
+                        <input class="form-control" type="text" id="number" name="number" placeholder="Ingrese el número de la calle" required maxlength="10" pattern="[0-9]+">
                     </div>
                 </div>
 
@@ -336,7 +337,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="tutor1_relationship" class="mb-1">Relación</label>
-                            <select class="form-select" id="tutor1_relationship" name="tutor1_relationship" required>
+                            <select class="form-select" id="tutor1_relationship" name="tutor1_relationship">
                                 <option disabled selected>Seleccione una relación...</option>
                                 <option value="Padre">Padre</option>
                                 <option value="Madre">Madre</option>
@@ -346,37 +347,37 @@
                     
                         <div class="form-group w-50">
                             <label for="tutor1_dni" class="mb-1">DNI</label>
-                            <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="9">
+                            <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" placeholder="Ingrese el DNI" pattern="[0-9]+" maxlength="9">
                         </div>
                     </div>
                     
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="tutor1_name" class="mb-1">Nombre</label>
-                            <input class="form-control" type="text" id="tutor1_name" name="tutor1_name" placeholder="Ingrese el nombre" required maxlength="64">
+                            <input class="form-control" type="text" id="tutor1_name" name="tutor1_name" placeholder="Ingrese el nombre" maxlength="64">
                         </div>
                     
                         <div class="form-group w-50">
                             <label for="tutor1_last_name" class="mb-1">Apellido</label>
-                            <input class="form-control" type="text" id="tutor1_last_name" name="tutor1_last_name" placeholder="Ingrese el apellido" required maxlength="64">
+                            <input class="form-control" type="text" id="tutor1_last_name" name="tutor1_last_name" placeholder="Ingrese el apellido" maxlength="64">
                         </div>
                     </div>
                     
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="tutor1_phone" class="mb-1">Teléfono</label>
-                            <input class="form-control" type="text" id="tutor1_phone" name="tutor1_phone" placeholder="Ingrese el teléfono" required maxlength="32">
+                            <input class="form-control" type="text" id="tutor1_phone" name="tutor1_phone" placeholder="Ingrese el teléfono" maxlength="32">
                         </div>
                     
                         <div class="form-group w-50">
                             <label for="tutor1_email" class="mb-1">Email</label>
-                            <input class="form-control" type="email" id="tutor1_email" name="tutor1_email" placeholder="Ingrese el email" required maxlength="64">
+                            <input class="form-control" type="email" id="tutor1_email" name="tutor1_email" placeholder="Ingrese el email" maxlength="64">
                         </div>
                     </div>
                     
                     <div class="form-group w-100">
                         <label for="tutor1_address" class="mb-1">Dirección</label>
-                        <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" required maxlength="128">
+                        <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" placeholder="Ingrese la dirección" maxlength="128">
                     </div>
                     
                     <div class="w-100 d-flex flex-row gap-3">
@@ -393,7 +394,7 @@
                     
                         <div class="form-group w-50">
                             <label for="tutor1_job" class="mb-1">Trabajo</label>
-                            <input class="form-control" type="text" id="tutor1_job" name="tutor1_job" placeholder="Ingrese el trabajo" required maxlength="64">
+                            <input class="form-control" type="text" id="tutor1_job" name="tutor1_job" placeholder="Ingrese el trabajo" maxlength="64">
                         </div>
                     </div>
                 
@@ -414,7 +415,7 @@
                         <div class="w-100 d-flex flex-row gap-3">
                             <div class="form-group w-50">
                                 <label for="tutor2_relationship" class="mb-1">Relación</label>
-                                <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" required>
+                                <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" >
                                     <option disabled selected>Seleccione una relación...</option>
                                     <option value="Padre">Padre</option>
                                     <option value="Madre">Madre</option>
@@ -424,43 +425,43 @@
                         
                             <div class="form-group w-50">
                                 <label for="tutor2_dni" class="mb-1">DNI</label>
-                                <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" required pattern="[0-9]+" maxlength="9">
+                                <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" placeholder="Ingrese el DNI" pattern="[0-9]+" maxlength="9">
                             </div>
                         </div>
                         
                         <div class="w-100 d-flex flex-row gap-3">
                             <div class="form-group w-50">
                                 <label for="tutor2_name" class="mb-1">Nombre</label>
-                                <input class="form-control" type="text" id="tutor2_name" name="tutor2_name" placeholder="Ingrese el nombre" required maxlength="64">
+                                <input class="form-control" type="text" id="tutor2_name" name="tutor2_name" placeholder="Ingrese el nombre"  maxlength="64">
                             </div>
                         
                             <div class="form-group w-50">
                                 <label for="tutor2_last_name" class="mb-1">Apellido</label>
-                                <input class="form-control" type="text" id="tutor2_last_name" name="tutor2_last_name" placeholder="Ingrese el apellido" required maxlength="64">
+                                <input class="form-control" type="text" id="tutor2_last_name" name="tutor2_last_name" placeholder="Ingrese el apellido"  maxlength="64">
                             </div>
                         </div>
                         
                         <div class="w-100 d-flex flex-row gap-3">
                             <div class="form-group w-50">
                                 <label for="tutor2_phone" class="mb-1">Teléfono</label>
-                                <input class="form-control" type="text" id="tutor2_phone" name="tutor2_phone" placeholder="Ingrese el teléfono" required maxlength="32">
+                                <input class="form-control" type="text" id="tutor2_phone" name="tutor2_phone" placeholder="Ingrese el teléfono"  maxlength="32">
                             </div>
                         
                             <div class="form-group w-50">
                                 <label for="tutor2_email" class="mb-1">Email</label>
-                                <input class="form-control" type="email" id="tutor2_email" name="tutor2_email" placeholder="Ingrese el email" required maxlength="64">
+                                <input class="form-control" type="email" id="tutor2_email" name="tutor2_email" placeholder="Ingrese el email"  maxlength="64">
                             </div>
                         </div>
                         
                         <div class="form-group w-100">
                             <label for="tutor2_address" class="mb-1">Dirección</label>
-                            <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección" required maxlength="128">
+                            <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" placeholder="Ingrese la dirección"  maxlength="128">
                         </div>
                         
                         <div class="w-100 d-flex flex-row gap-3">
                             <div class="form-group w-50">
                                 <label for="tutor2_education_level" class="mb-1">Nivel educativo</label>
-                                <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" required>
+                                <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" >
                                     <option disabled selected>Seleccione un nivel educativo...</option>
                                     <option value="Primario">Primario</option>
                                     <option value="Secundario">Secundario</option>
@@ -471,7 +472,7 @@
                         
                             <div class="form-group w-50">
                                 <label for="tutor2_job" class="mb-1">Trabajo</label>
-                                <input class="form-control" type="text" id="tutor2_job" name="tutor2_job" placeholder="Ingrese el trabajo" required maxlength="64">
+                                <input class="form-control" type="text" id="tutor2_job" name="tutor2_job" placeholder="Ingrese el trabajo"  maxlength="64">
                             </div>    
                         </div>
                     </div>
@@ -512,24 +513,24 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="school_name" class="mb-1">Nombre de la escuela</label>
-                            <input class="form-control" type="text" id="school_name" name="school_name" placeholder="Ingrese el nombre de la escuela" required maxlength="64">
+                            <input class="form-control" type="text" id="school_name" name="school_name" placeholder="Ingrese el nombre de la escuela" maxlength="64">
                         </div>
 
                         <div class="form-group w-50">
                             <label for="school_address" class="mb-1">Dirección de la escuela</label>
-                            <input class="form-control" type="text" id="school_address" name="school_address" placeholder="Ingrese la dirección de la escuela" required maxlength="128">
+                            <input class="form-control" type="text" id="school_address" name="school_address" placeholder="Ingrese la dirección de la escuela" maxlength="128">
                         </div>
                     </div>
 
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="school_phone" class="mb-1">Teléfono de la escuela</label>
-                            <input class="form-control" type="text" id="school_phone" name="school_phone" placeholder="Ingrese el teléfono de la escuela" required maxlength="16">
+                            <input class="form-control" type="text" id="school_phone" name="school_phone" placeholder="Ingrese el teléfono de la escuela" maxlength="16">
                         </div>
 
                         <div class="form-group w-50">
                             <label for="school_level" class="mb-1">Nivel educativo</label>
-                            <select class="form-select" id="school_level" name="school_level" required>
+                            <select class="form-select" id="school_level" name="school_level">
                                 <option disabled selected>Seleccione un nivel educativo...</option>
                                 <option value="Inicial">Inicial</option>
                                 <option value="Primario">Primario</option>
@@ -541,13 +542,13 @@
 
                         <div class="form-group w-50">
                             <label for="school_year" class="mb-1">Año</label>
-                            <input class="form-control" type="number" id="school_year" name="school_year" placeholder="Ingrese el año lectivo" required min="1" max="12">
+                            <input class="form-control" type="number" id="school_year" name="school_year" placeholder="Ingrese el año lectivo" min="1" max="12">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="school_observations" class="mb-1">Observaciones</label>
-                        <textarea class="form-control" id="school_observations" name="school_observations" placeholder="Ingrese las observaciones" required></textarea>
+                        <textarea class="form-control" id="school_observations" name="school_observations" placeholder="Ingrese las observaciones"></textarea>
                     </div>
                 </div>
 
@@ -570,7 +571,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="institutional_work_proposal" class="mb-1">Propuesta de trabajo institucional</label>
-                            <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal" required>
+                            <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal">
                                 <option disabled selected>Seleccione una propuesta...</option>
                                 <option value="Hipoterapia">Hipoterapia</option>
                                 <option value="Monta Terapéutica">Monta Terapéutica</option>
@@ -582,7 +583,7 @@
 
                         <div class="form-group w-50">
                             <label for="condition" class="mb-1">Condición</label>
-                            <select class="form-select" id="condition" name="condition" required>
+                            <select class="form-select" id="condition" name="condition">
                                 <option disabled selected>Seleccione una condición...</option>
                                 <option value="Regular">Regular</option>
                                 <option value="De baja">De baja</option>
@@ -593,7 +594,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="headquarters" class="mb-1">Sede</label>
-                            <select class="form-select" id="headquarters" name="headquarters" required>
+                            <select class="form-select" id="headquarters" name="headquarters">
                                 <option disabled selected>Seleccione una sede...</option>
                                 <option value="CASJ">CASJ</option>
                                 <option value="HLP">HLP</option>
@@ -603,7 +604,7 @@
 
                         <div class="form-group w-50">
                             <label for="days" class="mb-1">Días</label>
-                            <select class="form-select" id="days" name="days" multiple required>
+                            <select class="form-select" id="days" name="days" multiple>
                                 <option value="Lunes">Lunes</option>
                                 <option value="Martes">Martes</option>
                                 <option value="Miércoles">Miércoles</option>
@@ -618,7 +619,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="professor_id" class="mb-1">Profesor o terapeuta</label>
-                            <select class="form-select" id="professor_id" name="professor_id" required>
+                            <select class="form-select" id="professor_id" name="professor_id">
                                 <option disabled selected>Seleccione un profesor o terapeuta...</option>
                                 {% for member in members %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
@@ -628,7 +629,7 @@
 
                         <div class="form-group w-50">
                             <label for="assistant_id" class="mb-1">Auxiliar de pista</label>
-                            <select class="form-select" id="assistant_id" name="assistant_id" required>
+                            <select class="form-select" id="assistant_id" name="assistant_id">
                                 <option disabled selected>Seleccione un auxiliar de pista...</option>
                                 {% for member in members %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
@@ -640,7 +641,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="member_horse_rider_id" class="mb-1">Conductor del caballo</label>
-                            <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id" required>
+                            <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id">
                                 <option disabled selected>Seleccione un miembro...</option>
                                 {% for member in members %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
@@ -650,7 +651,7 @@
 
                         <div class="form-group w-50">
                             <label for="horse_id" class="mb-1">Caballo</label>
-                            <select class="form-select" id="horse_id" name="horse_id" required>
+                            <select class="form-select" id="horse_id" name="horse_id">
                                 <option disabled selected>Seleccione un caballo...</option>
                                 {% for horse in horses %}
                                 <option value="{{ horse.id }}">{{ horse.name }}</option>

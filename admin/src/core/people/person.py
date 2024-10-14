@@ -21,7 +21,7 @@ class Person(db.Model):
     street = db.Column(db.String(128), nullable=False)
     number = db.Column(db.String(8), nullable=False)
     floor = db.Column(db.String(4), nullable=True)
-    department = db.Column(db.String(8), nullable=True)
+    apartment = db.Column(db.String(8), nullable=True)
     health_insurance = db.Column(db.String(32), nullable=False)
     health_insurance_number = db.Column(db.String(32), nullable=False)
     locality_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)

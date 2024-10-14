@@ -1,8 +1,12 @@
 from datetime import datetime
 
-from flask import Blueprint, flash, redirect, render_template, Request, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from src.core.people.member_rider import Member
+from src.core.people.tutor import Tutor
+from src.core.professions.school import School
+from src.core.professions.job_proposal import JobProposal
+from src.core.equestrian.horse import Horse
 from src.core import adressing, disabilities, people, professions
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
@@ -63,27 +67,72 @@ def show(id: int) -> str:
     return render_template("jya/show.html", rider=rider, documents=documents, filters=filters, sort_by=sort_by, sort_direction=sort_direction, current_year=datetime.now().year,)
 
 
-def _get_validator(localities: list, rider_id=None) -> RiderForm:
+def _get_data_from_db() -> tuple:
+    """Obtiene la lista de discapacidades, tipos de discapacidades, provincias, localidades y miembros del equipo"""
+    disability_types_list = disabilities.list_disability_types()
+    disabilities_list = disabilities.list_disability_diagnosis()
+    localities_list = adressing.list_localities()
+    provinces_list = adressing.list_provinces()
+    horse_list = Horse.query.all()
+    member_list = Member.query.all()
+    return disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list
+
+
+def _configure_form(disability_types_list:list, disabilities_list:list, provinces_list:list, localities_list:list, member_list:list, horse_list:list, rider_id:int=None) -> RiderForm:
     """Recibe la lista de profesiones, trabajos, localidades y el id del j/a y retorna el validador del formulario"""
     form = RiderForm(rider_id=rider_id)
-    form.locality_id.choices = [(locality.id, locality.name) for locality in localities]
+    form.province_of_birth.choices = [(province.id, province.name) for province in provinces_list]
+    form.city_of_birth.choices = [(locality.id, locality.name) for locality in localities_list]
+    form.province_id.choices = [(province.id, province.name) for province in provinces_list]
+    form.locality_id.choices = [(locality.id, locality.name) for locality in localities_list]    
+    form.disability_type.choices = [(disability_type.id, disability_type.name) for disability_type in disability_types_list]
+    form.disability_id.choices = [(disability.id, disability.name) for disability in disabilities_list]
+    form.assigned_professionals.choices = [(member.id, member.name, member.last_name) for member in member_list]
+    form.professor_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
+    form.assistant_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
     return form
 
 
-def _validate_request(
-    req: Request,
-    localities: list,
-    rider_id=None,
-) -> tuple:
-    """Recibe la request, la lista de profesiones, trabajos, provincias y localidades y valida que el formulario sea correcto"""
-    form = _get_validator(localities, rider_id)
-    form.process(req.form)
-    if not form.validate():
-        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
-        flash(f"Error en el formulario -> {'; '.join(error_messages)}", "danger")
-        return form, False
+def _create_rider(form:RiderForm) -> int:
+    """Recibe el formulario y retorna el id del j/a creado"""
+    tutor_1_id, tutor_2_id = _create_tutors(form)
+    rider_data = form.get_rider_data()
+    rider_data['tutor_1_id'] = tutor_1_id
+    rider_data['tutor_2_id'] = tutor_2_id
+    member_ids = form.assigned_professionals.data
+    rider_data['members'] = [people.get_member_by_field("id", member_id) for member_id in member_ids]
 
-    return form, True
+    print(rider_data)
+    print([type(member) for member in rider_data['members']]) # Acá falla y no se por qué
+
+    return people.rider_new(**rider_data)
+
+
+def _create_tutors(form:RiderForm) -> int:
+    """Recibe el formulario y el número de tutor y retorna el id del tutor creado"""
+    tutor_1 = Tutor()
+    tutor_2 = Tutor()
+    if form.has_tutor_1.data == "True":
+        tutor_1 = people.tutor_new(**form.get_tutor_data(1))
+    if form.has_tutor_2.data == "True":
+        tutor_2 = people.tutor_new(**form.get_tutor_data(2))
+    return tutor_1.id, tutor_2.id
+
+
+def _create_school(form:RiderForm, rider_id:int) -> int:
+    """Recibe el formulario y el id del j/a y retorna el id de la escuela creada"""
+    school = School()
+    if form.has_school.data == "True":
+        school = professions.school_new(**form.get_school_data(), rider_id=rider_id)
+    return school.id
+
+
+def _create_job_proposal(form:RiderForm, rider_id:int) -> int:
+    """Recibe el formulario y el id del j/a y retorna el id de la propuesta de trabajo creada"""
+    job_proposal = JobProposal()
+    if form.has_job_proposal.data == "True":
+        job_proposal = professions.job_proposal_new(**form.get_job_proposal_data(), rider_id=rider_id)
+    return job_proposal.id
 
 
 @bp.route("/new", methods=["GET", "POST"])
@@ -91,24 +140,20 @@ def _validate_request(
 def create() -> str:
     """Muestra el formulario para crear un nuevo j/a y lo guarda en la BD"""
     rider = {}
-    disability_types_list = disabilities.list_disability_types()
-    disabilities_list = disabilities.list_disability_diagnosis()
-    localities_list = adressing.list_localities()
-    provinces_list = adressing.list_provinces()
-    member_list = Member.query.all()
+    disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list = _get_data_from_db()
+    form = _configure_form(disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list)
 
     # Si se envia el formulario
-    if request.method == "POST":
-        form, valid = _validate_request(request)
-        if valid:
-            rider = people.rider_new(**form.data)
-            flash(
-                f"{rider.name} {rider.last_name} ha sido creado exitosamente",
-                "success",
-            )
-            return redirect(url_for("jya.show", id=rider.id))
-        else:
-            rider = form.data
+    if form.validate_on_submit():
+        rider = _create_rider(form)
+        _create_school(form, rider.id)
+        _create_job_proposal(form, rider.id)
+        flash(f"{rider.name} {rider.last_name} ha sido creado exitosamente", "success")
+        return redirect(url_for("jya.show", id=rider.id))
+    elif form.errors:
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+        flash(f"Error en el formulario: {error_messages}", "danger")
+        rider = {field.name: field.data for field in form}
 
     return render_template(
         "jya/create.html",
@@ -118,6 +163,8 @@ def create() -> str:
         localities=localities_list,
         provinces=provinces_list,
         members=member_list,
+        horses=horse_list,
+        csrf_token=(form.csrf_token if hasattr(form, 'csrf_token') else None)
     )
 
 
@@ -127,21 +174,7 @@ def update(id: int) -> str:
     """Recibe el id de un j/a y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
     rider = people.get_rider_by_field("id", id)
 
-    # Si se envia el formulario
-    if request.method == "POST":
-        form, valid = _validate_request(
-            request, rider_id=rider.id
-        )
-        if valid:
-            rider = people.rider_update(id, **form.data)
-            flash(
-                f"{rider.name} {rider.last_name} ha sido actualizado exitosamente",
-                "success",
-            )
-            return redirect(url_for("jya.show", id=id))
-        else:
-            rider = people.Rider(**form.data)
-            rider.id = id
+    # Para después
 
     return render_template(
         "jya/update.html",

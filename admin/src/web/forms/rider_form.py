@@ -1,8 +1,8 @@
 from datetime import datetime
 
+from flask_wtf import FlaskForm
 from wtforms import (
     DateField,
-    Form,
     IntegerField,
     SelectField,
     SelectMultipleField,
@@ -21,11 +21,12 @@ from wtforms.validators import (
 from src.core import people
 
 
-class RiderForm(Form):
+class RiderForm(FlaskForm):
+    """Formulario para la creación y edición de jinetes/amazonas"""
     
     def __init__(self, *args, **kwargs):
         """Inicializa el formulario"""
-        self.member_id = kwargs.pop('rider_id', None)
+        self.rider_id = kwargs.pop('rider_id', None)
         super(RiderForm, self).__init__(*args, **kwargs)
 
 
@@ -78,15 +79,15 @@ class RiderForm(Form):
         ],
     )
     birth_date = DateField("Fecha de nacimiento", [DataRequired()])
-    province_of_birth = SelectField("Provincia de nacimiento", [DataRequired()])
-    city_of_birth = SelectField("Localidad de nacimiento", [DataRequired()])
+    province_of_birth = SelectField("Provincia de nacimiento", [DataRequired()], choices=[], coerce=int)
+    city_of_birth = SelectField("Localidad de nacimiento", [DataRequired()], choices=[], coerce=int)
     has_disability_certificate = SelectField(
         "¿Tiene certificado de discapacidad?",
         [DataRequired()],
         choices=[("True", "Sí"), ("False", "No")],
     )
-    disability_type = SelectField("Tipo de discapacidad", [Optional()])
-    disability_id = SelectField("Diagnóstico de discapacidad", [Optional()])
+    disability_type = SelectField("Tipo de discapacidad", [Optional()], choices=[])
+    disability_id = SelectField("Diagnóstico de discapacidad", [Optional()], choices=[])
     health_insurance = StringField("Obra social", [DataRequired(), Length(max=32)])
     health_insurance_number = StringField(
         "Número de obra social",
@@ -98,8 +99,8 @@ class RiderForm(Form):
             Length(max=32),
         ],
     )
-    province_id = SelectField("Provincia de domicilio", [DataRequired()])
-    locality_id = SelectField("Localidad de domicilio", [DataRequired()])
+    province_id = SelectField("Provincia de domicilio", [DataRequired()], choices=[], coerce=int)
+    locality_id = SelectField("Localidad de domicilio", [DataRequired()], choices=[], coerce=int)
     street = StringField("Calle", [DataRequired(), Length(max=64)])
     number = StringField(
         "Número",
@@ -247,7 +248,7 @@ class RiderForm(Form):
     tutor2_job = StringField("Trabajo", [Optional(), Length(max=64)])
 
     assigned_professionals = SelectMultipleField(
-        "Profesionales", [Optional()], coerce=int
+        "Profesionales", [Optional()], choices=[], coerce=int
     )
 
     has_school = SelectField(
@@ -329,16 +330,16 @@ class RiderForm(Form):
         ],
         coerce=int,
     )
-    professor_id = SelectField("Profesor o terapeuta", [Optional()], coerce=int)
-    assistant_id = SelectField("Auxiliar de pista", [Optional()], coerce=int)
+    professor_id = SelectField("Profesor o terapeuta", [Optional()], choices=[], coerce=int)
+    assistant_id = SelectField("Auxiliar de pista", [Optional()], choices=[], coerce=int)
     member_horse_rider_id = SelectField(
-        "Conductor del caballo", [Optional()], coerce=int
+        "Conductor del caballo", [Optional()], choices=[], coerce=int
     )
-    horse_id = SelectField("Caballo", [Optional()], coerce=int)
+    horse_id = SelectField("Caballo", [Optional()], choices=[], coerce=int)
 
 
-    def validate(self):
-        if not super(RiderForm, self).validate():
+    def validate(self, extra_validators=None):
+        if not super(RiderForm, self).validate(extra_validators=extra_validators):
             return False
         if self.has_disability_certificate.data == "True":
             if not self.disability_type.data:
@@ -418,6 +419,7 @@ class RiderForm(Form):
                 if not getattr(self, field).data:
                     getattr(self, field).errors.append("Este campo es obligatorio.")
                     return False
+        
         return True
 
 
@@ -451,12 +453,11 @@ class RiderForm(Form):
             "phone": self.phone.data,
             "emergency_phone": self.emergency_phone.data,
             "birth_date": self.birth_date.data,
-            "city_of_birth": self.city_of_birth.data,
-            "disability_type": self.disability_type.data,
-            "disability_id": self.disability_id.data,
+            "city_of_birth": int(self.city_of_birth.data),
+            "disability_id": int(self.disability_id.data) if self.disability_id.data else None,
             "health_insurance": self.health_insurance.data,
             "health_insurance_number": self.health_insurance_number.data,
-            "locality_id": self.locality_id.data,
+            "locality_id": int(self.locality_id.data),
             "street": self.street.data,
             "number": self.number.data,
             "floor": self.floor.data,
@@ -465,45 +466,44 @@ class RiderForm(Form):
             "pension_benefit": self.pension_benefit.data,
             "grant_percentage": self.grant_percentage.data,
             "has_guardianship": self.has_guardianship.data,
-            "assigned_professionals": self.assigned_professionals.data,
         }
 
 
     def get_school_data(self):
         return {
-            "school_name": self.school_name.data,
-            "school_address": self.school_address.data,
-            "school_phone": self.school_phone.data,
-            "school_level": self.school_level.data,
-            "school_year": self.school_year.data,
-            "school_observations": self.school_observations.data,
+            "name": self.school_name.data,
+            "address": self.school_address.data,
+            "phone": self.school_phone.data,
+            "level": self.school_level.data,
+            "year": self.school_year.data,
+            "observations": self.school_observations.data,
         }
 
 
     def get_tutor_data(self, tutor_number):
         if tutor_number == 1:
             return {
-                "tutor_relationship": self.tutor1_relationship.data,
-                "tutor_dni": self.tutor1_dni.data,
-                "tutor_name": self.tutor1_name.data,
-                "tutor_last_name": self.tutor1_last_name.data,
-                "tutor_phone": self.tutor1_phone.data,
-                "tutor_email": self.tutor1_email.data,
-                "tutor_address": self.tutor1_address.data,
-                "tutor_education_level": self.tutor1_education_level.data,
-                "tutor_job": self.tutor1_job.data,
+                "relationship": self.tutor1_relationship.data,
+                "dni": self.tutor1_dni.data,
+                "name": self.tutor1_name.data,
+                "last_name": self.tutor1_last_name.data,
+                "phone": self.tutor1_phone.data,
+                "email": self.tutor1_email.data,
+                "address": self.tutor1_address.data,
+                "education_level": self.tutor1_education_level.data,
+                "job": self.tutor1_job.data,
             }
         elif tutor_number == 2:
             return {
-                "tutor_relationship": self.tutor2_relationship.data,
-                "tutor_dni": self.tutor2_dni.data,
-                "tutor_name": self.tutor2_name.data,
-                "tutor_last_name": self.tutor2_last_name.data,
-                "tutor_phone": self.tutor2_phone.data,
-                "tutor_email": self.tutor2_email.data,
-                "tutor_address": self.tutor2_address.data,
-                "tutor_education_level": self.tutor2_education_level.data,
-                "tutor_job": self.tutor2_job.data,
+                "relationship": self.tutor2_relationship.data,
+                "dni": self.tutor2_dni.data,
+                "name": self.tutor2_name.data,
+                "last_name": self.tutor2_last_name.data,
+                "phone": self.tutor2_phone.data,
+                "email": self.tutor2_email.data,
+                "address": self.tutor2_address.data,
+                "education_level": self.tutor2_education_level.data,
+                "job": self.tutor2_job.data,
             }
 
 
