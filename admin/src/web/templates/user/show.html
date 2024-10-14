@@ -73,9 +73,12 @@
                 {% if user.isActive %}
                     Activo
                 {% else %}
-                    No Activo
+                    Inactivo
                 {% endif %}<br>
-            <strong>Roles:</strong> 
+            <strong>Roles:</strong>
+            {% if user.roles|length == 0 %}
+                Sin roles asignados
+            {% endif %}
             {% for role in user.roles %}
                 {{ role.name }}{% if not loop.last %}, {% endif %}
             {% endfor %}<br>
