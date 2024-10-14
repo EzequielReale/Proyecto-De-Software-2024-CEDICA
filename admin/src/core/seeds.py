@@ -1,35 +1,78 @@
-from src.core.models.operations import role_operations as Role
-from src.core.models.operations import user_operations as User
-from src.core.models.operations import role_operations as Role
-from src.core.models.operations import permission_operations as Permission
+from src.core.user_role_permission.operations import role_operations as Role
+from src.core.user_role_permission.operations import user_operations as User
+from src.core.user_role_permission.operations import role_operations as Role
+from src.core.user_role_permission.operations import permission_operations as Permission
 from datetime import datetime
-from src.core import auth, people, professions, adressing, registro_pagos, equestrian
+from src.core import  people, professions, adressing, registro_pagos, equestrian
 
 
 def run():
 
-    perm1 = Permission.permiso_new(name='index')
-    perm2 = Permission.permiso_new(name='new')
-    perm3 = Permission.permiso_new(name='destroy')
-    perm4 = Permission.permiso_new(name='update')
-    perm5 = Permission.permiso_new(name='show')
+    # Seed de Permisos modulo Usuarios
+
+    user_index = Permission.permiso_new(name='user_index')
+    user_new = Permission.permiso_new(name='user_new')
+    user_destroy = Permission.permiso_new(name='user_destroy')
+    user_update = Permission.permiso_new(name='user_update')
+    user_show = Permission.permiso_new(name='user_show')
+
+    # Seed de Permisos modulo Equipo
+
+    team_index = Permission.permiso_new(name='team_index')
+    team_new = Permission.permiso_new(name='team_new')
+    team_destroy = Permission.permiso_new(name='team_destroy')
+    team_update = Permission.permiso_new(name='team_update')
+    team_show = Permission.permiso_new(name='team_show')
+
+    # Seed de Permisos modulo Registro Pagos 
+
+    reg_pagos_index = Permission.permiso_new(name='reg_pagos_index')
+    reg_pagos_new = Permission.permiso_new(name='reg_pagos_new')
+    reg_pagos_destroy = Permission.permiso_new(name='reg_pagos_destroy')
+    reg_pagos_update = Permission.permiso_new(name='reg_pagos_update')
+    reg_pagos_show = Permission.permiso_new(name='reg_pagos_show')
+
+    # Seed para Permisos modulo Encuestre
+
+    encuestre_index = Permission.permiso_new(name='encuestre_index')
+    encuestre_new = Permission.permiso_new(name='encuestre_new')
+    encuestre_destroy = Permission.permiso_new(name='encuestre_destroy')
+    encuestre_update = Permission.permiso_new(name='encuestre_update')
+    encuestre_show = Permission.permiso_new(name='encuestre_show')
+
+
+    # Seed para Permisos modulo Jinetes y Amazonas
+    # ...
+
+    # Seed para Permisos modulo Registro Cobros
+    # ...
+
+    # Seed de Roles
 
     rol1 = Role.role_new(
         name='Tecnica',
+        permissions=[encuestre_index, encuestre_show]
     )
     rol2 = Role.role_new(
         name='Encuestre',
+        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy]
     )
     rol3 = Role.role_new(
         name='Voluntariado',
     )
     rol4 = Role.role_new(
         name='Administracion',
+        permissions=[team_index, team_show, team_update, team_new, team_destroy,
+                     reg_pagos_index, reg_pagos_show, reg_pagos_update, reg_pagos_new, reg_pagos_destroy,
+                     encuestre_index, encuestre_show]
     )
     rol5 = Role.role_new(
         name='SystemAdmin',
-        permissions=[perm1,perm2,perm3,perm4,perm5]
+        permissions=[user_index, user_new, user_destroy, user_update, user_show]
     )
+
+    # Seed de Usuarios
+
     user_admin = User.user_new(
         email="admin@admin.com",
         alias = "admin",
@@ -42,6 +85,7 @@ def run():
         alias = "giu",
         password="123",
         isActive=True,
+        roles=[rol4,rol5]
     )
     user2 = User.user_new(
         email="lau@gmail.com",
@@ -100,6 +144,21 @@ def run():
     locality1 = adressing.locality_new(
         name = "Ensenada",
         province = province1
+    )
+    horse_document_type1 = equestrian.horse_document_type_new(
+        name="Ficha general"
+    )
+    horse_document_type2 = equestrian.horse_document_type_new(
+        name="Planificación de Entrenamiento"
+    )
+    horse_document_type3 = equestrian.horse_document_type_new(
+        name="Informe de Evolución"
+    )
+    horse_document_type4 = equestrian.horse_document_type_new(
+        name="Imágenes"
+    )
+    horse_document_type5 = equestrian.horse_document_type_new(
+        name="Registro veterinario"
     )
     member1 = people.member_new(
             name="Giuliana",

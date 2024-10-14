@@ -27,6 +27,8 @@ class Pago(db.Model):
     tipo_pago = db.relationship('Tipo_pago', backref='pagos')  # Relación con el tipo de pago
     
     descripcion = db.Column(db.String(255), nullable=False)  # Descripción del pago
+   
+    created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # Actualización automática
 
     def __repr__(self):
