@@ -6,9 +6,10 @@ class RegistrationForm(FlaskForm):
     """ Clase para validar formulario de registro de un usuario."""
 
     alias = StringField('Alias', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired(), Email(message="Ingrese un correo electrónico válido.")])
     password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), 
+                                                                    EqualTo('password' , message="Las contraseñas no coinciden.")])
     role = SelectMultipleField('Rol', choices=[
         ('Tecnica', 'Técnica'),
         ('Encuestre', 'Ecuestre'),

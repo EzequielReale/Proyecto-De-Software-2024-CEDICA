@@ -11,17 +11,3 @@ def permiso_new(**kwargs):
     db.session.add(permiso)
     db.session.commit()
     return permiso
-
-def delete_permission(permission_name):
-    """ Recibe el nombre de un permiso y lo elimina de la BD"""
-    permission = get_permission_by_name(permission_name)
-    db.session.delete(permission)
-    db.session.commit()
-    return permission
-
-def add_role(permission, role):
-    """ Recibe un permiso y el/los rol/es, agrega el/los rol/es 
-    al permiso y lo actualiza en la BD"""
-    permission.roles.append(role)
-    db.session.commit()
-    return permission

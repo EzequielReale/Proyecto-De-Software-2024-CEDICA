@@ -16,6 +16,9 @@ def run():
     user_update = Permission.permiso_new(name='user_update')
     user_show = Permission.permiso_new(name='user_show')
 
+    user_block = Permission.permiso_new(name='user_block')
+    user_update_password = Permission.permiso_new(name='user_update_password')
+
     # Seed de Permisos modulo Equipo
 
     team_index = Permission.permiso_new(name='team_index')
@@ -48,7 +51,7 @@ def run():
     # ...
 
     # Seed de Roles
-
+    
     rol1 = Role.role_new(
         name='Tecnica',
         permissions=[encuestre_index, encuestre_show]
@@ -68,8 +71,9 @@ def run():
     )
     rol5 = Role.role_new(
         name='SystemAdmin',
-        permissions=[user_index, user_new, user_destroy, user_update, user_show]
+        permissions=[user_index, user_new, user_destroy, user_update, user_show, user_block, user_update_password,]
     )
+
 
     # Seed de Usuarios
 
@@ -93,6 +97,7 @@ def run():
         password="123",
         isActive=True,
     )
+
     # permiso = auth.permiso_new(
     #    name="administracion_index"
     # )

@@ -76,7 +76,7 @@
             </th>
 
             <th style="background-color: #0056b3; color: #ffffff;">
-                <a href="{{ url_for('user.index', sort_by='email', sort_direction='asc' if sort_by != 'email' or sort_direction == 'desc' else 'desc ', **filters) }}" style="color: inherit; text-decoration: none;">
+                <a href="{{ url_for('user.index', sort_by='email', sort_direction='asc' if sort_by != 'email' or sort_direction == 'desc' else 'desc', **filters) }}" style="color: inherit; text-decoration: none;">
                     Email
                     {% if sort_by == 'email' %}
                         {% if sort_direction == 'asc' %}
@@ -97,9 +97,9 @@
             </th>
 
             <th style="background-color: #0056b3; color: #ffffff;">
-                <a href="{{ url_for('user.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc ', **filters) }}" style="color: inherit; text-decoration: none;">
+                <a href="{{ url_for('user.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}" style="color: inherit; text-decoration: none;">
                     Fecha de Creación
-                    {% if sort_by == 'creation_date' %}
+                    {% if sort_by == 'created_at' %}
                         {% if sort_direction == 'asc' %}
                             &#9650;
                         {% else %}
@@ -129,14 +129,18 @@
                 {% if user.isActive %}
                   Activo
                 {% else %}
-                  No Activo
+                  Inactivo
                 {% endif %}
             </td>
             
             <td>
-                {% for role in user.roles %}
-                    {{ role.name }}{% if not loop.last %}, {% endif %}
-                {% endfor %}
+                {% if user.roles|length == 0 %}
+                    Sin roles asignados
+                {% else %}
+                    {% for role in user.roles %}
+                        {{ role.name }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                {% endif %}
             </td>
             
             <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
@@ -148,17 +152,18 @@
                     <i class="fas fa-file-text"></i>
                 </a>
                 <!-- Icono de edición -->
-                <a href="" title="Editar" style="cursor:pointer;">
+                <a href="{{ url_for('user.update', email=user.email)}}" title="Editar" style="cursor:pointer;">
                     <i class="fas fa-edit"></i>
                 </a>
                 <!-- Formulario de eliminación -->
-                <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;">
-                  <button type="submit" title="Eliminar" 
-                    style="border: none; background: none; color: #0099CC; cursor: pointer;">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
+
+                <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;"
+                    onsubmit="return confirm('¿Quieres eliminar al usuario {{user.alias}} y todos sus datos?');">
+                    <button type="submit" title="Eliminar" role="button"
+                        style="border: none; background: none; color: #0099CC;">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </form>
-              </div>
     
             </td>
     
