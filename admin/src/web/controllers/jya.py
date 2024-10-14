@@ -95,28 +95,28 @@ def _configure_form(disability_types_list:list, disabilities_list:list, province
 
 def _create_rider(form:RiderForm) -> int:
     """Recibe el formulario y retorna el id del j/a creado"""
-    tutor_1_id, tutor_2_id = _create_tutors(form)
+    tutor_1, tutor_2 = _create_tutors(form)
     rider_data = form.get_rider_data()
-    rider_data['tutor_1_id'] = tutor_1_id
-    rider_data['tutor_2_id'] = tutor_2_id
+    rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
+    rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
+    rider_data['tutor_1'] = tutor_1 if tutor_1 else None
+    rider_data['tutor_2'] = tutor_2 if tutor_2 else None
     member_ids = form.assigned_professionals.data
     rider_data['members'] = [people.get_member_by_field("id", member_id) for member_id in member_ids]
-
-    print(rider_data)
-    print([type(member) for member in rider_data['members']]) # Acá falla y no se por qué
 
     return people.rider_new(**rider_data)
 
 
 def _create_tutors(form:RiderForm) -> int:
     """Recibe el formulario y el número de tutor y retorna el id del tutor creado"""
-    tutor_1 = Tutor()
-    tutor_2 = Tutor()
+    tutor_1 = None
+    tutor_2 = None
+
     if form.has_tutor_1.data == "True":
         tutor_1 = people.tutor_new(**form.get_tutor_data(1))
     if form.has_tutor_2.data == "True":
         tutor_2 = people.tutor_new(**form.get_tutor_data(2))
-    return tutor_1.id, tutor_2.id
+    return tutor_1, tutor_2
 
 
 def _create_school(form:RiderForm, rider_id:int) -> int:

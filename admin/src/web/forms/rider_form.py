@@ -464,8 +464,9 @@ class RiderForm(FlaskForm):
             "apartment": self.apartment.data,
             "family_allowance": self.family_allowance.data,
             "pension_benefit": self.pension_benefit.data,
-            "grant_percentage": self.grant_percentage.data,
+            "grant_percentage": float(self.grant_percentage.data) if self.grant_percentage.data else None,
             "has_guardianship": self.has_guardianship.data,
+            "job_proposal": self.has_work.data
         }
 
 
