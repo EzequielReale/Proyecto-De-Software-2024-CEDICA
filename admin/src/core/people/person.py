@@ -26,7 +26,7 @@ class Person(db.Model):
     health_insurance_number = db.Column(db.String(32), nullable=False)
     locality_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
     locality = db.relationship(
-        "Locality", back_populates="persons", lazy=True, overlaps="riders"
+        "Locality", back_populates="persons", lazy=True, foreign_keys=[locality_id]
     )
     documents = db.relationship("PersonDocument", back_populates="person")
     type = db.Column(

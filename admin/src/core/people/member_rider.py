@@ -69,9 +69,9 @@ class Rider(Person):
 
     disability_id = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
     disability = db.relationship("DisabilityDiagnosis", backref="riders", lazy=True)
-    city_of_birth = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
-    city_of_birth = db.relationship("Locality", back_populates="riders", lazy=True, overlaps="locality,persons")
-    
+    city_of_birth_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
+    city_of_birth = db.relationship("Locality", foreign_keys=[city_of_birth_id], lazy=True)
+
     # members assigned
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 

@@ -164,7 +164,6 @@ class RiderForm(FlaskForm):
         "¿Tiene tutela legal?",
         [DataRequired()],
         choices=[("True", "Sí"), ("False", "No")],
-        coerce=lambda x: x == "True",
     )
 
     has_tutor_1 = SelectField(
@@ -290,7 +289,7 @@ class RiderForm(FlaskForm):
     )
     school_observations = StringField("Observaciones", [Optional()])
 
-    has_work = SelectField(
+    has_job_proposal = SelectField(
         "¿Tiene una oferta de trabajo con nosotros?",
         [DataRequired()],
         choices=[("True", "Sí"), ("False", "No")],
@@ -338,6 +337,31 @@ class RiderForm(FlaskForm):
     horse_id = SelectField("Caballo", [Optional()], choices=[], coerce=int)
 
 
+    def process(self, formdata=None, obj=None, **kwargs):
+        """Preprocesa los datos antes de la validación y pasa los nombres a mayúsculas"""
+        super().process(formdata, obj, **kwargs)
+        if self.name.data:
+            self.name.data = self.name.data.title()
+        if self.last_name.data:
+            self.last_name.data = self.last_name.data.title()
+        if self.street.data:
+            self.street.data = self.street.data.title()
+        if self.school_name.data:
+            self.school_name.data = self.school_name.data.title()
+        if self.tutor1_name.data:
+            self.tutor1_name.data = self.tutor1_name.data.title()
+        if self.tutor1_last_name.data:
+            self.tutor1_last_name.data = self.tutor1_last_name.data.title()
+        if self.tutor2_name.data:
+            self.tutor2_name.data = self.tutor2_name.data.title()
+        if self.tutor2_last_name.data:
+            self.tutor2_last_name.data = self.tutor2_last_name
+    
+        # Debug statements to check values
+        print(f"City of Birth: {self.city_of_birth.data}")
+        print(f"Locality ID: {self.locality_id.data}")
+
+
     def validate(self, extra_validators=None):
         if not super(RiderForm, self).validate(extra_validators=extra_validators):
             return False
@@ -360,7 +384,7 @@ class RiderForm(FlaskForm):
             if not self.grant_percentage.data:
                 self.grant_percentage.errors.append("Este campo es obligatorio.")
                 return False
-        if self.has_work.data == "True":
+        if self.has_job_proposal.data == "True":
             required_fields = [
                 "institutional_work_proposal",
                 "condition",
@@ -425,7 +449,7 @@ class RiderForm(FlaskForm):
 
     def validate_dni(form, field):
         """Valida que el DNI no esté repetido"""
-        if people.get_member_by_field('dni', field.data, exclude_id=form.rider_id):
+        if people.get_rider_by_field('dni', field.data, exclude_id=form.rider_id):
             raise ValidationError("Ya existe un jinete/amazona con ese DNI")
         
 
@@ -465,8 +489,7 @@ class RiderForm(FlaskForm):
             "family_allowance": self.family_allowance.data,
             "pension_benefit": self.pension_benefit.data,
             "grant_percentage": float(self.grant_percentage.data) if self.grant_percentage.data else None,
-            "has_guardianship": self.has_guardianship.data,
-            "job_proposal": self.has_work.data
+            "has_guardianship": self.has_guardianship.data == "True",
         }
 
 

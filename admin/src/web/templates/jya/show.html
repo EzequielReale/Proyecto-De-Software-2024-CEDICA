@@ -32,8 +32,10 @@
             <strong style="margin-left: 20px;">DNI:</strong> {{ rider.dni }}<br>
             <strong style="margin-left: 20px;">Teléfono:</strong> {{ rider.phone }}<br>
             <strong style="margin-left: 20px;">Teléfono de emergencia:</strong> {{ rider.emergency_phone }}<br>
-            <strong style="margin-left: 20px;">Domicilio:</strong> {{ rider.street }} {{ rider.number }}, {{
-            rider.locality.name }}, provincia de {{ rider.locality.province.name }}<br>
+            <strong style="margin-left: 20px;">Domicilio:</strong> {{ rider.street }} {{ rider.number }}. 
+            {% if rider.floor %}Piso {{ rider.floor }}, {% endif %}
+            {% if rider.apartment %}Departamento {{ rider.apartment }}. {% endif %}
+            {{ rider.locality.name }}, provincia de {{ rider.locality.province.name }}<br>
             <strong style="margin-left: 20px;">Fecha de nacimiento:</strong> {{ rider.birth_date.strftime('%d-%m-%Y') }}
             ({{(current_year - rider.birth_date.year)}} años)<br>
             <strong style="margin-left: 20px;">Lugar de nacimiento:</strong> {{ rider.city_of_birth.name }}, provincia

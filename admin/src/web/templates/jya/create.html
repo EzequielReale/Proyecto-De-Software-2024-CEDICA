@@ -165,7 +165,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
-                            <select class="form-select" id="disability_type" name="disability_type" required>
+                            <select class="form-select" id="disability_type" name="disability_type">
                                 <option disabled selected>Seleccione un tipo de discapacidad...</option>
                                 {% for disability_type in disability_types %}
                                 <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
@@ -175,7 +175,7 @@
                             
                         <div class="form-group w-50">
                             <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
-                            <select class="form-select" id="disability_id" name="disability_id" required>
+                            <select class="form-select" id="disability_id" name="disability_id">
                                 <option disabled selected>Seleccione una discapacidad...</option>
                                 {% for disability in disabilities %}
                                 <option value="{{ disability.id }}">{{ disability.name }}</option>
@@ -324,7 +324,7 @@
 
                 <div class="form-group w-100">
                     <label for="has_tutor_1" class="mb-1">¿Tiene tutor?</label>
-                    <select class="form-select" id="has_tutor_1" name="has_tutor_1" required>
+                    <select class="form-select" id="has_tutor_1" name="has_tutor_1">
                         <option disabled selected>Seleccione una opción...</option>
                         <option value="True">Sí</option>
                         <option value="False">No</option>
@@ -383,7 +383,7 @@
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="tutor1_education_level" class="mb-1">Nivel educativo</label>
-                            <select class="form-select" id="tutor1_education_level" name="tutor1_education_level" required>
+                            <select class="form-select" id="tutor1_education_level" name="tutor1_education_level">
                                 <option disabled selected>Seleccione un nivel educativo...</option>
                                 <option value="Primario">Primario</option>
                                 <option value="Secundario">Secundario</option>
@@ -402,7 +402,7 @@
                     <!-- Tutor 2 -->
                     <div class="form-group w-100">  
                         <label for="has_tutor_2" class="mb-1">¿Tiene otro tutor?</label>
-                        <select class="form-select" id="has_tutor_2" name="has_tutor_2" required>
+                        <select class="form-select" id="has_tutor_2" name="has_tutor_2">
                             <option disabled selected>Seleccione una opción...</option>
                             <option value="True">Sí</option>
                             <option value="False">No</option>
@@ -559,8 +559,8 @@
                 </div>
 
                 <div class="form-group w-100">
-                    <label for="has_work" class="mb-1">¿Tiene una oferta de trabajo con nosotros?</label>
-                    <select class="form-select" id="has_work" name="has_work" required>
+                    <label for="has_job_proposal" class="mb-1">¿Tiene una oferta de trabajo con nosotros?</label>
+                    <select class="form-select" id="has_job_proposal" name="has_job_proposal" required>
                         <option disabled selected>Seleccione una opción...</option>
                         <option value="True">Sí</option>
                         <option value="False">No</option>
@@ -737,8 +737,14 @@
         triggerElement.addEventListener('change', function() {
             if (this.value === expectedValue) {
                 targetElement.style.display = 'block';
+                targetElement.querySelectorAll('select, input').forEach(function(element) {
+                    element.setAttribute('required', 'required');
+                });
             } else {
                 targetElement.style.display = 'none';
+                targetElement.querySelectorAll('select, input').forEach(function(element) {
+                    element.removeAttribute('required');
+                });
             }
         });
     }
@@ -752,7 +758,24 @@
         setupDynamicField('has_tutor_1', 'tutor_1_group', 'True');
         setupDynamicField('has_tutor_2', 'tutor_2_group', 'True');
         setupDynamicField('has_school', 'school_group', 'True');
-        setupDynamicField('has_work', 'job_group', 'True');
+        setupDynamicField('has_job_proposal', 'job_group', 'True');
+    });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const rider = JSON.parse('{{ rider|tojson|e }}');
+        
+        for (const [key, value] of Object.entries(rider)) {
+            const element = document.getElementById(key);
+            if (element) {
+                if (element.tagName === 'SELECT') {
+                    element.value = value;
+                } else if (element.tagName === 'INPUT' && element.type === 'checkbox') {
+                    element.checked = value;
+                } else {
+                    element.value = value;
+                }
+            }
+        }
     });
 </script>
 

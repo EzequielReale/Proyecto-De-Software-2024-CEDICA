@@ -11,9 +11,7 @@ class Locality(db.Model):
     province_id = db.Column(db.Integer, db.ForeignKey("provinces.id"), nullable=False)
     province = db.relationship("Province", backref="localities", lazy=True)
     persons = db.relationship("Person", back_populates="locality")
-    riders = db.relationship(
-        "Rider", back_populates="city_of_birth", overlaps="persons"
-    )
+
 
     def __repr__(self):
         return f"Locality {self.id}"

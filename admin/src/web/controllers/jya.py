@@ -63,6 +63,7 @@ def show(id: int) -> str:
     sort_by = request.args.get("sort_by", "document_name")
     sort_direction = request.args.get("sort_direction", "asc")
     rider = people.get_rider_by_field("id", id)
+    print(rider.city_of_birth, rider.locality)
     documents = people.list_filtered_documents(id, filters, sort_by, sort_direction) 
     return render_template("jya/show.html", rider=rider, documents=documents, filters=filters, sort_by=sort_by, sort_direction=sort_direction, current_year=datetime.now().year,)
 
@@ -90,6 +91,7 @@ def _configure_form(disability_types_list:list, disabilities_list:list, province
     form.assigned_professionals.choices = [(member.id, member.name, member.last_name) for member in member_list]
     form.professor_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
     form.assistant_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
+    form.horse_id.choices = [(horse.id, horse.name) for horse in horse_list]
     return form
 
 
@@ -99,6 +101,7 @@ def _create_rider(form:RiderForm) -> int:
     rider_data = form.get_rider_data()
     rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
     rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
+    print(rider_data)
     rider_data['tutor_1'] = tutor_1 if tutor_1 else None
     rider_data['tutor_2'] = tutor_2 if tutor_2 else None
     member_ids = form.assigned_professionals.data
@@ -107,7 +110,7 @@ def _create_rider(form:RiderForm) -> int:
     return people.rider_new(**rider_data)
 
 
-def _create_tutors(form:RiderForm) -> int:
+def _create_tutors(form:RiderForm) -> Tutor:
     """Recibe el formulario y el número de tutor y retorna el id del tutor creado"""
     tutor_1 = None
     tutor_2 = None
