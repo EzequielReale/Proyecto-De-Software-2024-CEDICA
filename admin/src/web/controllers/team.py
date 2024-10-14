@@ -22,7 +22,7 @@ def index() -> str:
         "last_name": request.args.get("last_name"),
         "dni": request.args.get("dni"),
         "email": request.args.get("email"),
-        "profession_id": request.args.get("profession_id"),
+        "job_id": request.args.get("job_id"),
     }
     sort_by = request.args.get("sort_by", "name")
     sort_direction = request.args.get("sort_direction", "asc")
@@ -35,7 +35,7 @@ def index() -> str:
         members=members,
         page=page,
         total_pages=total_pages,
-        professions=professions.list_professions(),
+        jobs=professions.list_jobs(),
         filters=filters,
         sort_by=sort_by,
         sort_direction=sort_direction,

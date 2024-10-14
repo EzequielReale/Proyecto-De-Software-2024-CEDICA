@@ -34,12 +34,12 @@
       placeholder="Email" style="width: auto; display: inline-block;">
   </div>
   <div class="form-group mr-3" style="margin-bottom: 10px;">
-    <label for="profession">Profesión:</label>
-    <select class="form-control" id="profession_id" name="profession_id" style="width: auto; display: inline-block;">
+    <label for="job">Puesto laboral:</label>
+    <select class="form-control" id="job_id" name="job_id" style="width: auto; display: inline-block;">
       <option value="">Seleccionar</option>
-      {% for profession in professions %}
-      <option value="{{ profession.id }}" {% if profession.id==filters.profession_id %}selected{% endif %}>
-        {{ profession.name }}
+      {% for job in jobs %}
+      <option value="{{ job.id }}" {% if job.id==filters.job_id %}selected{% endif %}>
+        {{ job.name }}
       </option>
       {% endfor %}
     </select>
@@ -87,7 +87,7 @@
       <th style="background-color: #0056b3; color: #ffffff;">DNI</th>
       <th style="background-color: #0056b3; color: #ffffff;">Email</th>
       <th style="background-color: #0056b3; color: #ffffff;">Teléfono</th>
-      <th style="background-color: #0056b3; color: #ffffff;">Profesión</th>
+      <th style="background-color: #0056b3; color: #ffffff;">Puesto laboral</th>
       <th style="background-color: #0056b3; color: #ffffff;">
         <a href="{{ url_for('team.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}"
           style="color: inherit; text-decoration: none;">
@@ -112,7 +112,7 @@
       <td>{{ member.dni }}</td>
       <td>{{ member.email }}</td>
       <td>{{ member.phone }}</td>
-      <td>{{ member.profession.name }}</td>
+      <td>{{ member.job.name }}</td>
       <td>{{ member.created_at.strftime('%d-%m-%Y') }}</td>
     </tr>
     {% endfor %}
