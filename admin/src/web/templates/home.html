@@ -8,6 +8,13 @@
 
 
 {% block aside %}
+{% if is_authenticated(session) %}
+
+<li class="nav-item">
+    <a class="nav-link active" href="{{ url_for('registro_pagos.index') }}">Listado de Pagos</a>
+</li>
+
+{%endif%}
 {% endblock %}
 
 

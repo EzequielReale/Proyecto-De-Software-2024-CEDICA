@@ -4,210 +4,58 @@
 
 {% block head %}
 {{ super() }}
-<style>
-  /* Estilos para los botones de las distintas acciones */
-  .action-icons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .action-icons i {
-        transition: 0.3s;
-        color: #0099CC;
-    }
-
-    .action-icons i:hover {
-        color: #0077AA;
-        fill: #0077AA;
-    }
-</style>
+<script src="{{ url_for('static', filename='js/search_users.js') }}"></script>
 {% endblock %}
 
 {% block content %}
-  <h1 style="color: #007bff; margin-bottom: 20px;">Usuarios</h1>
-  <p style="margin-bottom: 20px;">Página de presentación de usuarios</p>
-
-    <!-- Formulario de búsqueda -->
-     
-    <form action="{{ url_for('user.index') }}" method="GET" class="form-inline mb-3" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-    
-        <div class="form-group mr-3" style="margin-bottom: 10px;">
-            <label for="email">Email:</label>
-            <input type="text" class="form-control" id="email" name="email" value="{{ filters.email or '' }}" placeholder="Email" style="width: auto; display: inline-block;">
-        </div>
-
-        <div class="form-group mr-3" style="margin-bottom: 10px;">
-            <label for="status">Estado:</label>
-            <select class="form-control" id="state" name="status" style="width: auto; display: inline-block;">
-                <option value="">Seleccionar</option>
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option> 
-            </select>
-        </div>
-
-        <div class="form-group mr-3" style="margin-bottom: 10px;">
-            <label for="role">Rol:</label>
-            <select class="form-control" id="role_id" name="role_id" style="width: auto; display: inline-block;">
-                <option value="">Seleccionar</option>
-                {% for role in roles %}
-                <option value="{{ role.id }}" >
-                {{ role.name }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;">Buscar</button>
-        <a href="{{ url_for('team.index') }}" class="btn btn-secondary" style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros</a>
-    
-    </form>
-    <!-- Fin de formulario de búsqueda -->
-
-    <a href="{{ url_for('user.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-      <i class="fas fa-user-plus"></i> Crear usuario nuevo
-    </a>
-
-    <!-- Tabla de usuarios -->
-    <table class="table table-striped">
-        <thead>
-          <tr>
-            <th style="background-color: #0056b3; color: #ffffff;">
-                Alias
-            </th>
-
-            <th style="background-color: #0056b3; color: #ffffff;">
-                <a href="{{ url_for('user.index', sort_by='email', sort_direction='asc' if sort_by != 'email' or sort_direction == 'desc' else 'desc ', **filters) }}" style="color: inherit; text-decoration: none;">
-                    Email
-                    {% if sort_by == 'email' %}
-                        {% if sort_direction == 'asc' %}
-                            &#9650;
-                        {% else %}
-                            &#9660;
-                        {% endif %}
-                    {% endif %}
-                </a>
-            </th>
-
-            <th style="background-color: #0056b3; color: #ffffff;">
-                Esta activo
-            </th>
-
-            <th style="background-color: #0056b3; color: #ffffff;">
-                Roles
-            </th>
-
-            <th style="background-color: #0056b3; color: #ffffff;">
-                <a href="{{ url_for('user.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc ', **filters) }}" style="color: inherit; text-decoration: none;">
-                    Fecha de Creación
-                    {% if sort_by == 'creation_date' %}
-                        {% if sort_direction == 'asc' %}
-                            &#9650;
-                        {% else %}
-                            &#9660;
-                        {% endif %}
-                    {% endif %}
-                </a>
-            </th>
-
-            <th style="background-color: #0056b3; color: #ffffff;">
-                Acciones
-            </th>
-
-          </tr>
-        </thead>
-        <tbody>
-    
-          {% if users %}
-          {% for user in users %}
-          
-          <tr>
-            <td>{{ user.alias }}</td>
-
-            <td>{{ user.email }}</td>
-
-            <td>
-                {% if user.isActive %}
-                  Activo
-                {% else %}
-                  No Activo
-                {% endif %}
-            </td>
-            
-            <td>
-                {% for role in user.roles %}
-                    {{ role.name }}{% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </td>
-            
-            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
-
-            <td>
-              <div class="action-icons">
-                <!-- Icono de vista   -->
-                <a href="{{ url_for('user.show', email=user.email)}}" title="Ver detalles" style="cursor:pointer;">
-                    <i class="fas fa-file-text"></i>
-                </a>
-                <!-- Icono de edición -->
-                <a href="" title="Editar" style="cursor:pointer;">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <!-- Formulario de eliminación -->
-                <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;">
-                  <button type="submit" title="Eliminar" 
-                    style="border: none; background: none; color: #0099CC; cursor: pointer;">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </form>
-              </div>
-    
-            </td>
-    
-          </tr>
-    
-          {% endfor %}
-          {% else %}
-    
-          <tr>
-            <td colspan="8">No hay usuarios</td>
-          </tr>
-    
-          {% endif %}
-    
-        </tbody>
-    
-      </table>
-
-      <!-- Fin de tabla de usuarios -->
-
-
-    <!-- Paginación -->
-    <nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
-        <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
-            {% if page > 1 %}
-            <li class="page-item">
-            <a class="page-link" href="{{ url_for('user.index', page=page-1, **filters) }}" aria-label="Previous" style="color: #0056b3;">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-            </li>
-            {% endif %}
-            {% for p in range(1, total_pages + 1) %}
-            <li class="page-item {% if p == page %}active{% endif %}">
-            <a class="page-link" href="{{ url_for('user.index', page=p, **filters) }}" style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{ p }}</a>
-            </li>
-            {% endfor %}
-            {% if page < total_pages %}
-            <li class="page-item">
-            <a class="page-link" href="{{ url_for('user.index', page=page+1, **filters) }}" aria-label="Next" style="color: #0056b3;">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-            </li>
-            {% endif %}
-        </ul>
-        </nav>
-
-        <!-- Fin de paginación -->
-
+  <h1>Usuarios</h1>
   
+  <a href="{{ url_for('user.create') }}" class="btn btn-primary">Crear usuario nuevo</a>
+
+  <a href="{{ url_for('user.search') }}" class="btn btn-primary">Buscar usuario</a>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Alias</th>
+        <th>Email</th>
+        <th>Esta activo</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      {% if users %}
+      {% for user in users %}
+      
+      <tr>
+        <td>{{ user.alias }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.isActive }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+            <a href="" class="btn btn-info">Ver</a>
+            <a href="{{ url_for('user.update', email=user.email) }}" class="btn btn-warning">Editar</a>
+            <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </td>
+
+      </tr>
+
+      {% endfor %}
+      {% else %}
+
+      <tr>
+        <td colspan="8">No hay miembros en el equipo</td>
+      </tr>
+
+      {% endif %}
+
+    </tbody>
+
+  </table>
 
 {% endblock %}
 
