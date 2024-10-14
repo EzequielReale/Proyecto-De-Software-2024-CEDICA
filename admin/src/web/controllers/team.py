@@ -5,16 +5,12 @@ from flask import (
     render_template,
     Request,
     request,
-    session,
     url_for
 )
 
 from src.core import adressing, people, professions
 from web.forms.member_form import MemberForm
-from web.forms.person_document_form import PersonDocumentForm as DocumentForm
-from src.web.handlers.autenticacion import check_permission,login_required
-from src.web.handlers.error import unauthorized
-
+from src.web.handlers.autenticacion import login_required
 
 
 bp = Blueprint("team", __name__, url_prefix ="/team") 
@@ -23,8 +19,6 @@ bp = Blueprint("team", __name__, url_prefix ="/team")
 @login_required
 def index() -> str:
     """Listado de miembros del equipo usando filtros, ordenación y paginación"""
-    if  not check_permission(session,"team_index"):
-         return unauthorized()
     page = request.args.get('page', 1, type=int)
     per_page = 25
 
@@ -54,11 +48,8 @@ def index() -> str:
 @bp.get("/<int:id>")
 def show(id: int)->str:
     """Recibe el id de un miembro del equipo y muestra su información"""
-    if  not check_permission(session,"team_show"):
-         return unauthorized()
     member = people.get_member_by_field('id', id)
-    documents = people.list_documents(id)
-    return render_template('team/show.html', member=member, documents=documents)
+    return render_template('team/show.html', member=member)
 
 def _get_data_from_db():
     """Obtiene la lista de profesiones, trabajos, provincias y localidades de la BD"""
@@ -76,7 +67,7 @@ def _get_validator(profession_list:list, jobs:list, localities:list, member_id=N
     form.locality_id.choices = [(locality.id, locality.name) for locality in localities]
     return form
 
-def _validate_request(req:Request, profession_list:list, jobs:list, provinces:list, localities: list, member_id=None)->tuple:
+def _get_form(req:Request, profession_list:list, jobs:list, provinces:list, localities: list, member_id=None)->tuple:
     """Recibe la request, la lista de profesiones, trabajos, provincias y localidades y valida que el formulario sea correcto"""
     form = _get_validator(profession_list, jobs, localities, member_id)
     form.process(req.form)
@@ -90,14 +81,12 @@ def _validate_request(req:Request, profession_list:list, jobs:list, provinces:li
 @bp.route("/new" , methods=['GET', 'POST'])
 def create()->str:
     """Muestra el formulario para crear un nuevo miembro del equipo y lo guarda en la BD"""
-    if  not check_permission(session,"team_new"):
-         return unauthorized()
     member = {}
     profession_list, jobs, provinces, localities = _get_data_from_db()
     
     # Si se envia el formulario
     if request.method == "POST":
-        form, valid = _validate_request(request, profession_list, jobs, provinces, localities)
+        form, valid = _get_form(request, profession_list, jobs, provinces, localities)
         if valid:
             member = people.member_new(**form.data)
             flash(f"El miembro {member.name} {member.last_name} ha sido creado exitosamente", "success")
@@ -110,14 +99,12 @@ def create()->str:
 @bp.route("/<int:id>/edit", methods=['GET', 'POST'])
 def update(id: int)->str:
     """Recibe el id de un miembro del equipo y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
-    if  not check_permission(session,"team_update"):
-         return unauthorized()
     member = people.get_member_by_field('id', id)
     profession_list, jobs, provinces, localities = _get_data_from_db()
     
     # Si se envia el formulario
     if request.method == "POST":
-        form, valid = _validate_request(request, profession_list, jobs, provinces, localities, member_id=member.id)
+        form, valid = _get_form(request, profession_list, jobs, provinces, localities, member_id=member.id)
         if valid:
             member = people.member_update(id, **form.data)
             flash(f"El miembro {member.name} {member.last_name} ha sido actualizado exitosamente", "success")
@@ -131,33 +118,6 @@ def update(id: int)->str:
 @bp.post("/<int:id>/delete")
 def destroy(id: int)->str:
     """Recibe el id de un miembro del equipo y lo elimina fisicamente de la BD"""
-    if  not check_permission(session,"team_destroy"):
-         return unauthorized()
-    documents = people.list_documents(id)
-    for document in documents:
-        people.delete_document(document['id'])
     member = people.member_delete(id)
     flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
     return redirect(url_for('team.index'))
-
-@bp.route("/<int:id>/add_document", methods=['GET', 'POST'])
-def add_document(id: int)->str:
-    """Recibe el id de un miembro del equipo y agrega un documento a su lista de documentos"""
-    form = DocumentForm()
-    if form.validate_on_submit():
-        document = form.document.data
-        people.member_add_document(id, document)
-        flash("Documento agregado exitosamente", "success")
-        return redirect(url_for('team.show', id=id))
-    else:
-        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
-        flash(f"Error en el formulario: {error_messages}", "danger")
-
-    return render_template('team/add_document.html', member_id=id, form=form)
-
-@bp.post("/<int:id>/delete_document/<int:document_id>")
-def destroy_document(id: int, document_id: int)->str:
-    """Recibe el id de un miembro del equipo y el id de un documento y lo elimina de la BD"""
-    document = people.delete_document(document_id)
-    flash(f"Documento {document.document_name} eliminado exitosamente", "success")
-    return redirect(url_for('team.show', id=id))

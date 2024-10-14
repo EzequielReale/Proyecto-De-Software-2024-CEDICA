@@ -1,9 +1,5 @@
 from src.core.database import db
-from src.core.user_role_permission.upr_models import Role
-
-def list_roles()->list:
-    """ Lista todos los roles guardados en la BD"""
-    return Role.query.all()
+from src.core.models.user_role_permission.upr_models import Role
 
 def get_role_by_name(role_name)->Role:
     """ Recibe el nombre de un role y retorna el role correspondiente si existia"""

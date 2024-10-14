@@ -26,8 +26,7 @@
         color: #333;
     }
 
-    input,
-    select {
+    input, select {
         width: 100%;
         padding: 10px;
         border-radius: 5px;
@@ -73,33 +72,32 @@
         <label for="tipo_pago">Tipo de Pago:</label>
         <select name="tipo_pago" id="tipo_pago" required>
             {% for tipo in tipos %}
-            <option value="{{ tipo.id }}" {% if tipo.id==pago.tipo_pago.id %}selected{% endif %}>
-                {{ tipo.tipo }}
-            </option>
+                <option value="{{ tipo.id }}" {% if tipo.id == pago.tipo_pago.id %}selected{% endif %}>
+                    {{ tipo.tipo }}
+                </option>
             {% endfor %}
         </select>
-
+        
         <label for="fecha_pago">Fecha de Pago:</label>
-        <input type="date" name="fecha_pago" id="fecha_pago" value="{{ pago.fecha_pago.strftime('%Y-%m-%d') }}"
-            required>
+        <input type="date" name="fecha_pago" id="fecha_pago" value="{{ pago.fecha_pago.strftime('%Y-%m-%d') }}" required>
 
-
+        
         <label for="beneficiario">Beneficiario:</label>
         <select name="beneficiario" id="beneficiario" required>
             {% for user in users %}
-            <option value="{{ user.id }}" {% if user.id==pago.beneficiario_id %}selected{% endif %}>
-                {{ user.email }}
-            </option>
+                <option value="{{ user.id }}" {% if user.id == pago.beneficiario_id %}selected{% endif %}>
+                    {{ user.email }}
+                </option>
             {% endfor %}
         </select>
 
 
         <label for="descripcion">Descripción:</label>
         <input type="text" name="descripcion" id="descripcion" value="{{ pago.descripcion }}" required maxlength="255">
-        <div id="descripcion-count">0/255 </div>
+            <div id="descripcion-count">0/255 </div>
 
 
-
+        
         <button type="submit">Guardar Cambios</button>
         <a href="{{ url_for('registro_pagos.index') }}">Cancelar</a>
     </form>
@@ -108,7 +106,10 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    print("estre al script")
+    console.log("entro al script");
+
+    document.addEventListener('DOMContentLoaded', function() {
         const descripcionInput = document.getElementById('descripcion');
         const countDisplay = document.getElementById('descripcion-count');
 

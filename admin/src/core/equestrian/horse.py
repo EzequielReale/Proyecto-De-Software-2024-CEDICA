@@ -16,8 +16,6 @@ class Horse(db.Model):
     assigned_location = db.Column(db.String(64), nullable=False)
     assigned_members = db.relationship('Member', secondary='horse_members', backref='horses')
     activities = db.relationship('Activity', secondary='horse_activities', backref='horses')
-    documents = db.relationship('HorseDocument', backref='horse', lazy=True)
-
 
     def __repr__(self):
         return f'Horse {self.id} - {self.name}'

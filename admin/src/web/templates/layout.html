@@ -52,30 +52,14 @@
                         <a class="nav-link {% if 'jya' in request.endpoint %}active{% endif %}" aria-current="page"
                             href="{{ url_for('jya') }}">J&A</a>
                     </li>
-                    {% if check_permission(session,'encuestre_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if 'ecuestre' in request.endpoint %}active{% endif %}"
                             href="{{ url_for('ecuestre.index') }}">Ecuestre</a>
                     </li>
-                    {% endif %}
-                    {% if check_permission(session,'team_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if 'team' in request.endpoint %}active{% endif %}"
                             href="{{ url_for('team.index') }}">Equipo</a>
                     </li>
-                    {% endif %}
-                    {% if check_permission(session,'user_index')%}
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'user' in request.endpoint %}active{% endif %}"
-                            href="{{ url_for('user.index') }}">Usuarios</a>
-                    </li>
-                    {% endif %}
-                    {% if check_permission(session,'reg_pagos_index')%}
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'registro_pagos' in request.endpoint %}active{% endif %}"
-                            href="{{ url_for('registro_pagos.index') }}">Registro de Pagos</a>
-                    </li>
-                    {% endif %}
                     {% endif %}
                 </ul>
 
