@@ -115,7 +115,7 @@ def download_document(document_id: int) -> bytes:
 
 def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
-    return db_fun.list(Member, filters, page, per_page, sort_by, sort_direction)
+    return db_fun.list_paginated(Member, filters, page, per_page, sort_by, sort_direction)
 
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
@@ -135,9 +135,24 @@ def member_update(member_id: int, **kwargs) -> Member:
 
 def member_delete(member_id: int) -> Member:
     """Elimina un miembro por ID y lo devuelve"""
+    # Eliminar documentos asociados
     documents = list_documents(member_id)
     for document in documents:
         delete_document(document["id"])
+
+    # Quitar el miembro de los j/a asociados
+    riders = db_fun.filter(Rider, {'members': member_id})
+    for rider in riders:
+        rider.members = [m for m in rider.members if m.id != member_id]
+        db.session.commit()
+
+    # Quitar el miembro de las propuestas de trabajo de J/a asociadas
+    job_proposals = list(db_fun.filter(professions.JobProposal, {"professor_id": member_id}))
+    job_proposals += list(db_fun.filter(professions.JobProposal, {"member_horse_rider_id": member_id}))
+    job_proposals += list(db_fun.filter(professions.JobProposal, {"assistant_id": member_id}))
+    for job_proposal in job_proposals:
+        professions.job_proposal_delete(job_proposal.id)
+
     return db_fun.delete(Member, member_id)
 
 
@@ -152,7 +167,7 @@ def member_add_document(member_id: int, file: bytes) -> Document:
 
 def list_riders(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve los jinetes paginados de la BD"""
-    return db_fun.list(Rider, filters, page, per_page, sort_by, sort_direction)
+    return db_fun.list_paginated(Rider, filters, page, per_page, sort_by, sort_direction)
 
 
 def get_rider_by_field(field: str, value, exclude_id=None) -> Rider:
@@ -190,8 +205,8 @@ def _create_tutors(form:RiderForm) -> Tutor:
 def rider_new(form:RiderForm) -> str:
     """Crea un nuevo jinete en base a un formulario, lo guarda en la BD y lo devuelve"""
     rider = _create_rider(form)
-    professions.create_school(form, rider.id)
-    professions.create_job_proposal(form, rider.id)
+    professions.school_new(form, rider.id)
+    professions.job_proposal_new(form, rider.id)
     return rider
 
 

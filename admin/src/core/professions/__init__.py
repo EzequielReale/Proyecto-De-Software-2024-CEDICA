@@ -45,7 +45,7 @@ def school_new(form:RiderForm, rider_id:int) -> int:
     """Recibe el formulario y el id del j/a y retorna la escuela creada"""
     school = School()
     if form.has_school.data == "True":
-        school = db.new(**form.get_school_data(), rider_id=rider_id)
+        school = db.new(School, **form.get_school_data(), rider_id=rider_id)
     return school
 
 
@@ -53,7 +53,7 @@ def job_proposal_new(form:RiderForm, rider_id:int) -> int:
     """Recibe el formulario y el id del j/a y retorna la propuesta de trabajo creada"""
     job_proposal = JobProposal()
     if form.has_job_proposal.data == "True":
-        job_proposal = db.new(**form.get_job_proposal_data(), rider_id=rider_id)
+        job_proposal = db.new(JobProposal, **form.get_job_proposal_data(), rider_id=rider_id)
     return job_proposal
 
 

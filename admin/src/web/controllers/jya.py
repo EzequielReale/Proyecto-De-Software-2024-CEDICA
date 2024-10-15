@@ -38,7 +38,7 @@ def index() -> str:
     return render_template(
         "jya/index.html",
         riders=riders,
-        members=db.filter(Member, {'job_id': 2}),
+        members=db.filter(Member, {'job_id': 2}), # Terapeutas
         filters=filters,
         page=page,
         total_pages=total_pages,
@@ -71,7 +71,7 @@ def _get_data_from_db() -> tuple:
     localities_list = adressing.list_localities()
     provinces_list = adressing.list_provinces()
     horse_list = Horse.query.all() # Hago una funcion en init para esto?
-    assigned_professionals_list = people.filter(Member, {"job_id": 2}) # Terapeuta
+    assigned_professionals_list = db.filter(Member, {"job_id": 2}) # Terapeuta
     professor_list = db.filter(Member, {"job_id": 9}) # Profesor de equitación
     professor_list = list(professor_list) + list(assigned_professionals_list)
     assistant_list = db.filter(Member, {"job_id": 4}) # Asistente de pista
@@ -148,10 +148,8 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un j/a y lo elimina fisicamente de la BD"""
-    
     rider = people.rider_delete(id)
     flash(f"{rider.name} {rider.last_name} ha sido eliminado", "success")
-
     return redirect(url_for("jya.index"))
 
 

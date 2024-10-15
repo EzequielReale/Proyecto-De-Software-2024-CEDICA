@@ -97,13 +97,15 @@
             <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_2.job }}<br>
             {% endif %}
             {% endif %}
-            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Profesionales que lo
-                atienden:</strong>
-            {% for member in rider.members %}
-            <strong style="margin-left: 20px;">Profesional {{ loop.index }}:</strong><br>
-            <strong style="margin-left: 40px;">Nombre completo:</strong> {{ member.name }} {{ member.last_name }}<br>
-            <strong style="margin-left: 40px;">DNI:</strong> {{ member.dni }}<br>
-            {% endfor %}
+            {% if rider.members %}
+                <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Profesionales que lo
+                    atienden:</strong>
+                {% for member in rider.members %}
+                    <strong style="margin-left: 20px;">Profesional {{ loop.index }}:</strong><br>
+                    <strong style="margin-left: 40px;">Nombre completo:</strong> {{ member.name }} {{ member.last_name }}<br>
+                    <strong style="margin-left: 40px;">DNI:</strong> {{ member.dni }}<br>
+                {% endfor %}
+            {% endif %}
             {% if rider.job_proposal %}
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Trabajo en
                 CEDICA:</strong>
@@ -252,11 +254,11 @@
 {% block scripts %}
 <script>
     function confirmDeleteRider() {
-        return confirm("¿Está seguro de que desea eliminar este rider?");
+        return confirm("¿Está seguro de que desea eliminar este jinete/amazona? Esta acción no se puede deshacer.");
     }
 
     function confirmDeleteDocument() {
-        return confirm("¿Está seguro de que desea eliminar este documento?");
+        return confirm("¿Está seguro de que desea eliminar este documento? Esta acción no se puede deshacer.");
     }
 </script>
 {% endblock %}

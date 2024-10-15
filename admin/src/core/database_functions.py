@@ -1,10 +1,12 @@
+
+from sqlalchemy.orm.query import Query
 from sqlalchemy.types import Enum, Integer, String, Text
 from sqlalchemy.orm import RelationshipProperty
 
 from src.core.database import db
 
 
-def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
+def __apply_filters(model, query:Query, field:any, value:any) -> Query:
     """Aplica los filtros respectivos a una consulta"""
     column = getattr(model, field)
             
@@ -13,12 +15,13 @@ def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
         related_model = column.property.mapper.class_
         query = query.join(column)
         # Si hay más de un valor (o sea, un getlist), convertirlo en una lista
+        print(f"Field: {field}, Value: {value}, Type: {type(value)}")
         if isinstance(value, list):
             query = query.filter(getattr(related_model, 'id').in_(value))
         else:
             query = query.filter(getattr(related_model, 'id') == value)
     # Comprobar si es un entero o un enum
-    elif isinstance(column.type, Integer) or isinstance(column.type, Enum):
+    elif isinstance(column.type, (Integer, Enum)):
         query = query.filter(column == value)
     # Comprobar si es un tipo de columna string
     elif isinstance(column.type, (String, Text)):
@@ -27,7 +30,7 @@ def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
     return query
 
 
-def filter(model, filters: dict) -> tuple:
+def filter(model, filters: dict) -> Query:
     """Aplica filtros y ordenación a una consulta"""
     query = model.query
     for field, value in filters.items():
@@ -37,7 +40,7 @@ def filter(model, filters: dict) -> tuple:
     return query
 
 
-def order_by(model, query:tuple, sort_by=None, sort_direction="asc") -> tuple:
+def order_by(model, query:Query, sort_by=None, sort_direction="asc") -> Query:
     """Aplica ordenación a una consulta"""
     if sort_by:
         column = getattr(model, sort_by)
@@ -54,7 +57,7 @@ def list_all(model) -> list:
     return model.query.all()
 
 
-def list(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
+def list_paginated(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
     query = filter(model, filters)
     query = order_by(model, query, sort_by, sort_direction) 
