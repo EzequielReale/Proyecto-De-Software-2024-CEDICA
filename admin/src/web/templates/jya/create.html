@@ -236,12 +236,12 @@
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label for="floor" class="mb-1">Piso</label>
-                        <input class="form-control" type="text" id="floor" name="floor" placeholder="Ingrese el piso" maxlength="10">
+                        <input class="form-control" type="text" id="floor" name="floor" placeholder="Ingrese el piso (opcional)" maxlength="10">
                     </div>
 
                     <div class="form-group w-50">
                         <label for="apartment" class="mb-1">Departamento</label>
-                        <input class="form-control" type="text" id="apartment" name="apartment" placeholder="Ingrese el departamento" maxlength="10">
+                        <input class="form-control" type="text" id="apartment" name="apartment" placeholder="Ingrese el departamento (opcional)" maxlength="10">
                     </div>
                 </div>
 
@@ -486,7 +486,7 @@
 
                 <div class="w-100 d-flex flex-row gap-3">
                     <select class="form-select" id="assigned_professionals" name="assigned_professionals" multiple required>
-                        {% for member in members %}
+                        {% for member in assigned_professionals %}
                         <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                         {% endfor %}
                     </select>
@@ -605,13 +605,13 @@
                         <div class="form-group w-50">
                             <label for="days" class="mb-1">Días</label>
                             <select class="form-select" id="days" name="days" multiple>
-                                <option value="Lunes">Lunes</option>
-                                <option value="Martes">Martes</option>
-                                <option value="Miércoles">Miércoles</option>
-                                <option value="Jueves">Jueves</option>
-                                <option value="Viernes">Viernes</option>
-                                <option value="Sábado">Sábado</option>
-                                <option value="Domingo">Domingo</option>
+                                <option value="1">Lunes</option>
+                                <option value="2">Martes</option>
+                                <option value="3">Miércoles</option>
+                                <option value="4">Jueves</option>
+                                <option value="5">Viernes</option>
+                                <option value="6">Sábado</option>
+                                <option value="7">Domingo</option>
                             </select>
                         </div>
                     </div>
@@ -621,7 +621,7 @@
                             <label for="professor_id" class="mb-1">Profesor o terapeuta</label>
                             <select class="form-select" id="professor_id" name="professor_id">
                                 <option disabled selected>Seleccione un profesor o terapeuta...</option>
-                                {% for member in members %}
+                                {% for member in professors %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
@@ -631,7 +631,7 @@
                             <label for="assistant_id" class="mb-1">Auxiliar de pista</label>
                             <select class="form-select" id="assistant_id" name="assistant_id">
                                 <option disabled selected>Seleccione un auxiliar de pista...</option>
-                                {% for member in members %}
+                                {% for member in assistants %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
@@ -642,8 +642,8 @@
                         <div class="form-group w-50">
                             <label for="member_horse_rider_id" class="mb-1">Conductor del caballo</label>
                             <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id">
-                                <option disabled selected>Seleccione un miembro...</option>
-                                {% for member in members %}
+                                <option disabled selected>Seleccione un conductor...</option>
+                                {% for member in horse_riders %}
                                 <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
@@ -737,14 +737,10 @@
         triggerElement.addEventListener('change', function() {
             if (this.value === expectedValue) {
                 targetElement.style.display = 'block';
-                targetElement.querySelectorAll('select, input').forEach(function(element) {
-                    element.setAttribute('required', 'required');
-                });
+
             } else {
                 targetElement.style.display = 'none';
-                targetElement.querySelectorAll('select, input').forEach(function(element) {
-                    element.removeAttribute('required');
-                });
+
             }
         });
     }

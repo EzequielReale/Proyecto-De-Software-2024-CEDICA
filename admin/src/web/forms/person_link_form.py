@@ -46,3 +46,7 @@ class PersonLinkForm(FlaskForm):
         documents = people.list_documents(id)
         if any(doc['url'] == field.data for doc in documents):
             raise validators.ValidationError('La URL del documento ya existe para esta persona.')
+        
+    def get_data(self) -> tuple:
+        """Devuelve el nombre, la URL y el tipo de documento"""
+        return self.document_name.data, self.document_path.data, self.document_type.data

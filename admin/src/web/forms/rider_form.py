@@ -319,13 +319,13 @@ class RiderForm(FlaskForm):
         "Días",
         [Optional()],
         choices=[
-            ("Lunes", "Lunes"),
-            ("Martes", "Martes"),
-            ("Miércoles", "Miércoles"),
-            ("Jueves", "Jueves"),
-            ("Viernes", "Viernes"),
-            ("Sábado", "Sábado"),
-            ("Domingo", "Domingo"),
+            ("1", "Lunes"),
+            ("2", "Martes"),
+            ("3", "Miércoles"),
+            ("4", "Jueves"),
+            ("5", "Viernes"),
+            ("6", "Sábado"),
+            ("7", "Domingo"),
         ],
         coerce=int,
     )
@@ -356,10 +356,6 @@ class RiderForm(FlaskForm):
             self.tutor2_name.data = self.tutor2_name.data.title()
         if self.tutor2_last_name.data:
             self.tutor2_last_name.data = self.tutor2_last_name
-    
-        # Debug statements to check values
-        print(f"City of Birth: {self.city_of_birth.data}")
-        print(f"Locality ID: {self.locality_id.data}")
 
 
     def validate(self, extra_validators=None):
@@ -531,14 +527,29 @@ class RiderForm(FlaskForm):
             }
 
 
+    def _get_days_data(self):
+        """Obtiene los días seleccionados como una lista de nombres de días"""
+        days_mapping = {
+            1: "Lunes",
+            2: "Martes",
+            3: "Miércoles",
+            4: "Jueves",
+            5: "Viernes",
+            6: "Sábado",
+            7: "Domingo",
+        }
+        return [days_mapping[day] for day in self.days.data]
+
+
     def get_job_proposal_data(self):
         return {
             "institutional_work_proposal": self.institutional_work_proposal.data,
             "condition": self.condition.data,
             "headquarters": self.headquarters.data,
-            "days": self.days.data,
+            "days": self._get_days_data(),
             "professor_id": self.professor_id.data,
             "assistant_id": self.assistant_id.data,
             "member_horse_rider_id": self.member_horse_rider_id.data,
             "horse_id": self.horse_id.data,
         }
+        

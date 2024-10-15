@@ -31,3 +31,7 @@ class PersonDocumentForm(FlaskForm):
         documents = people.list_documents(id)
         if any(doc['name'] == field.data.filename for doc in documents):
             raise validators.ValidationError('El nombre del documento ya existe para esta persona.')
+        
+    def get_data(self) -> tuple:
+        """Devuelve el archivo y el tipo de documento"""
+        return self.document.data, self.document_type.data

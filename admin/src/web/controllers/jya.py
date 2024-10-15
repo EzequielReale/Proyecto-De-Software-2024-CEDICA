@@ -41,7 +41,7 @@ def index() -> str:
     return render_template(
         "jya/index.html",
         riders=riders,
-        members=people.list_professionals(),
+        members=people.filter(Member, {'job_id': 2}),
         filters=filters,
         page=page,
         total_pages=total_pages,
@@ -74,12 +74,16 @@ def _get_data_from_db() -> tuple:
     disabilities_list = disabilities.list_disability_diagnosis()
     localities_list = adressing.list_localities()
     provinces_list = adressing.list_provinces()
-    horse_list = Horse.query.all()
-    member_list = Member.query.all()
-    return disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list
+    horse_list = Horse.query.all() # Hago una funcion en init para esto?
+    assigned_professionals_list = people.filter(Member, {"job_id": 2}) # Terapeuta
+    professor_list = people.filter(Member, {"job_id": 9}) # Profesor de equitación
+    professor_list = list(professor_list) + list(assigned_professionals_list)
+    assistant_list = people.filter(Member, {"job_id": 4}) # Asistente de pista
+    horse_rider_list = people.filter(Member, {"job_id": 3}) # Conductor
+    return disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list
 
 
-def _configure_form(disability_types_list:list, disabilities_list:list, provinces_list:list, localities_list:list, member_list:list, horse_list:list, rider_id:int=None) -> RiderForm:
+def _configure_form(disability_types_list:list, disabilities_list:list, provinces_list:list, localities_list:list, assigned_professionals_list:list, professor_list:list, assistant_list:list, horse_rider_list:list, horse_list:list, rider_id:int=None) -> RiderForm:
     """Recibe la lista de profesiones, trabajos, localidades y el id del j/a y retorna el validador del formulario"""
     form = RiderForm(rider_id=rider_id)
     form.province_of_birth.choices = [(province.id, province.name) for province in provinces_list]
@@ -88,9 +92,10 @@ def _configure_form(disability_types_list:list, disabilities_list:list, province
     form.locality_id.choices = [(locality.id, locality.name) for locality in localities_list]    
     form.disability_type.choices = [(disability_type.id, disability_type.name) for disability_type in disability_types_list]
     form.disability_id.choices = [(disability.id, disability.name) for disability in disabilities_list]
-    form.assigned_professionals.choices = [(member.id, member.name, member.last_name) for member in member_list]
-    form.professor_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
-    form.assistant_id.choices = [(member.id, member.name, member.last_name) for member in member_list]
+    form.assigned_professionals.choices = [(member.id, member.name, member.last_name) for member in assigned_professionals_list]
+    form.professor_id.choices = [(member.id, member.name, member.last_name) for member in professor_list]
+    form.assistant_id.choices = [(member.id, member.name, member.last_name) for member in assistant_list]
+    form.member_horse_rider_id.choices = [(member.id, member.name, member.last_name) for member in horse_rider_list]
     form.horse_id.choices = [(horse.id, horse.name) for horse in horse_list]
     return form
 
@@ -101,7 +106,6 @@ def _create_rider(form:RiderForm) -> int:
     rider_data = form.get_rider_data()
     rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
     rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
-    print(rider_data)
     rider_data['tutor_1'] = tutor_1 if tutor_1 else None
     rider_data['tutor_2'] = tutor_2 if tutor_2 else None
     member_ids = form.assigned_professionals.data
@@ -143,8 +147,8 @@ def _create_job_proposal(form:RiderForm, rider_id:int) -> int:
 def create() -> str:
     """Muestra el formulario para crear un nuevo j/a y lo guarda en la BD"""
     rider = {}
-    disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list = _get_data_from_db()
-    form = _configure_form(disability_types_list, disabilities_list, provinces_list, localities_list, member_list, horse_list)
+    disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list = _get_data_from_db()
+    form = _configure_form(disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list)
 
     # Si se envia el formulario
     if form.validate_on_submit():
@@ -165,7 +169,10 @@ def create() -> str:
         disabilities=disabilities_list,
         localities=localities_list,
         provinces=provinces_list,
-        members=member_list,
+        assigned_professionals=assigned_professionals_list,
+        professors=professor_list,
+        assistants=assistant_list,
+        horse_riders=horse_rider_list,
         horses=horse_list,
         csrf_token=(form.csrf_token if hasattr(form, 'csrf_token') else None)
     )
@@ -218,8 +225,7 @@ def add_document(id: int) -> str:
     """Recibe el id de un j/a y agrega un documento a su lista de documentos"""
     form = DocumentForm()
     if form.validate_on_submit():
-        document = form.document.data
-        type = form.document_type.data
+        document, type = form.get_data()
         people.rider_add_document(id, document, type)
         flash("Documento agregado exitosamente", "success")
         return redirect(url_for("jya.show", id=id))
@@ -236,9 +242,7 @@ def add_link(id: int) -> str:
     """Recibe el id de un j/a y agrega un enlace a su lista de documentos"""
     form = LinkForm()
     if form.validate_on_submit():
-        name = form.document_name.data
-        path = form.document_path.data
-        type = form.document_type.data
+        name, path, type = form.get_data()
         people.document_new(id, path, name, type, link=True)
         flash("Enlace cargado exitosamente", "success")
         return redirect(url_for("jya.show", id=id))
@@ -247,6 +251,13 @@ def add_link(id: int) -> str:
         flash(f"Error en el formulario: {error_messages}", "danger")
 
     return render_template("jya/add_link.html", rider_id=id, form=form)
+
+
+@bp.get("/<int:id>/download_document/<int:document_id>")
+@login_required
+def download_document(id: int, document_id: int) -> bytes:
+    """Recibe el id de un j/a y el id de un documento y lo descarga"""
+    return people.download_document(document_id)
 
 
 @bp.post("/<int:id>/delete_document/<int:document_id>")

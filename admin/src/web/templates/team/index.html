@@ -45,13 +45,17 @@
     </select>
   </div>
   <button type="submit" class="btn btn-primary"
-    style="background-color: #007bff; border-color: #007bff;">Buscar</button>
+    style="background-color: #007bff; border-color: #007bff;">Buscar
+    <i class="fas fa-search"></i>
+  </button>
   <a href="{{ url_for('team.index') }}" class="btn btn-secondary"
-    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros</a>
+    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros
+    <i class="fas fa-eraser"></i>
+  </a>
 </form>
 
 <a href="{{ url_for('team.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-  <i class="fas fa-user-plus"></i> Crear miembro nuevo
+  Crear nuevo miembro <i class="fas fa-user-plus"></i>
 </a>
 
 <table class="table table-striped"

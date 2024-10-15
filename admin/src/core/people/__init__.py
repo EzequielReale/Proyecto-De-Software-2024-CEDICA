@@ -1,7 +1,8 @@
+from io import BytesIO
 from os import fstat
 import uuid
 
-from flask import current_app
+from flask import current_app, send_file
 from minio.error import S3Error
 from sqlalchemy.types import Enum, Integer, String, Text
 from sqlalchemy.orm import RelationshipProperty
@@ -37,16 +38,18 @@ def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
     return query
 
 
-def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction="asc") -> tuple:
+def filter(model, filters: dict) -> tuple:
     """Aplica filtros y ordenación a una consulta"""
     query = model.query
-
-    # Aplicar filtros
     for field, value in filters.items():
         if value and value != "":
             query = __apply_filters(model, query, field, value)
 
-    # Aplicar ordenación
+    return query
+
+
+def order_by(model, query:tuple, sort_by=None, sort_direction="asc") -> tuple:
+    """Aplica ordenación a una consulta"""
     if sort_by:
         column = getattr(model, sort_by)
         if sort_direction == "desc":
@@ -59,7 +62,8 @@ def _filter_and_sort(model, filters: dict, sort_by=None, sort_direction="asc") -
 
 def _list(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
-    query = _filter_and_sort(model, filters, sort_by, sort_direction)
+    query = filter(model, filters)
+    query = order_by(model, query, sort_by, sort_direction) 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.pages
 
@@ -134,13 +138,29 @@ def _get_files_associated(docs:tuple) -> list:
             file_url = current_app.storage.client.presigned_get_object(
                 "grupo04", doc.document_path
             )
-        files.append({"id": doc.id, "name": doc.document_name, "url": file_url, "type": doc.document_type, "created_at": doc.created_at,})
+        files.append(
+            {
+                "id": doc.id,
+                "name": doc.document_name,
+                "url": file_url,
+                "type": doc.document_type,
+                "its_a_link": doc.its_a_link,
+                "created_at": doc.created_at,
+            }
+        )
     return files
 
 
 def list_documents(person_id: int) -> list:
     """Devuelve los documentos de una persona por ID con URLs descargables"""
     docs_db = Document.query.filter_by(person_id=person_id).all()
+    return _get_files_associated(docs_db)
+
+
+def list_filtered_documents(person_id: int, filters: dict, sort_by=None, sort_direction="asc") -> list:
+    """Devuelve los documentos de una persona por ID y filtros aplicados con URLs descargables"""
+    docs_db = filter(Document, filters)
+    docs_db = order_by(Document, docs_db, sort_by, sort_direction)
     return _get_files_associated(docs_db)
 
 
@@ -154,30 +174,33 @@ def delete_document(document_id: int) -> Document:
     return document
 
 
-def list_filtered_documents(person_id: int, filters: dict, sort_by=None, sort_direction="asc") -> list:
-    """Devuelve los documentos de una persona por ID y filtros aplicados con URLs descargables"""
-    docs_db = _filter_and_sort(Document, filters, sort_by, sort_direction)
-    return _get_files_associated(docs_db)
-
-
-def download_document(document_id: int) -> tuple:
-    """Descarga un documento por ID"""
+def download_document(document_id: int) -> bytes:
+    """Descarga un documento por ID, obteniendo su contenido desde MinIO"""
     document = _get_by_field(Document, "id", document_id)
-    file = current_app.storage.client.get_object("grupo04", document.document_path)
-    return file, document.document_name
+
+    try:
+        # Obtener el archivo desde MinIO
+        file_obj = current_app.storage.client.get_object("grupo04", document.document_path)
+        
+        # Leer el contenido del archivo
+        file_data = BytesIO(file_obj.read())
+
+        # Devolver el archivo como descarga
+        return send_file(
+            file_data,
+            as_attachment=True,
+            download_name=document.document_name,
+            mimetype="application/octet-stream"
+        )
+    except S3Error as e:
+        raise RuntimeError(f"Error descargando el documento: {e}")
 
 
 """Funciones de miembros"""
 
-
 def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
     return _list(Member, filters, page, per_page, sort_by, sort_direction)
-
-
-def list_professionals() -> list:
-    """Devuelve todos los miembros de la BD"""
-    return Member.query.all()
 
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
@@ -261,8 +284,3 @@ def get_tutor_by_id(id:int) -> Tutor:
 def tutor_delete(tutor_id:int) -> Tutor:
     """Recibe el ID de un tutor, lo elimina de la BD y lo devuelve"""
     return _delete(Tutor, tutor_id)
-
-
-def rider_member_new(**kwargs) -> Rider:
-    """Crea una relación entre un jinete y un miembro"""
-    return _new(RiderMember, **kwargs)

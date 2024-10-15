@@ -38,13 +38,17 @@
     {% endfor %}
   </select>  
   <button type="submit" class="btn btn-primary"
-    style="background-color: #007bff; border-color: #007bff;">Buscar</button>
+    style="background-color: #007bff; border-color: #007bff;">Buscar
+    <i class="fas fa-search"></i>
+  </button>
   <a href="{{ url_for('jya.index') }}" class="btn btn-secondary"
-    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros</a>
+    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros
+    <i class="fas fa-eraser"></i>
+  </a>
 </form>
 
 <a href="{{ url_for('jya.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-  <i class="fas fa-user-plus"></i> Crear nuevo Jinete/Amazona
+  Crear nuevo Jinete/Amazona <i class="fas fa-user-plus"></i>
 </a>
 
 <table class="table table-striped"
@@ -104,7 +108,7 @@
       <td>{{ rider.dni }}</td>
       <td>{{ (current_year - rider.birth_date.year) }}</td>
       <td>{{ rider.phone }}</td>
-      <td>{{ rider.created_at.strftime('%Y-%m-%d') }}</td>
+      <td>{{ rider.created_at.strftime('%d-%m-%Y') }}</td>
     </tr>
     {% endfor %}
     {% else %}
@@ -144,15 +148,19 @@
   </ul>
 </nav>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$(document).ready(function() {
-    $('.select2').select2({
-        placeholder: "Seleccione los profesionales",
-        allowClear: true
+    jQuery.noConflict();
+    jQuery(document).ready(function($) {
+        $('.select2').select2({
+            placeholder: "Seleccione los profesionales",
+            allowClear: true
+        });
     });
-});
 </script>
+
+
 
 
 {% endblock %}
