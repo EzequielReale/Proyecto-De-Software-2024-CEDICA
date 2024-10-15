@@ -1,11 +1,14 @@
-from flask import Blueprint
-from flask import render_template
-from flask import request,redirect, flash,url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from flask import session
-from src.core.user_role_permission.operations.user_operations import find_user, get_user_by_email, get_roles_from_user
+from src.core.user_role_permission.operations.user_operations import (
+    find_user,
+    get_roles_from_user,
+    get_user_by_email,
+)
+
 
 bp= Blueprint("auth",__name__,url_prefix="/auth")
+
 
 @bp.get("/")
 def login():
@@ -19,6 +22,7 @@ def logout():
     else:
         flash("No se encontro ninguna sesion activa","error")
     return redirect(url_for("auth.login"))
+
 
 @bp.post("/authenticate")
 def authenticate():
@@ -34,6 +38,7 @@ def authenticate():
    session["user"] = user.email
    flash("La sesion se inicio correctamente!", "success")
    return render_template("home.html")
+
 
 @bp.get("/profile")
 def profile():

@@ -1,9 +1,3 @@
-from flask import Blueprint, flash, redirect, render_template, Request, request, url_for
-
-from src.core import adressing, people, professions
-from src.web.forms.member_form import MemberForm
-from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
-from src.web.handlers.autenticacion import login_required
 from flask import (
     Blueprint,
     flash,
@@ -12,15 +6,14 @@ from flask import (
     Request,
     request,
     session,
-    url_for
+    url_for,
 )
 
 from src.core import adressing, people, professions
-from web.forms.member_form import MemberForm
-from web.forms.person_document_form import PersonDocumentForm as DocumentForm
-from src.web.handlers.autenticacion import check_permission,login_required
+from src.web.forms.member_form import MemberForm
+from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
+from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
-
 
 
 bp = Blueprint("team", __name__, url_prefix="/team")
@@ -30,8 +23,9 @@ bp = Blueprint("team", __name__, url_prefix="/team")
 @login_required
 def index() -> str:
     """Listado de miembros del equipo usando filtros, ordenación y paginación"""
-    if  not check_permission(session,"team_index"):
-         return unauthorized()
+    if not check_permission(session,"team_index"):
+        return unauthorized()
+    
     page = request.args.get('page', 1, type=int)
     per_page = 25
 
@@ -65,8 +59,9 @@ def index() -> str:
 @login_required
 def show(id: int) -> str:
     """Recibe el id de un miembro del equipo y muestra su información"""
-    if  not check_permission(session,"team_show"):
-         return unauthorized()
+    if not check_permission(session,"team_show"):
+        return unauthorized()
+    
     member = people.get_member_by_field('id', id)
     documents = people.list_documents(id)
     return render_template("team/show.html", member=member, documents=documents)
@@ -116,8 +111,9 @@ def _validate_request(
 @login_required
 def create() -> str:
     """Muestra el formulario para crear un nuevo miembro del equipo y lo guarda en la BD"""
-    if  not check_permission(session,"team_new"):
-         return unauthorized()
+    if not check_permission(session,"team_new"):
+        return unauthorized()
+    
     member = {}
     profession_list, jobs, provinces, localities = _get_data_from_db()
 
@@ -149,8 +145,9 @@ def create() -> str:
 @login_required
 def update(id: int) -> str:
     """Recibe el id de un miembro del equipo y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
-    if  not check_permission(session,"team_update"):
-         return unauthorized()
+    if not check_permission(session,"team_update"):
+        return unauthorized()
+    
     member = people.get_member_by_field('id', id)
     profession_list, jobs, provinces, localities = _get_data_from_db()
 
@@ -183,8 +180,9 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un miembro del equipo y lo elimina fisicamente de la BD"""
-    if  not check_permission(session,"team_destroy"):
-         return unauthorized()
+    if not check_permission(session,"team_destroy"):
+        return unauthorized()
+    
     member = people.member_delete(id)
     flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
     return redirect(url_for("team.index"))
@@ -194,6 +192,9 @@ def destroy(id: int) -> str:
 @login_required
 def add_document(id: int) -> str:
     """Recibe el id de un miembro del equipo y agrega un documento a su lista de documentos"""
+    if not check_permission(session,"team_new"):
+        return unauthorized()
+    
     form = DocumentForm()
     if form.validate_on_submit():
         document = form.document.data
@@ -213,6 +214,9 @@ def add_document(id: int) -> str:
 @login_required
 def destroy_document(id: int, document_id: int) -> str:
     """Recibe el id de un miembro del equipo y el id de un documento y lo elimina de la BD"""
+    if not check_permission(session,"team_destroy"):
+        return unauthorized()
+    
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")
     return redirect(url_for("team.show", id=id))

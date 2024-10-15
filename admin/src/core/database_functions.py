@@ -1,7 +1,6 @@
-
+from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy.orm.query import Query
 from sqlalchemy.types import Enum, Integer, String, Text
-from sqlalchemy.orm import RelationshipProperty
 
 from src.core.database import db
 
