@@ -121,6 +121,11 @@ def horse_update(horse_id: int, **kwargs) -> Horse:
 def horse_delete(horse_id:int)->Horse:
     """Elimina un caballo por ID"""
     horse = get_horse_by_id(horse_id)
+    
+    # Eliminar documentos asociados
+    for doc in horse.documents:
+        delete_document(doc.id)
+    
     db.session.delete(horse)
     db.session.commit()
     return horse
