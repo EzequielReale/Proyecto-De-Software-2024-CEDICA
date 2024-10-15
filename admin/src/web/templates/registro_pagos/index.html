@@ -178,7 +178,7 @@ tr:last-child td {
 
     {% if not pagos %}
     <p style="text-align: center; color: #dc3545;">No hay pagos disponibles en el listado.</p>
-{% else %}
+{% endif %}
 
  <!-- Buscador -->
  <div class="search-container p-3 mb-4 bg-light rounded">
@@ -218,7 +218,7 @@ tr:last-child td {
 </div>
 
 
-
+{%if pagos %}
 </div>
 
     <table>

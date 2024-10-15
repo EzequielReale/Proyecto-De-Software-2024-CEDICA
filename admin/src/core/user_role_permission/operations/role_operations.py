@@ -1,9 +1,13 @@
 from src.core.database import db
 from src.core.user_role_permission.upr_models import Role
 
-def get_role_by_name(role_name)->Role:
-    """ Recibe el nombre de un role y retorna el role correspondiente si existia"""
-    return Role.query.filter_by(name=role_name).first()
+#################################################
+
+# Métodos CRUD
+
+def list_roles()->list:
+    """ Lista todos los roles guardados en la BD"""
+    return Role.query.all()
 
 def role_new(**kwargs)->Role:
     """ Recibe nombre del rol y permisos asociados
@@ -13,17 +17,28 @@ def role_new(**kwargs)->Role:
     db.session.commit()
     return role
 
-def delete_role(role_name)->Role:
-    """ Recibe el nombre de un rol y lo elimina de la BD"""
-    role = get_role_by_name(role_name)
-    db.session.delete(role)
-    db.session.commit()
-    return role
+#################################################
 
-def add_permission(role, permission)->Role:
-    """ Recibe un rol y el/los permiso/s, agrega el/los permiso/s 
-    al rol y lo actualiza en la BD"""
-    role.permissions.append(permission)
-    db.session.commit()
-    return role
+# Métodos adicionales
+
+def role_exists(role_name)->bool:
+    """ Recibe el nombre de un rol y retorna True si existe"""
+    return get_role_by_name(role_name) is not None
+
+def roles_exists(roles)->bool:
+    """ Recibe una lista de roles y retorna True si todos existen"""
+    for role in roles:
+        if role_exists(role) is False:
+            return False
+    return True
+
+#################################################
+
+# Métodos de búsqueda
+
+def get_role_by_name(role_name)->Role:
+    """ Recibe el nombre de un role y retorna el role correspondiente si existia"""
+    return Role.query.filter_by(name=role_name).first()
+
+
 

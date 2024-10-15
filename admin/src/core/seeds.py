@@ -16,6 +16,9 @@ def run():
     user_update = Permission.permiso_new(name='user_update')
     user_show = Permission.permiso_new(name='user_show')
 
+    user_block = Permission.permiso_new(name='user_block')
+    user_update_password = Permission.permiso_new(name='user_update_password')
+
     # Seed de Permisos modulo Equipo
 
     team_index = Permission.permiso_new(name='team_index')
@@ -48,7 +51,7 @@ def run():
     # ...
 
     # Seed de Roles
-
+    
     rol1 = Role.role_new(
         name='Tecnica',
         permissions=[encuestre_index, encuestre_show]
@@ -68,8 +71,9 @@ def run():
     )
     rol5 = Role.role_new(
         name='SystemAdmin',
-        permissions=[user_index, user_new, user_destroy, user_update, user_show]
+        permissions=[user_index, user_new, user_destroy, user_update, user_show, user_block, user_update_password,]
     )
+
 
     # Seed de Usuarios
 
@@ -85,6 +89,7 @@ def run():
         alias = "giu",
         password="123",
         isActive=True,
+        roles=[rol4,rol5]
     )
     user2 = User.user_new(
         email="lau@gmail.com",
@@ -92,6 +97,7 @@ def run():
         password="123",
         isActive=True,
     )
+
     # permiso = auth.permiso_new(
     #    name="administracion_index"
     # )
@@ -143,6 +149,61 @@ def run():
     locality1 = adressing.locality_new(
         name = "Ensenada",
         province = province1
+    )
+    horse_document_type1 = equestrian.horse_document_type_new(
+        name="Ficha general"
+    )
+    horse_document_type2 = equestrian.horse_document_type_new(
+        name="Planificación de Entrenamiento"
+    )
+    horse_document_type3 = equestrian.horse_document_type_new(
+        name="Informe de Evolución"
+    )
+    horse_document_type4 = equestrian.horse_document_type_new(
+        name="Imágenes"
+    )
+    horse_document_type5 = equestrian.horse_document_type_new(
+        name="Registro veterinario"
+    )
+    member1 = people.member_new(
+            name="Giuliana",
+            last_name="Rossi",
+            dni="12345678",
+            phone="123456789",
+            emergency_phone=987654321,
+            street="Calle Falsa",
+            number=123,
+            locality_id=1,
+            email="giuliana@gmail.com",
+            start_date="2023-01-01",
+            end_date="2023-12-31",
+            health_insurance="Health Inc",
+            health_insurance_number=987654321,
+            condition="Voluntario",
+            active=True,
+            profession_id=1,
+            job_id=1
+    )
+    # Creo 30 miembros para poder probar la paginación del index
+    for i in range(30):
+        people.member_new(
+            name=f"Giuliana_{i}",
+            last_name="Rossi",
+            dni=f"{12345678 + i}",
+            phone=f"123456789{i}",
+            emergency_phone=f"987654321{i}",
+            street="Calle Falsa",
+            number=f"{123 + i}",
+            locality_id=1,
+            email=f"giuliana_{i}@gmail.com",
+            start_date="2023-01-01",
+            end_date="2023-12-31",
+            health_insurance="Health Inc",
+            health_insurance_number=f"987654321{i}",
+            condition="Voluntario",
+            active=True,
+            profession_id=1,
+            job_id=1
     )
     activity1 = equestrian.activity_new(
         name="Hipoterapia"
