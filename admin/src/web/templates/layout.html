@@ -50,7 +50,7 @@
                     {% if is_authenticated(session) %}
                     <li class="nav-item">
                         <a class="nav-link {% if 'jya' in request.endpoint %}active{% endif %}" aria-current="page"
-                            href="{{ url_for('jya') }}">J&A</a>
+                            href="{{ url_for('jya.index') }}">J&A</a>
                     </li>
                     {% if check_permission(session,'encuestre_index')%}
                     <li class="nav-item">

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Nuevo enlace{% endblock %}
+
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div style="text-align: center;">
+    <h1 style="color: #007bff; margin-bottom: 20px;">Nuevo enlace</h1>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow">
+    {{ form.hidden_tag() }}
+    
+    <div class="mb-3">
+        <label for="document_name" class="form-label">Nombre</label>
+        {{ form.document_name(class="form-control") }}
+    </div>
+    
+    <div class="mb-3">
+        <label for="document_path" class="form-label">URL</label>
+        {{ form.document_path(class="form-control") }}
+    </div>
+    
+    <div class="mb-3">
+        <label for="document_type" class="form-label">Tipo de documentación</label>
+        {{ form.document_type(class="form-control") }}
+    </div>
+    
+    <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    <a href="{{ url_for('jya.show', id=rider_id) }}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+<style>
+    form {
+        max-width: 600px;
+        margin: auto;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .form-control {
+        border-radius: 0.25rem;
+    }
+    .btn {
+        margin-top: 10px;
+    }
+</style>
+
+{% endblock %}
