@@ -130,11 +130,17 @@ def delete(email: str):
         if email == session.get("user"):  
             flash("No puedes eliminar tu propio usuario.", "danger")
             return redirect("/user")
-        else :
-            print('Se eliminara el usuario')
-            delete_user(email)
-            flash("Usuario eliminado exitosamente.", "success")
+        
+        # Chequea si el usuario a eliminar es SystemAdmin
+        if get_role_by_name('SystemAdmin') in get_user_by_email(email).roles:
+            flash("No es posible eliminar usuarios con rol SystemAdmin", "danger")
             return redirect("/user")
+        
+        print('Se eliminara el usuario')
+        delete_user(email)
+        flash("Usuario eliminado exitosamente.", "success")
+        return redirect("/user")
+    
     else:
         flash("El usuario que desea eliminar no existe", "danger")
         return redirect("/user")
@@ -265,6 +271,10 @@ def validate_roles(roles, user_roles, action):
             if role not in user_roles:
                 validation['result'] = False
                 validation['message'] = f"El rol {role} no existe en el usuario"
+                break
+            if role == 'SystemAdmin':
+                validation['result'] = False
+                validation['message'] = f"No es posible quitar el rol SystemAdmin a otro SystemAdmin"
                 break
         
         elif action == 'add':
