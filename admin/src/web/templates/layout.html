@@ -112,7 +112,7 @@
                     <ul class="dropdown-menu dropdown-menu-lg-end">
                         <!-- Si el usuario está logueado, se muestra la opción de perfil y cerrar sesión. -->
                         {% if is_authenticated(session) %}
-                        <li><a class="dropdown-item" href="#">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">Perfil</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
