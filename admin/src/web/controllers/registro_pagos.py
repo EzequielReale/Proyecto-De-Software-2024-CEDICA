@@ -2,14 +2,18 @@ from flask import Blueprint, flash, redirect, render_template, request, session,
 
 from src.core.user_role_permission.operations.user_operations import get_user_by_id,list_users
 from src.core import  registro_pagos
-
+from src.web.handlers.autenticacion import check_permission
+from src.web.handlers.error import unauthorized
+from src.web.handlers.autenticacion import login_required
 
 bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 
+@login_required
 @bp.get("/")
 def index():
     """controlador listado, paso al template los pagos"""
-
+    if  not check_permission(session,"reg_pagos_index"):
+         return unauthorized()
     pagos = registro_pagos.administracion_index(request)
     return render_template("registro_pagos/index.html",pagos=pagos)
 
@@ -52,6 +56,8 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
 @bp.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     """controlador para actualizar un registro de pago"""
+    if  not check_permission(session,"reg_pagos_update"):
+         return unauthorized()
     tipos = registro_pagos.administracion_tipoPagos()
 
     if request.method == 'POST':
@@ -76,6 +82,8 @@ def update(id):
 @bp.route("/destroy/<int:id>", methods=['POST'])
 def destroy(id):
      """controlador para eliminar fisicamente un reg de pago"""
+     if  not check_permission(session,"reg_pagos_destroy"):
+        return unauthorized()
      pude = registro_pagos.administracion_destroy(id)
      if(pude):
         flash('Pago eliminado exitosamente.', 'success')
@@ -89,6 +97,8 @@ def destroy(id):
 @bp.route("/create", methods=['GET', 'POST'])
 def create():
      """controlador para crear un nuevo registro de pago"""
+     if  not check_permission(session,"reg_pagos_new"):
+         return unauthorized()
      if request.method == 'POST':
         monto = request.form['monto']
         tipo_pago_id = request.form['tipo_pago'] 

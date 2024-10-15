@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Perfil{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+
+{% block aside %}
+{% endblock %}
+
+
+{% block content %}
+<div class="row d-flex justify-content-center align-items-center" style="height: 80vh;">
+    <div class="col col-md-9 col-lg-7 col-xl-6">
+        <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-4">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <img src="{{ url_for('static', filename='resources/profile-icon.png') }}"
+                            alt="Generic placeholder image" class="img-fluid border"
+                            style="width: 180px; border-radius: 10px; padding: 15px;">
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        {% if user_alias %}
+                        <h5 class="mb-1 text-capitalize">{{ user_alias }}</h5>
+                        {% endif %}
+                        {% if user %}
+                        <p class="mb-2 pb-1">{{ user }}</p>
+                        {% endif %}
+                        <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                            <div class="ms-1">
+                                <p class="small mb-1 fw-medium">Roles asignados</p>
+                                {% for role in roles %}
+                                <span class="badge bg-success rounded-pill">{{ role }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="d-flex pt-1 gap-2">
+                            <a role="button" href="{{ url_for('home') }}"
+                                class="btn btn-outline-secondary me-1 flex-grow-1">Volver</a>
+                            <a role="button" href="{{ url_for('auth.logout') }}"
+                                class="btn btn-outline-primary flex-grow-1">Cerrar sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
