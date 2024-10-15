@@ -158,9 +158,6 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un miembro del equipo y lo elimina fisicamente de la BD"""
-    documents = people.list_documents(id)
-    for document in documents:
-        people.delete_document(document["id"])
     member = people.member_delete(id)
     flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
     return redirect(url_for("team.index"))

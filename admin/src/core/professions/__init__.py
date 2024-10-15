@@ -1,79 +1,67 @@
-from src.core.database import db
 from src.core.professions.profession import Profession
 from src.core.professions.job import Job
 from src.core.professions.job_proposal import JobProposal
 from src.core.professions.school import School
+from src.web.forms.rider_form import RiderForm
+from src.core import database_functions as db
 
 
 """Módulo de profesiones"""
 
 def list_professions() -> list:
     """Obtiene todas las profesiones"""
-    return Profession.query.all()
+    return db.list_all(Profession)
 
 
 def get_profession_by_id(profession_id: int) -> Profession:
     """Obtiene una profesion por ID"""
-    return Profession.query.filter_by(id=profession_id).first()
+    return db.get_by_field(Profession, "id", profession_id)
 
 
 def profession_new(**kwargs) -> Profession:
     """Crea una profesion, la guarda en la BD y la devuelve"""
-    profession = Profession(**kwargs)
-    db.session.add(profession)
-    db.session.commit()
-    return profession
+    return db.new(Profession, **kwargs)
 
 
 """Módulo de trabajos"""
 
 def list_jobs() -> list:
     """Obtiene todos los trabajos"""
-    return Job.query.all()
-
+    return db.list_all(Job)
 
 def get_job_by_id(job_id: int) -> Job:
     """Obtiene un trabajo por ID"""
-    return Job.query.filter_by(id=job_id).first()
+    return db.get_by_field(Job, "id", job_id)
 
 
 def job_new(**kwargs) -> Job:
     """Crea un trabajo, lo guarda en la BD y lo devuelve"""
-    job = Job(**kwargs)
-    db.session.add(job)
-    db.session.commit()
-    return job
+    return db.new(Job, **kwargs)
 
 
 """Módulo de jya"""
 
-def job_proposal_new(**kwargs) -> JobProposal:
-    """Crea una propuesta de trabajo, la guarda en la BD y la devuelve"""
-    job_proposal = JobProposal(**kwargs)
-    db.session.add(job_proposal)
-    db.session.commit()
+def school_new(form:RiderForm, rider_id:int) -> int:
+    """Recibe el formulario y el id del j/a y retorna la escuela creada"""
+    school = School()
+    if form.has_school.data == "True":
+        school = db.new(**form.get_school_data(), rider_id=rider_id)
+    return school
+
+
+def job_proposal_new(form:RiderForm, rider_id:int) -> int:
+    """Recibe el formulario y el id del j/a y retorna la propuesta de trabajo creada"""
+    job_proposal = JobProposal()
+    if form.has_job_proposal.data == "True":
+        job_proposal = db.new(**form.get_job_proposal_data(), rider_id=rider_id)
     return job_proposal
 
 
 def job_proposal_delete(id:int) -> JobProposal:
     """Recibe el id de una propuesta de trabajo, la elimina de la BD y la devuelve"""
-    job_proposal = JobProposal.query.filter_by(id=id).first()
-    db.session.delete(job_proposal)
-    db.session.commit()
-    return job_proposal
-
-
-def school_new(**kwargs) -> School:
-    """Crea una escuela, la guarda en la BD y la devuelve"""
-    school = School(**kwargs)
-    db.session.add(school)
-    db.session.commit()
-    return school
+    return db.delete(JobProposal, id)
 
 
 def school_delete(id:int) -> School:
     """Recibe el id de una escuela, la elimina de la BD y la devuelve"""
-    school = School.query.filter_by(id=id).first()
-    db.session.delete(school)
-    db.session.commit()
-    return school
+    return db.delete(School, id)

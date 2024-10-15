@@ -355,7 +355,7 @@ class RiderForm(FlaskForm):
         if self.tutor2_name.data:
             self.tutor2_name.data = self.tutor2_name.data.title()
         if self.tutor2_last_name.data:
-            self.tutor2_last_name.data = self.tutor2_last_name
+            self.tutor2_last_name.data = self.tutor2_last_name.data.title()
 
 
     def validate(self, extra_validators=None):

@@ -4,102 +4,17 @@ import uuid
 
 from flask import current_app, send_file
 from minio.error import S3Error
-from sqlalchemy.types import Enum, Integer, String, Text
-from sqlalchemy.orm import RelationshipProperty
 
+from src.core import professions, adressing, database_functions as db_fun
 from src.core.database import db
 from src.core.people.member_rider import Member
 from src.core.people.member_rider import Rider
 from src.core.people.tutor import Tutor
-from src.core.people.member_rider import RiderMember
+from src.web.forms.rider_form import RiderForm
 from src.core.people.person_document import PersonDocument as Document
 
 
-def __apply_filters(model, query:tuple, field:any, value:any) -> tuple:
-    """Aplica los filtros respectivos a una consulta"""
-    column = getattr(model, field)
-            
-    # Comprobar si es una relación de muchos a muchos (por ejemplo, members en Rider)
-    if hasattr(column, "property") and isinstance(column.property, RelationshipProperty):
-        related_model = column.property.mapper.class_
-        query = query.join(column)
-        # Si hay más de un valor (o sea, un getlist), convertirlo en una lista
-        if isinstance(value, list):
-            query = query.filter(getattr(related_model, 'id').in_(value))
-        else:
-            query = query.filter(getattr(related_model, 'id') == value)
-    # Comprobar si es un entero o un enum
-    elif isinstance(column.type, Integer) or isinstance(column.type, Enum):
-        query = query.filter(column == value)
-    # Comprobar si es un tipo de columna string
-    elif isinstance(column.type, (String, Text)):
-        query = query.filter(column.ilike(f"%{value}%"))
-    
-    return query
-
-
-def filter(model, filters: dict) -> tuple:
-    """Aplica filtros y ordenación a una consulta"""
-    query = model.query
-    for field, value in filters.items():
-        if value and value != "":
-            query = __apply_filters(model, query, field, value)
-
-    return query
-
-
-def order_by(model, query:tuple, sort_by=None, sort_direction="asc") -> tuple:
-    """Aplica ordenación a una consulta"""
-    if sort_by:
-        column = getattr(model, sort_by)
-        if sort_direction == "desc":
-            query = query.order_by(column.desc())
-        else:
-            query = query.order_by(column.asc())
-
-    return query
-
-
-def _list(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
-    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
-    query = filter(model, filters)
-    query = order_by(model, query, sort_by, sort_direction) 
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-    return pagination.items, pagination.pages
-
-
-def _get_by_field(model, field: str, value, exclude_id=None) -> object:
-    """Devuelve un elemento de un modelo por un campo específico y su valor"""
-    query = model.query.filter_by(**{field: value})
-    if exclude_id is not None:
-        query = query.filter(model.id != exclude_id)
-    return query.first()
-
-
-def _new(model, **kwargs) -> object:
-    """Crea un nuevo elemento, lo guarda en la BD y lo devuelve"""
-    item = model(**kwargs)
-    db.session.add(item)
-    db.session.commit()
-    return item
-
-
-def _update(model, item_id: int, **kwargs) -> object:
-    """Actualiza un elemento por ID y lo devuelve"""
-    item = _get_by_field(model, "id", item_id)
-    for attr, value in kwargs.items():
-        setattr(item, attr, value)
-    db.session.commit()
-    return item
-
-
-def _delete(model, item_id: int) -> object:
-    """Elimina un elemento por ID"""
-    item = _get_by_field(model, "id", item_id)
-    db.session.delete(item)
-    db.session.commit()
-    return item
-
+"""Funciones de documentos"""
 
 def document_new(person_id: int, path: str, name: str, type:str=None, link:bool=False) -> Document:
     """Crea un documento, lo guarda en la BD y lo devuelve"""
@@ -153,20 +68,20 @@ def _get_files_associated(docs:tuple) -> list:
 
 def list_documents(person_id: int) -> list:
     """Devuelve los documentos de una persona por ID con URLs descargables"""
-    docs_db = Document.query.filter_by(person_id=person_id).all()
+    docs_db = db_fun.filter(Document, {"person_id": person_id})
     return _get_files_associated(docs_db)
 
 
 def list_filtered_documents(person_id: int, filters: dict, sort_by=None, sort_direction="asc") -> list:
     """Devuelve los documentos de una persona por ID y filtros aplicados con URLs descargables"""
-    docs_db = filter(Document, filters)
-    docs_db = order_by(Document, docs_db, sort_by, sort_direction)
+    docs_db = db_fun.filter(Document, filters)
+    docs_db = db_fun.order_by(Document, docs_db, sort_by, sort_direction)
     return _get_files_associated(docs_db)
 
 
 def delete_document(document_id: int) -> Document:
-    """Elimina un documento por ID"""
-    document = _get_by_field(Document, "id", document_id)
+    """Elimina un documento por ID y lo devuelve"""
+    document = db_fun.get_by_field(Document, "id", document_id)
     if not document.its_a_link:
         current_app.storage.client.remove_object("grupo04", document.document_path)
     db.session.delete(document)
@@ -176,7 +91,7 @@ def delete_document(document_id: int) -> Document:
 
 def download_document(document_id: int) -> bytes:
     """Descarga un documento por ID, obteniendo su contenido desde MinIO"""
-    document = _get_by_field(Document, "id", document_id)
+    document = db_fun.get_by_field(Document, "id", document_id)
 
     try:
         # Obtener el archivo desde MinIO
@@ -200,27 +115,30 @@ def download_document(document_id: int) -> bytes:
 
 def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve miembros que coinciden con los filtros enviados como parámetro"""
-    return _list(Member, filters, page, per_page, sort_by, sort_direction)
+    return db_fun.list(Member, filters, page, per_page, sort_by, sort_direction)
 
 
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
-    return _get_by_field(Member, field, value, exclude_id)
+    return db_fun.get_by_field(Member, field, value, exclude_id)
 
 
 def member_new(**kwargs) -> Member:
     """Crea un miembro, lo guarda en la BD y lo devuelve"""
-    return _new(Member, **kwargs)
+    return db_fun.new(Member, **kwargs)
 
 
 def member_update(member_id: int, **kwargs) -> Member:
     """Actualiza un miembro por ID y lo devuelve"""
-    return _update(Member, member_id, **kwargs)
+    return db_fun.update(Member, member_id, **kwargs)
 
 
 def member_delete(member_id: int) -> Member:
-    """Elimina un miembro por ID"""
-    return _delete(Member, member_id)
+    """Elimina un miembro por ID y lo devuelve"""
+    documents = list_documents(member_id)
+    for document in documents:
+        delete_document(document["id"])
+    return db_fun.delete(Member, member_id)
 
 
 def member_add_document(member_id: int, file: bytes) -> Document:
@@ -234,27 +152,74 @@ def member_add_document(member_id: int, file: bytes) -> Document:
 
 def list_riders(filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve los jinetes paginados de la BD"""
-    return _list(Rider, filters, page, per_page, sort_by, sort_direction)
+    return db_fun.list(Rider, filters, page, per_page, sort_by, sort_direction)
 
 
 def get_rider_by_field(field: str, value, exclude_id=None) -> Rider:
     """Devuelve un jinete por un campo específico y su valor"""
-    return _get_by_field(Rider, field, value, exclude_id)
+    return db_fun.get_by_field(Rider, field, value, exclude_id)
 
 
-def rider_new(**kwargs) -> Rider:
-    """Crea un jinete, lo guarda en la BD y lo devuelve"""
-    return _new(Rider, **kwargs)
+def _create_rider(form:RiderForm) -> int:
+    """Recibe el formulario y retorna el id del j/a creado"""
+    tutor_1, tutor_2 = _create_tutors(form)
+    rider_data = form.get_rider_data()
+    rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
+    rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
+    rider_data['tutor_1'] = tutor_1 if tutor_1 else None
+    rider_data['tutor_2'] = tutor_2 if tutor_2 else None
+    member_ids = form.assigned_professionals.data
+    rider_data['members'] = [get_member_by_field("id", member_id) for member_id in member_ids]
+
+    return db_fun.new(Rider, **rider_data)
+
+
+def _create_tutors(form:RiderForm) -> Tutor:
+    """Recibe el formulario y retorna los tutores creados"""
+    tutor_1 = None
+    tutor_2 = None
+
+    if form.has_tutor_1.data == "True":
+        tutor_1 = db_fun.new(Tutor, **form.get_tutor_data(1))
+    if form.has_tutor_2.data == "True":
+        tutor_2 = db_fun.new(Tutor, **form.get_tutor_data(2))
+    
+    return tutor_1, tutor_2
+
+
+def rider_new(form:RiderForm) -> str:
+    """Crea un nuevo jinete en base a un formulario, lo guarda en la BD y lo devuelve"""
+    rider = _create_rider(form)
+    professions.create_school(form, rider.id)
+    professions.create_job_proposal(form, rider.id)
+    return rider
 
 
 def rider_update(rider_id: int, **kwargs) -> Rider:
     """Actualiza un jinete por ID y lo devuelve"""
-    return _update(Rider, rider_id, **kwargs)
+    return db_fun.update(Rider, rider_id, **kwargs)
 
 
 def rider_delete(rider_id: int) -> Rider:
-    """Elimina un jinete por ID"""
-    return _delete(Rider, rider_id)
+    """Elimina un jinete por ID y lo devuelve"""
+    rider = db_fun.get_by_field(Rider, "id", rider_id)
+
+    documents = list_documents(rider.id)
+    for document in documents:
+        delete_document(document["id"])
+
+    if rider.tutor_1:
+        db_fun.delete(Tutor, rider.tutor_1.id)
+    if rider.tutor_2:
+        db_fun.delete(Tutor, rider.tutor_2.id)
+    if rider.school:
+        for school in rider.school:
+            professions.school_delete(school.id)
+    if rider.job_proposal:
+        for job_proposal in rider.job_proposal:
+            professions.job_proposal_delete(job_proposal.id)
+
+    return db_fun.delete(Rider, rider_id)
 
 
 def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
@@ -262,25 +227,3 @@ def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
     ulid = uuid.uuid4().hex
     path = f"riders/{rider_id}/{ulid}_{file.filename}"
     return _add_document(rider_id, file, path, type)
-
-
-"""Funciones de tutores"""
-
-def tutor_new(**kwargs) -> Tutor:
-    """Crea un tutor, lo guarda en la BD y lo devuelve"""
-    return _new(Tutor, **kwargs)
-
-
-def tutor_update(tutor_id: int, **kwargs) -> Tutor:
-    """Actualiza un tutor por ID y lo devuelve"""
-    return _update(Tutor, tutor_id, **kwargs)
-
-
-def get_tutor_by_id(id:int) -> Tutor:
-    """Recibe el id de un tutor y lo devuelve"""
-    return _get_by_field(Tutor, "id", id)
-
-
-def tutor_delete(tutor_id:int) -> Tutor:
-    """Recibe el ID de un tutor, lo elimina de la BD y lo devuelve"""
-    return _delete(Tutor, tutor_id)

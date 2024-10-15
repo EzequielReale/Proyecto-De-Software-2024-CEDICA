@@ -3,11 +3,8 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from src.core.people.member_rider import Member
-from src.core.people.tutor import Tutor
-from src.core.professions.school import School
-from src.core.professions.job_proposal import JobProposal
 from src.core.equestrian.horse import Horse
-from src.core import adressing, disabilities, people, professions
+from src.core import adressing, disabilities, people, professions, database_functions as db
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
@@ -41,7 +38,7 @@ def index() -> str:
     return render_template(
         "jya/index.html",
         riders=riders,
-        members=people.filter(Member, {'job_id': 2}),
+        members=db.filter(Member, {'job_id': 2}),
         filters=filters,
         page=page,
         total_pages=total_pages,
@@ -63,7 +60,6 @@ def show(id: int) -> str:
     sort_by = request.args.get("sort_by", "document_name")
     sort_direction = request.args.get("sort_direction", "asc")
     rider = people.get_rider_by_field("id", id)
-    print(rider.city_of_birth, rider.locality)
     documents = people.list_filtered_documents(id, filters, sort_by, sort_direction) 
     return render_template("jya/show.html", rider=rider, documents=documents, filters=filters, sort_by=sort_by, sort_direction=sort_direction, current_year=datetime.now().year,)
 
@@ -76,10 +72,10 @@ def _get_data_from_db() -> tuple:
     provinces_list = adressing.list_provinces()
     horse_list = Horse.query.all() # Hago una funcion en init para esto?
     assigned_professionals_list = people.filter(Member, {"job_id": 2}) # Terapeuta
-    professor_list = people.filter(Member, {"job_id": 9}) # Profesor de equitación
+    professor_list = db.filter(Member, {"job_id": 9}) # Profesor de equitación
     professor_list = list(professor_list) + list(assigned_professionals_list)
-    assistant_list = people.filter(Member, {"job_id": 4}) # Asistente de pista
-    horse_rider_list = people.filter(Member, {"job_id": 3}) # Conductor
+    assistant_list = db.filter(Member, {"job_id": 4}) # Asistente de pista
+    horse_rider_list = db.filter(Member, {"job_id": 3}) # Conductor
     return disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list
 
 
@@ -100,48 +96,6 @@ def _configure_form(disability_types_list:list, disabilities_list:list, province
     return form
 
 
-def _create_rider(form:RiderForm) -> int:
-    """Recibe el formulario y retorna el id del j/a creado"""
-    tutor_1, tutor_2 = _create_tutors(form)
-    rider_data = form.get_rider_data()
-    rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
-    rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
-    rider_data['tutor_1'] = tutor_1 if tutor_1 else None
-    rider_data['tutor_2'] = tutor_2 if tutor_2 else None
-    member_ids = form.assigned_professionals.data
-    rider_data['members'] = [people.get_member_by_field("id", member_id) for member_id in member_ids]
-
-    return people.rider_new(**rider_data)
-
-
-def _create_tutors(form:RiderForm) -> Tutor:
-    """Recibe el formulario y el número de tutor y retorna el id del tutor creado"""
-    tutor_1 = None
-    tutor_2 = None
-
-    if form.has_tutor_1.data == "True":
-        tutor_1 = people.tutor_new(**form.get_tutor_data(1))
-    if form.has_tutor_2.data == "True":
-        tutor_2 = people.tutor_new(**form.get_tutor_data(2))
-    return tutor_1, tutor_2
-
-
-def _create_school(form:RiderForm, rider_id:int) -> int:
-    """Recibe el formulario y el id del j/a y retorna el id de la escuela creada"""
-    school = School()
-    if form.has_school.data == "True":
-        school = professions.school_new(**form.get_school_data(), rider_id=rider_id)
-    return school.id
-
-
-def _create_job_proposal(form:RiderForm, rider_id:int) -> int:
-    """Recibe el formulario y el id del j/a y retorna el id de la propuesta de trabajo creada"""
-    job_proposal = JobProposal()
-    if form.has_job_proposal.data == "True":
-        job_proposal = professions.job_proposal_new(**form.get_job_proposal_data(), rider_id=rider_id)
-    return job_proposal.id
-
-
 @bp.route("/new", methods=["GET", "POST"])
 @login_required
 def create() -> str:
@@ -152,9 +106,7 @@ def create() -> str:
 
     # Si se envia el formulario
     if form.validate_on_submit():
-        rider = _create_rider(form)
-        _create_school(form, rider.id)
-        _create_job_proposal(form, rider.id)
+        rider = people.rider_new(form)
         flash(f"{rider.name} {rider.last_name} ha sido creado exitosamente", "success")
         return redirect(url_for("jya.show", id=rider.id))
     elif form.errors:
@@ -196,23 +148,7 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un j/a y lo elimina fisicamente de la BD"""
-    rider = people.get_rider_by_field("id", id)
-
-    documents = people.list_documents(rider.id)
-    for document in documents:
-        people.delete_document(document["id"])
-
-    if rider.tutor_1:
-        people.tutor_delete(rider.tutor_1.id)
-    if rider.tutor_2:
-        people.tutor_delete(rider.tutor_2.id)
-    if rider.school:
-        for school in rider.school:
-            professions.school_delete(school.id)
-    if rider.job_proposal:
-        for job_proposal in rider.job_proposal:
-            professions.job_proposal_delete(job_proposal.id)
-
+    
     rider = people.rider_delete(id)
     flash(f"{rider.name} {rider.last_name} ha sido eliminado", "success")
 
