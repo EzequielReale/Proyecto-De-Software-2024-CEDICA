@@ -30,17 +30,16 @@ def document_new(person_id: int, path: str, name: str, type:str=None, link:bool=
     return document
 
 
-def _add_document(person_id: int, file: bytes, path: str, type:str=None) -> Document:
-    """Añade un documento a un elemento por ID y lo guarda en MinIO"""
+def _save_document(file: bytes, path: str) -> bytes:
+    """Guarda un documento en MinIO y lo devuelve"""
     size = fstat(file.fileno()).st_size
     try:
         document = current_app.storage.client.put_object(
             "grupo04", path, file, size, file.content_type
         )
+        return document
     except S3Error as e:
         raise RuntimeError(f"Error subiendo el documento: {e}")
-
-    return document_new(person_id, path, file.filename, type)
 
 
 def _get_files_associated(docs:tuple) -> list:
@@ -77,6 +76,22 @@ def list_filtered_documents(person_id: int, filters: dict, sort_by=None, sort_di
     docs_db = db_fun.filter(Document, filters)
     docs_db = db_fun.order_by(Document, docs_db, sort_by, sort_direction)
     return _get_files_associated(docs_db)
+
+
+def get_document_by_id(document_id: int) -> Document:
+    """Devuelve un documento por ID"""
+    return db_fun.get_by_field(Document, "id", document_id)
+
+
+def update_document(document:Document, **kwargs) -> Document:
+    """Recibe un documento, lo edita y lo devuelve"""    
+    if not document.its_a_link:
+        current_app.storage.client.remove_object("grupo04", document.document_path)
+        _save_document(kwargs["file"], document.document_path)
+    else:
+        db_fun.update(Document, document.id, **kwargs)
+        
+    return document
 
 
 def delete_document(document_id: int) -> Document:
@@ -160,7 +175,8 @@ def member_add_document(member_id: int, file: bytes) -> Document:
     """Añade un documento a un miembro por ID y lo guarda en MinIO"""
     ulid = uuid.uuid4().hex
     path = f"members/{member_id}/{ulid}_{file.filename}"
-    return _add_document(member_id, file, path)
+    _save_document(file, path)
+    return document_new(member_id, path, file.filename)
 
 
 """Funciones de j/a"""
@@ -241,4 +257,5 @@ def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
     """Añade un documento a un jinete por ID y lo guarda en MinIO"""
     ulid = uuid.uuid4().hex
     path = f"riders/{rider_id}/{ulid}_{file.filename}"
-    return _add_document(rider_id, file, path, type)
+    _save_document(file, path)
+    return document_new(rider_id, path, file.filename, type)

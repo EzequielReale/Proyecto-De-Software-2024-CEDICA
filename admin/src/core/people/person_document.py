@@ -10,7 +10,7 @@ class PersonDocument(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     document_name = db.Column(db.String(255), nullable=False)
-    document_path = db.Column(db.String(255), nullable=False)
+    document_path = db.Column(db.String(255), nullable=False) # Path en MinIO o URL
     document_type = db.Column(
         db.Enum("Entrevista", "Evaluación", "Planificaciones", "Evolución", "Crónicas", "Documental", name="document_type_enum"),
         nullable=True

@@ -231,6 +231,15 @@
                                 class="btn btn-primary btn-sm">
                                 <i class="fas fa-download"></i>
                             </a>
+                            <a href="{{ url_for('jya.edit_document', id=rider.id, document_id=document.id) }}"
+                                class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('jya.edit_link', id=rider.id, document_id=document.id) }}"
+                                class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         {% endif %}
                         <form action="{{ url_for('jya.destroy_document', id=rider.id, document_id=document.id) }}"
                             method="POST" onsubmit="return confirmDeleteDocument();" class="d-inline">

@@ -6,6 +6,13 @@ from src.core import people
 
 
 class PersonLinkForm(FlaskForm):
+
+
+    def __init__(self, document_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.document_id = document_id
+
+
     document_name = StringField('Nombre', [validators.DataRequired()])
     document_path = StringField('URL', [
         validators.DataRequired(),
@@ -22,30 +29,26 @@ class PersonLinkForm(FlaskForm):
         ('Evolución', 'Evolución'),
         ('Crónicas', 'Crónicas'),
         ('Documental', 'Documental')
-    ], validators=[validators.DataRequired()])
+    ], validators=[validators.Optional()])
     submit = SubmitField('Guardar')
 
 
     def validate_document_name(self, field):
-        """Valida que el nombre del documento sea único"""
+        """Valida que el nombre del documento sea único, excluyendo el documento actual si se está editando"""
         id = request.view_args.get('id')
-        if id is None:
-            raise validators.ValidationError('ID de la persona no encontrado en la URL.')
-        
         documents = people.list_documents(id)
-        if any(doc['name'] == field.data for doc in documents):
-            raise validators.ValidationError('El nombre del documento ya existe para esta persona.')
+        for doc in documents:
+            if doc['name'] == field.data and (self.document_id is None or doc['id'] != self.document_id):
+                raise validators.ValidationError('El nombre del documento ya existe para esta persona.')
 
         
     def validate_document_path(self, field):
-        """Valida que la URL del documento sea única"""
-        id = request.view_args.get('id')
-        if id is None:
-            raise validators.ValidationError('ID de la persona no encontrado en la URL.')
-        
+        """Valida que la URL del documento sea única, excluyendo el documento actual si se está editando"""
+        id = request.view_args.get('id')        
         documents = people.list_documents(id)
-        if any(doc['url'] == field.data for doc in documents):
-            raise validators.ValidationError('La URL del documento ya existe para esta persona.')
+        for doc in documents:
+            if doc['url'] == field.data and (self.document_id is None or doc['id'] != self.document_id):
+                raise validators.ValidationError('La URL del documento ya existe para esta persona.')
         
     def get_data(self) -> tuple:
         """Devuelve el nombre, la URL y el tipo de documento"""

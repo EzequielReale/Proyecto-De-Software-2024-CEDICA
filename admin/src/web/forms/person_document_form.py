@@ -8,6 +8,13 @@ from src.core import people
 
 
 class PersonDocumentForm(FlaskForm):
+
+
+    def __init__(self, document_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.document_id = document_id
+
+
     document = FileField('Subir archivo', validators=[
         FileRequired(message='No se ha seleccionado ningún archivo.'),
         FileAllowed(['pdf', 'png', 'jpg', 'jpeg', 'doc', 'docx', 'xls', 'xlsx'], 'Tipos de archivo permitidos: pdf, png, jpg, jpeg, doc, docx, xls, xlsx.')
@@ -29,7 +36,7 @@ class PersonDocumentForm(FlaskForm):
             raise validators.ValidationError('ID de la persona no encontrado en la URL.')
         
         documents = people.list_documents(id)
-        if any(doc['name'] == field.data.filename for doc in documents):
+        if any(doc['name'] == field.data.filename and (self.document_id is None or doc['id'] != self.document_id) for doc in documents):
             raise validators.ValidationError('El nombre del documento ya existe para esta persona.')
         
     def get_data(self) -> tuple:

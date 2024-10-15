@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Editar documento{% endblock %}
+
+{% block head %} {{ super() }} {% endblock %}
+
+{% block content %}
+
+<div style="text-align: center;">
+    <h1 style="color: #007bff; margin-bottom: 20px;">Editar documento</h1>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="p-4 bg-light rounded shadow">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        {{ form.document.label(class="form-label") }}
+        {{ form.document(class="form-control", accept=".doc,.docx,.xls,.xlsx,.pdf,image/*") }}
+    </div>
+    <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    <a href="{{ url_for('jya.show', id=rider_id) }}" class="btn btn-secondary">Cancelar</a>
+</form>
+
+<style>
+    form {
+        max-width: 600px;
+        margin: auto;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .form-control {
+        border-radius: 0.25rem;
+    }
+    .btn {
+        margin-top: 10px;
+    }
+</style>
+
+{% endblock %}
