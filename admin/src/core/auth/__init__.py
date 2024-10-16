@@ -1,6 +1,6 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.user_role_permission.upr_models import User, Role, Permission
+from src.core.models.user_role_permission.upr_models import User, Role, Permission
 
 
 def get_permissions(user):
@@ -12,6 +12,8 @@ def get_permissions(user):
             permisos.add(permission.name)
     
     return list(permisos)  # Retornamos la lista de nombres de permisos
+
+
 
 
 def list_users():
