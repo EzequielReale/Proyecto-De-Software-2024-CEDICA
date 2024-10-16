@@ -1,8 +1,10 @@
 from functools import wraps
+
+from flask import abort
+from flask import redirect
 from flask import session
 
-from src.core.user_role_permission.operations.role_permissions_operations import get_permissions
-from src.core.user_role_permission.operations.user_operations import get_user_by_email
+from src.core import auth
 from src.web.handlers.error import unauthorized
 
 def autenticacion(session):
@@ -22,6 +24,6 @@ def login_required(f):
 
 def check_permission(session, permission):
     user_email = session.get("user")
-    user = get_user_by_email(user_email)
-    permissions = get_permissions(user) # Permissos del user
+    user = auth.find_user_email(user_email)
+    permissions = auth.get_permissions(user) #permissos del user
     return user is not None and permission in permissions 

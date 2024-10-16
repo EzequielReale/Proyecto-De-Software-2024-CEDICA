@@ -1,5 +1,5 @@
 from src.core.database import db
-from src.core.user_role_permission.upr_models import Role
+from core.user_role_permission.upr_models import Role
 
 #################################################
 

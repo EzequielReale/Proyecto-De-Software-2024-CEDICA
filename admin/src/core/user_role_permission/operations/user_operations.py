@@ -1,11 +1,10 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
-from src.core.user_role_permission.upr_models import User
-from src.core.user_role_permission.upr_models import Role
-from src.core.user_role_permission.upr_models import UserRole
+from src.core.database_functions import list_paginated as _list
+from core.user_role_permission.upr_models import User
+from core.user_role_permission.upr_models import Role
+from core.user_role_permission.upr_models import UserRole
 from src.core.user_role_permission.operations.role_operations import get_role_by_name
-
-from sqlalchemy.types import String, Text
 
 #################################################
 
@@ -122,36 +121,35 @@ def list_users_advance(filters: dict, page=1, per_page=25, sort_by=None, sort_di
     return _list(User, filters, page, per_page, sort_by, sort_direction)
 
 
-def _list(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->tuple:
-    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
-    query = filter_sort_users(filters, sort_by, sort_direction)
-    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-    return pagination.items, pagination.pages
-
-def filter_sort_users(filters: dict, sort_by=None, sort_direction='asc'):
-    """Recibe los criterios de filtrado, sort_by, sort_direction y ejecuta una consulta a la base 
-    de datos para obtener los usuarios que cumplen con los criterios"""
-    query = User.query
-    # Aplicar filtros
-    for field, value in filters.items():
-        if value is not None and value != '':
-            column = getattr(User, field)
-            if field == 'roles':
-                query = query.join(UserRole).join(Role).filter(Role.id == value)
-            elif isinstance(column.type, (String, Text)):
-                query = query.filter(column.ilike(f"%{value}%"))
-            else:
-                query = query.filter(column == value)
-    if sort_by:
-        column = getattr(User, sort_by)
-        if sort_direction == 'desc':
-            query = query.order_by(column.desc())
-        else:
-            query = query.order_by(column.asc())
-
-    return query
-
-
-
 #####################################################
 
+# Metodos agregados por Giu
+
+def find_user_email(email):
+    """ busco usuario por email """
+    user = User.query.filter_by(email=email).first()
+    return user
+
+
+def find_user_id(id):
+    """ busco usuario por id """
+    user = User.query.filter_by(id=id).first()
+    return user
+
+
+def find_user(email,password):
+    user = find_user_email(email)
+    if user and bcrypt.check_password_hash(user.password,password):
+        return user
+    return None
+
+
+def get_permissions(user):
+    """Retorna los permisos del rol del usuario"""
+    # Obtenemos los roles del usuario y luego los permisos relacionados con esos roles
+    permisos = set()  # Usamos un set para evitar duplicados
+    for role in user.roles:
+        for permission in role.permissions:
+            permisos.add(permission.name)
+    
+    return list(permisos)  # Retornamos la lista de nombres de permisos
