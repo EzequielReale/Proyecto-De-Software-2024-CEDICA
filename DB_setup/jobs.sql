@@ -19,7 +19,7 @@ ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id
 INSERT INTO public.jobs VALUES (1, 'Docente de capacitación', 'Enseñanza para nuevos miembros');
 INSERT INTO public.jobs VALUES (2, 'Administrativo/a', 'Gestiona tareas administrativas en oficinas, asegurando la eficiencia operativa diaria.');
 INSERT INTO public.jobs VALUES (3, 'Terapeuta', 'Facilita procesos de sanación y desarrollo personal mediante técnicas terapéuticas.');
-INSERT INTO public.jobs VALUES (4, 'Conductor', 'Maneja vehículos garantizando la seguridad y comodidad de pasajeros o entrega de mercancías.');
+INSERT INTO public.jobs VALUES (4, 'Conductor', 'Maneja caballos garantizando la seguridad y comodidad de pasajeros.');
 INSERT INTO public.jobs VALUES (5, 'Auxiliar de pista', 'Asiste en la gestión y cuidado de caballos en pistas de equitación, garantizando seguridad.');
 INSERT INTO public.jobs VALUES (6, 'Herrero', 'Artesano que forja metales, creando herramientas y piezas personalizadas a medida.');
 INSERT INTO public.jobs VALUES (7, 'Veterinario', 'Diagnostica y trata enfermedades en animales, ofreciendo cuidados preventivos y educativos.');
