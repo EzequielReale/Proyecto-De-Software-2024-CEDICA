@@ -3,7 +3,7 @@ from flask_session import Session
 from src.core.bcrypt import bcrypt
 from src.core import database
 from src.core.config import config
-from src.web.handlers.autenticacion import autenticacion
+from src.web.handlers.autenticacion import check_permission,autenticacion
 from src.web import blueprints
 from src.web import commands
 from src.web import routes
@@ -24,6 +24,7 @@ def create_app(env="development", static_folder="../../static"):
   
     #registro funcion en jinja para restringir el front
     app.jinja_env.globals.update(is_authenticated = autenticacion)
+    app.jinja_env.globals.update(check_permission = check_permission)
 
     # Rutas
     routes.register(app)

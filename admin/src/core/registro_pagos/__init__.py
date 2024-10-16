@@ -1,4 +1,3 @@
-from src.core.auth import User
 from src.core.database import db
 from src.core.registro_pagos.Pagos import Pago, Tipo_pago
 
@@ -25,27 +24,40 @@ def pago_create(**kwargs):
     return pago
 
 
-
+#mod
 def administracion_index(request):
     """devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""   
+    #filtros
     fecha_inicio = request.args.get('fecha_inicio')
     fecha_fin = request.args.get('fecha_fin')
     tipo_pago = request.args.get('tipo_pago')
     
+     #orden
+    order_by = request.args.get('order_by', 'fecha_pago')  # por defecto, ordenar por fecha_pago
+    order = request.args.get('order', 'desc')  # por defecto, de más nuevo a más viejo
+
     # consulta base
     query = Pago.query
     
-    # filtrar por rango de fechas
+    # rango de fechas
     if fecha_inicio:
         query = query.filter(Pago.fecha_pago >= fecha_inicio)
     if fecha_fin:
         query = query.filter(Pago.fecha_pago <= fecha_fin)
     
-    # filtrar por tipo de pago
+    # tipo de pago
     if tipo_pago and tipo_pago != "Todos los tipos":
         print("tipo pago: ",tipo_pago)
         query = query.join(Pago.tipo_pago).filter(Tipo_pago.tipo == tipo_pago)
     
+    #orden de las fechas
+    if order_by == 'fecha_pago':
+        if order == 'asc':
+            query = query.order_by(Pago.fecha_pago.asc())
+        else:
+            query = query.order_by(Pago.fecha_pago.desc())
+
+
     pagos = query.all()
     return pagos 
     

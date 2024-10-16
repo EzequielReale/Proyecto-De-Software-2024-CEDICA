@@ -4,58 +4,28 @@
 
 {% block head %}
 {{ super() }}
-<script src="{{ url_for('static', filename='js/search_users.js') }}"></script>
+<style>
+  /* Estilos para los botones de las distintas acciones */
+  .action-icons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-icons i {
+        transition: 0.3s;
+        color: #0099CC;
+    }
+
+    .action-icons i:hover {
+        color: #0077AA;
+        fill: #0077AA;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
   <h1>Usuarios</h1>
   
-  <a href="{{ url_for('user.create') }}" class="btn btn-primary">Crear usuario nuevo</a>
-
-  <a href="{{ url_for('user.search') }}" class="btn btn-primary">Buscar usuario</a>
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Alias</th>
-        <th>Email</th>
-        <th>Esta activo</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-
-      {% if users %}
-      {% for user in users %}
-      
-      <tr>
-        <td>{{ user.alias }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.isActive }}</td>
-        <td>{{ user.role }}</td>
-        <td>
-            <a href="" class="btn btn-info">Ver</a>
-            <a href="{{ url_for('user.update', email=user.email) }}" class="btn btn-warning">Editar</a>
-            <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-danger">Eliminar</button>
-            </form>
-        </td>
-
-      </tr>
-
-      {% endfor %}
-      {% else %}
-
-      <tr>
-        <td colspan="8">No hay miembros en el equipo</td>
-      </tr>
-
-      {% endif %}
-
-    </tbody>
-
-  </table>
 
 {% endblock %}
 

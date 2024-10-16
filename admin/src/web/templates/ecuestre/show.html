@@ -10,6 +10,33 @@
         text-decoration: none !important;
     }
 
+    /* Estilos para los botones de las distintas acciones */
+    .action-icons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-icons i {
+        transition: 0.3s;
+        color: #0099CC;
+    }
+
+    .action-icons i:hover {
+        color: #0077AA;
+        fill: #0077AA;
+    }
+
+    /* Estilos para columnas ordenables */
+    th>a {
+        color: #0077AA;
+        text-decoration: none;
+    }
+
+    th>a>i {
+        margin-left: 2px;
+        transform: scale(0.7);
+    }
+
     #btn-back {
         transition: 0.2s;
         color: #222 !important;
@@ -17,6 +44,23 @@
 
     #btn-back:hover {
         background-color: #ddd !important;
+    }
+
+    .btn-outline-custom {
+        color: #0077AA !important;
+        border-color: #0077AA !important;
+    }
+
+    .btn-outline-custom:hover {
+        background-color: #0077AA !important;
+        color: white !important;
+    }
+
+    /* Acomodar filtros en fila */
+    .form-filter-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
     }
 
     @media screen and (max-width: 768px) {
@@ -54,7 +98,7 @@
                 Eliminar
             </button>
         </form>
-        <a class="btn btn-warning" href="{{ url_for('ecuestre.index') }}">
+        <a class="btn btn-warning" href="{{ url_for('ecuestre.update', id=horse.id) }}">
             <i class="fas fa-edit me-1"></i>
             Editar
         </a>
@@ -64,53 +108,301 @@
         </a>
     </div>
 </header>
-<div class="d-flex flex-row justify-content-evenly align-items-start flex-wrap w-100 gap-3 mt-3">
-    <div class="card" style="flex-grow: 0.3;">
-        <div class="card-header bg-secondary-subtle fw-medium">
-            Información general
-        </div>
-        <div class="card-body pt-2">
-            <p class="card-text">
-                <span class="fw-medium">Nombre:</span> {{ horse.name }}<br>
-                <span class="fw-medium">Nacimiento:</span> {{ horse.birth_date }}<br>
-                <span class="fw-medium">Sexo:</span> {{ horse.gender }}<br>
-                <span class="fw-medium">Raza:</span> {{ horse.race }}<br>
-                <span class="fw-medium">Pelaje:</span> {{ horse.coat }}<br>
-                <span class="fw-medium">Origen:</span> {{ "Donación" if horse.donation else "Compra" }}<br>
-                <span class="fw-medium">Fecha de ingreso:</span> {{ horse.entry_date }}<br>
-                <span class="fw-medium">Sede asignada:</span> {{ horse.assigned_location }}<br>
-            </p>
-        </div>
-    </div>
-    <div class="card" style="flex-grow: 0.3;">
-        <div class="card-header bg-secondary-subtle fw-medium">
-            Actividades asignadas
-        </div>
-        <ul class="list-group list-group-flush">
-            {% if horse.activities %}
-            {% for activity in horse.activities %}
-            <li class="list-group-item">{{ activity.name }}</li>
-            {% endfor %}
-            {% else %}
-            <li class="list-group-item">Este caballo no tiene actividades asignadas</li>
-            {% endif %}
-        </ul>
-    </div>
-    <div class="card" style="flex-grow: 0.3;">
-        <div class="card-header bg-secondary-subtle fw-medium">
-            Sus entrenadores y/o conductores
-        </div>
-        <ul class="list-group list-group-flush">
-            {% if horse.assigned_members %}
-            {% for member in horse.assigned_members %}
-            <li class="list-group-item">{{ member.name }} - {{ member.job }}</li>
-            {% endfor %}
-            {% else %}
-            <li class="list-group-item">No hay miembros asignados</li>
-            {% endif %}
-        </ul>
+<div>
+    <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
+        <li class="nav-item">
+            <a role="button" class="nav-link {{ 'active' if initial_page==0 }}" aria-current="page"
+                onclick="changePage(0)">Información</a>
+        </li>
+        <li class="nav-item">
+            <a role="button" class="nav-link {{ 'active' if initial_page==1 }}" onclick="changePage(1)">Documentos</a>
+        </li>
+    </ul>
+    <div id="tabs-container" class="border border-top-0 rounded-bottom mt-0 p-4">
+        <section class="d-flex flex-row justify-content-between align-items-start flex-wrap w-100 gap-5 mt-0
+        {{ 'visually-hidden' if initial_page != 0 }}">
+            <div style="flex-grow: 0.33;">
+                <h5 class="border-bottom border-dark mb-3 pb-2 w-100">
+                    Información general
+                </h5>
+                <ul>
+                    <li><span class="fw-medium">Nombre:</span> {{ horse.name }}</li>
+                    <li><span class="fw-medium">Nacimiento:</span> {{ horse.birth_date }}</li>
+                    <li><span class="fw-medium">Sexo:</span> {{ horse.gender }}</li>
+                    <li><span class="fw-medium">Raza:</span> {{ horse.race }}</li>
+                    <li><span class="fw-medium">Pelaje:</span> {{ horse.coat }}</li>
+                    <li><span class="fw-medium">Origen:</span> {{ "Donación" if horse.donation else "Compra" }}</li>
+                    <li><span class="fw-medium">Fecha de ingreso:</span> {{ horse.entry_date }}</li>
+                    <li><span class="fw-medium">Sede asignada:</span> {{ horse.assigned_location }}</li>
+                </ul>
+            </div>
+            <div style="flex-grow: 0.33;">
+                <h5 class="border-bottom border-dark mb-3 pb-2 w-100">
+                    Actividades asignadas
+                </h5>
+                <ul>
+                    {% if horse.activities %}
+                    {% for activity in horse.activities %}
+                    <li>{{ activity.name }}</li>
+                    {% endfor %}
+                    {% else %}
+                    <li>Este caballo no tiene actividades asignadas</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div style="flex-grow: 0.33;">
+                <h5 class="border-bottom border-dark mb-3 pb-2 w-100">
+                    Sus entrenadores y/o conductores
+                </h5>
+                <ul>
+                    {% if horse.assigned_members %}
+                    {% for member in horse.assigned_members %}
+                    <li>{{ member.name }} - {{ member.job }}</li>
+                    {% endfor %}
+                    {% else %}
+                    <li>No hay miembros asignados</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </section>
+        <section class="{{ 'visually-hidden' if initial_page != 1 }} d-flex flex-column">
+            <h5 class="border-bottom border-dark pb-2">Documentación complementaria</h5>
+
+            <!-- Formulario de búsqueda y filtros -->
+            <form method="get" class="d-flex flex-row align-items-end gap-3 mt-3"
+                action="{{ url_for('ecuestre.show', id=horse.id) }}">
+                <div class="form-filter-container" style="flex-grow: 1;">
+                    <div class="form-group" style="flex-grow: 1;">
+                        <label class="mb-1" for="search">Buscar por nombre:</label>
+                        <input type="text" id="search" name="search" value="{{ search }}" class="form-control">
+                    </div>
+                    <div class="form-group" style="flex-grow: 1;">
+                        <label class="mb-1" for="document_type_id">Filtrar por tipo de documento:</label>
+                        <select id="document_type_id" name="document_type_id" class="form-select">
+                            <option value="">Todos los documentos</option>
+                            {% for doc_type in document_types %}
+                            <option value="{{ doc_type.id }}" {% if doc_type.id==document_type_id %}selected{% endif %}>
+                                {{ doc_type.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="text" name="initial_page" value="1" class="visually-hidden">
+                </div>
+                <div class="form-filter-container">
+                    <a href="{{ url_for('ecuestre.show', id=horse.id, initial_page=1) }}"
+                        class="btn btn-outline-secondary d-flex align-items-center">
+                        Limpiar filtros
+                    </a>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+            <table class="table table-striped overflow-auto mt-4 mb-4">
+                <thead>
+                    <tr>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc') }}">
+                                Nombre
+                                {% if order_by == 'name' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='document_type_id', order='asc' if order_by != 'document_type_id' or order == 'desc' else 'desc') }}">
+                                Tipo de documento
+                                {% if order_by == 'document_type_id' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a
+                                href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='upload_date', order='asc' if order_by != 'upload_date' or order == 'desc' else 'desc') }}">
+                                Fecha de subida
+                                {% if order_by == 'upload_date' %}
+                                {% if order == 'asc' %}
+                                <i class="fas fa-sort-asc"></i>
+                                {% else %}
+                                <i class="fas fa-sort-desc"></i>
+                                {% endif %}
+                                {% else %}
+                                <i class="fas fa-sort"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="documents-table-body">
+                    {% if documents %}
+                    {% for document in documents %}
+                    <tr>
+                        <td>{{ document.name }}</td>
+                        <td>{{ document.type }}</td>
+                        <td>{{ document.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>
+                            <div class="action-icons">
+                                <!-- Icono de vista / descarga -->
+                                <a href="{{ document.url }}" title="Ver" target="_blank">
+                                    <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                                </a>
+                                <!-- Formulario de eliminación -->
+                                <form
+                                    action="{{ url_for('ecuestre.delete_document', id=horse.id, document_id=document.id) }}"
+                                    method="POST" style="display: inline;"
+                                    onsubmit="return confirm('¿Quieres eliminar la documentación seleccionada?');">
+                                    <button type="submit" title="Eliminar" role="button"
+                                        style="border: none; background: none; color: #0099CC;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No hay documentación para mostrar</td>
+                    </tr>
+                    {% endif %}
+
+                </tbody>
+            </table>
+
+            <div class="d-flex flex-row gap-2 justify-content-end mt-3 w-100">
+                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                    data-bs-target="#modal-attach-url">
+                    <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                    Enlace
+                </button>
+                <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
+                    data-bs-target="#modal-upload-file">
+                    <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
+                    Subir archivo
+                </button>
+            </div>
+
+            <div class="modal fade" id="modal-upload-file" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form action="{{ url_for('ecuestre.upload', id=horse.id) }}" method="POST"
+                        enctype="multipart/form-data" class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase">Subir archivo</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="upload-file-form">
+                                <div class="form-group">
+                                    <label class="mb-1" for="doc-type">Tipo de documentación</label>
+                                    <select class="form-select" name="doc-type" id="doc-type" required>
+                                        <option selected>Seleccione una opción...</option>
+                                        {% if document_types %}
+                                        {% for document_type in document_types %}
+                                        <option value="{{ document_type.id }}">{{ document_type.name }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-1" for="file">Subir archivo</label>
+                                    <input type="file" class="form-control" id="file" name="file"
+                                        accept=".pdf,.doc,.xls,.jpeg" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Subir archivo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-attach-url" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form action="{{ url_for('ecuestre.upload', id=horse.id) }}" method="POST" id="attach-url-form"
+                        class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bolder text-uppercase">Adjuntar URL</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div class="form-group">
+                                    <label class="mb-1" for="doc-name">Nombre</label><span class="form-text"></span>
+                                    (Opcional)</span>
+                                    <input class="form-control" type="text" name="doc-name" id="doc-name"
+                                        placeholder="Nombre del documento">
+                                    <p class="form-text">Si no se especifica se utilizará la URL como nombre
+                                        para reconocer el documento.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mb-1" for="doc-type">Tipo de documentación</label>
+                                    <select class="form-select" name="doc-type" id="doc-type" required>
+                                        <option selected>Seleccione una opción...</option>
+                                        {% if document_types %}
+                                        {% for document_type in document_types %}
+                                        <option value="{{ document_type.id }}">{{ document_type.name }}</option>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label class="mb-1" for="doc-url">URL del documento</label>
+                                    <input type="url" class="form-control" name="doc-url" id="doc-url"
+                                        placeholder="Ingrese la URL del documento" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Adjuntar URL</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
+<script>
+    // Función para cambiar de página en el formulario
+    function changePage(page) {
+        // Obtener las secciones del formulario
+        const sections = document.querySelectorAll('#tabs-container > section');
+
+        // Ocultar todas las secciones
+        sections.forEach(section => section.classList.add('visually-hidden'));
+
+        // Mostrar la sección correspondiente a la página seleccionada
+        sections[page].classList.remove('visually-hidden');
+
+        // Cambiar la clase 'active' en los botones de la barra de navegación
+        document.querySelectorAll('#form-tabs .nav-link').forEach((button, index) => {
+            if (index === page) {
+                button.classList.add('active');
+                button.attributes['aria-current'] = 'page';
+            } else {
+                button.classList.remove('active');
+                button.attributes['aria-current'] = '';
+            }
+        });
+    }
+</script>
 {% endblock %}
 
 {% block footer %}

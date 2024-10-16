@@ -1,4 +1,8 @@
 /* styles.css */
+:root {
+    --primary-color: #7a7a7a !important;
+}
+
 
 /* General reset and base styles */
 * {
