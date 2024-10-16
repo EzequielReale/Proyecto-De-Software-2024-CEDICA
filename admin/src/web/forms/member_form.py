@@ -1,7 +1,15 @@
-from wtforms import BooleanField, DateField, Form, SelectField, StringField, ValidationError
+from wtforms import (
+    BooleanField,
+    DateField,
+    Form,
+    SelectField,
+    StringField,
+    ValidationError,
+)
 from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 
 from src.core import people
+
 
 class MemberForm(Form):
     
@@ -100,4 +108,3 @@ class MemberForm(Form):
         """Valida que el teléfono no sea igual al teléfono de emergencia"""
         if field.data == form.emergency_phone.data:
             raise ValidationError("El teléfono y el teléfono de emergencia no pueden ser el mismo")
-    

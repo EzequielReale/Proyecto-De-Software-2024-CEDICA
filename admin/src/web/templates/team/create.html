@@ -78,7 +78,8 @@
       <select class="form-control" id="province_id" name="province_id" required>
         <option value="">Seleccione una provincia</option>
         {% for province in provinces %}
-        <option value="{{ province.id }}" {% if member.locality and province.id==member.locality.province_id %}selected{% endif %}>
+        <option value="{{ province.id }}" {% if member.locality and province.id==member.locality.province_id
+          %}selected{% endif %}>
           {{ province.name }}</option>
         {% endfor %}
       </select>
@@ -88,7 +89,8 @@
     <label for="locality_id">Localidad:</label>
     <div class="input-group">
       <span class="input-group-text"><i class="fas fa-city"></i></span>
-      <select class="form-control" id="locality_id" name="locality_id" data-selected="{{ member.locality_id }}" required>
+      <select class="form-control" id="locality_id" name="locality_id" data-selected="{{ member.locality_id }}"
+        required>
         <option value="">Seleccione una localidad</option>
       </select>
     </div>
@@ -142,18 +144,20 @@
       <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
       <select class="form-control" id="condition" name="condition" required>
         <option value="">Seleccione una condición</option>
-        <option value="Voluntario" {% if member and member.condition=='Voluntario' %}selected{% endif %}>Voluntario</option>
-        <option value="Personal Rentado" {% if member and member.condition=='Personal Rentado' %}selected{% endif %}>Personal Rentado</option>
+        <option value="Voluntario" {% if member and member.condition=='Voluntario' %}selected{% endif %}>Voluntario
+        </option>
+        <option value="Personal Rentado" {% if member and member.condition=='Personal Rentado' %}selected{% endif %}>
+          Personal Rentado</option>
       </select>
     </div>
   </div>
   <div class="form-group mb-3">
     <label class="custom-checkbox">
-        Activo actualmente en el trabajo:
-        <input type="checkbox" id="active" name="active" value="true" {% if member and member.active %}checked{% endif %}>
-        <span class="checkmark"></span>
+      Activo actualmente en el trabajo:
+      <input type="checkbox" id="active" name="active" value="true" {% if member and member.active %}checked{% endif %}>
+      <span class="checkmark"></span>
     </label>
-</div>
+  </div>
   <div class="form-group mb-3">
     <label for="profession_id">Profesión:</label>
     <div class="input-group">
@@ -161,7 +165,7 @@
       <select class="form-control" id="profession_id" name="profession_id" required>
         <option value="">Seleccione una profesión</option>
         {% for profession in professions %}
-        <option value="{{ profession.id }}" {% if member.profession_id == profession.id %}selected{% endif %}>
+        <option value="{{ profession.id }}" {% if member.profession_id==profession.id %}selected{% endif %}>
           {{ profession.name }}</option>
         {% endfor %}
       </select>
@@ -174,7 +178,7 @@
       <select class="form-control" id="job_id" name="job_id" required>
         <option value="">Seleccione un puesto laboral</option>
         {% for job in jobs %}
-        <option value="{{ job.id }}" {% if member.job_id == job.id %}selected{% endif %}>
+        <option value="{{ job.id }}" {% if member.job_id==job.id %}selected{% endif %}>
           {{ job.name }}</option>
         {% endfor %}
       </select>
@@ -294,10 +298,13 @@
   }
 
   input[type="checkbox"] {
-    width: 20px;  /* Ajusta el tamaño */
-    height: 20px; /* Ajusta el tamaño */
-    cursor: pointer; /* Cambia el cursor cuando pasas por encima */
-}
+    width: 20px;
+    /* Ajusta el tamaño */
+    height: 20px;
+    /* Ajusta el tamaño */
+    cursor: pointer;
+    /* Cambia el cursor cuando pasas por encima */
+  }
 
   .custom-checkbox {
     position: relative;
@@ -305,39 +312,41 @@
     cursor: pointer;
     user-select: none;
     display: inline-block;
-}
+  }
 
-.custom-checkbox input[type="checkbox"] {
+  .custom-checkbox input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
-}
+  }
 
-.checkmark {
+  .checkmark {
     position: absolute;
     top: 0;
     left: 0;
     height: 20px;
     width: 20px;
     background-color: #eee;
-    border-radius: 5px; /* Para bordes redondeados */
-}
+    border-radius: 5px;
+    /* Para bordes redondeados */
+  }
 
-.custom-checkbox input[type="checkbox"]:checked + .checkmark {
-    background-color: #28a745; /* Color cuando está activo */
-}
+  .custom-checkbox input[type="checkbox"]:checked+.checkmark {
+    background-color: #28a745;
+    /* Color cuando está activo */
+  }
 
-.checkmark:after {
+  .checkmark:after {
     content: "";
     position: absolute;
     display: none;
-}
+  }
 
-.custom-checkbox input[type="checkbox"]:checked + .checkmark:after {
+  .custom-checkbox input[type="checkbox"]:checked+.checkmark:after {
     display: block;
-}
+  }
 
-.custom-checkbox .checkmark:after {
+  .custom-checkbox .checkmark:after {
     left: 6px;
     top: 3px;
     width: 6px;
@@ -345,7 +354,7 @@
     border: solid white;
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
-}
+  }
 </style>
 {% endblock %}
 {% endblock %}

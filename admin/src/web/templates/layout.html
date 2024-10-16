@@ -48,10 +48,12 @@
                 <!-- Enlaces a las secciones de la página -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if is_authenticated(session) %}
+                    {% if check_permission(session,'jya_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if 'jya' in request.endpoint %}active{% endif %}" aria-current="page"
-                            href="{{ url_for('jya') }}">J&A</a>
+                            href="{{ url_for('jya.index') }}">J&A</a>
                     </li>
+                    {% endif %}
                     {% if check_permission(session,'encuestre_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if 'ecuestre' in request.endpoint %}active{% endif %}"

@@ -1,17 +1,20 @@
-from flask import Blueprint
-from flask import request
-from flask import render_template
-from flask import request,redirect
-from flask import session
-from flask import url_for
-from flask import json
-from flask import flash
 from datetime import datetime
+
+from flask import (
+    Blueprint,
+    flash,
+    json,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+
+from src.core import equestrian, people
 from src.core.database import db
-from src.web.handlers.autenticacion import check_permission,login_required
+from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
-from src.core import equestrian
-from src.core import people
 
 bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 

@@ -20,9 +20,6 @@ def login_required(f):
     return wrapper
 
 
-
-
-
 def check_permission(session, permission):
     user_email = session.get("user")
     user = get_user_by_email(user_email)
