@@ -1,12 +1,13 @@
-CREATE TABLE public.users (
-    id integer NOT NULL,
-    alias character varying(100),
-    password character varying(100) NOT NULL,
-    email character varying(100) NOT NULL,
-    "isActive" boolean,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    alias VARCHAR(100),
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
 );
+
 
 CREATE SEQUENCE public.users_id_seq
     AS integer

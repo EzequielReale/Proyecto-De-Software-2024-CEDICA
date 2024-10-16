@@ -5,13 +5,12 @@ import uuid
 from flask import current_app, send_file
 from minio.error import S3Error
 
-from src.core import professions, adressing, database_functions as db_fun
+from src.core import adressing, database_functions as db_fun, professions
 from src.core.database import db
-from src.core.people.member_rider import Member
-from src.core.people.member_rider import Rider
+from src.core.people.member_rider import Member, Rider
+from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
-from src.core.people.person_document import PersonDocument as Document
 
 
 """Funciones de documentos"""
@@ -162,9 +161,10 @@ def member_delete(member_id: int) -> Member:
         db.session.commit()
 
     # Quitar el miembro de las propuestas de trabajo de J/a asociadas
-    job_proposals = list(db_fun.filter(professions.JobProposal, {"professor_id": member_id}))
-    job_proposals += list(db_fun.filter(professions.JobProposal, {"member_horse_rider_id": member_id}))
-    job_proposals += list(db_fun.filter(professions.JobProposal, {"assistant_id": member_id}))
+    job_proposals = set()
+    job_proposals.update(db_fun.filter(professions.JobProposal, {"professor_id": member_id}))
+    job_proposals.update(db_fun.filter(professions.JobProposal, {"member_horse_rider_id": member_id}))
+    job_proposals.update(db_fun.filter(professions.JobProposal, {"assistant_id": member_id}))
     for job_proposal in job_proposals:
         professions.job_proposal_delete(job_proposal.id)
 
@@ -259,3 +259,21 @@ def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
     path = f"riders/{rider_id}/{ulid}_{file.filename}"
     _save_document(file, path)
     return document_new(rider_id, path, file.filename, type)
+
+"""Seeds"""
+
+def rider_new_seed(**kwargs) -> Rider:
+    """Crea un jinete con datos de prueba y lo guarda en la BD"""
+    return db_fun.new(Rider, **kwargs)
+
+def school_new_seed(**kwargs) -> professions.School:
+    """Crea una escuela con datos de prueba y la guarda en la BD"""
+    return db_fun.new(professions.School, **kwargs)
+
+def job_proposal_new_seed(**kwargs) -> professions.JobProposal:
+    """Crea una propuesta de trabajo con datos de prueba y la guarda en la BD"""
+    return db_fun.new(professions.JobProposal, **kwargs)
+
+def tutor_new_seed(**kwargs) -> Tutor:
+    """Crea un tutor con datos de prueba y lo guarda en la BD"""
+    return db_fun.new(Tutor, **kwargs)

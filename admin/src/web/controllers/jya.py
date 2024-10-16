@@ -1,19 +1,20 @@
 from datetime import datetime
 
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from src.core.people.member_rider import Member
-from src.core.equestrian.horse import Horse
 from src.core import (
     adressing,
+    database_functions as db,
     disabilities,
     people,
-    database_functions as db,
 )
+from src.core.equestrian.horse import Horse
+from src.core.people.member_rider import Member
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
-from src.web.handlers.autenticacion import login_required
+from src.web.handlers.autenticacion import check_permission, login_required
+from src.web.handlers.error import unauthorized
 
 
 bp = Blueprint("jya", __name__, url_prefix="/jya")
@@ -23,6 +24,9 @@ bp = Blueprint("jya", __name__, url_prefix="/jya")
 @login_required
 def index() -> str:
     """Listado de j/a del equipo usando filtros, ordenación y paginación"""
+    if not check_permission(session, "jya_index"):
+        return unauthorized()
+    
     page = request.args.get("page", 1, type=int)
     per_page = 25
 
@@ -57,6 +61,9 @@ def index() -> str:
 @login_required
 def show(id: int) -> str:
     """Recibe el id de un j/a y muestra su información y documentos asociados"""
+    if not check_permission(session, "jya_show"):
+        return unauthorized()
+    
     filters = {
         "document_name": request.args.get("document_name"),
         "document_type": request.args.get("document_type"),
@@ -156,6 +163,9 @@ def _configure_form(
 @login_required
 def create() -> str:
     """Muestra el formulario para crear un nuevo j/a y lo guarda en la BD"""
+    if not check_permission(session, "jya_new"):
+        return unauthorized()
+    
     rider = {}
     (
         disability_types_list,
@@ -226,6 +236,9 @@ def update(id: int) -> str:
 @login_required
 def destroy(id: int) -> str:
     """Recibe el id de un j/a y lo elimina fisicamente de la BD"""
+    if not check_permission(session, "jya_destroy"):
+        return unauthorized()
+    
     rider = people.rider_delete(id)
     flash(f"{rider.name} {rider.last_name} ha sido eliminado", "success")
     return redirect(url_for("jya.index"))
@@ -235,6 +248,9 @@ def destroy(id: int) -> str:
 @login_required
 def add_document(id: int) -> str:
     """Recibe el id de un j/a y agrega un documento a su lista de documentos"""
+    if not check_permission(session, "jya_new"):
+        return unauthorized()
+    
     form = DocumentForm()
     if form.validate_on_submit():
         document, type = form.get_data()
@@ -254,6 +270,9 @@ def add_document(id: int) -> str:
 @login_required
 def add_link(id: int) -> str:
     """Recibe el id de un j/a y agrega un enlace a su lista de documentos"""
+    if not check_permission(session, "jya_new"):
+        return unauthorized()
+    
     form = LinkForm()
     if form.validate_on_submit():
         name, path, type = form.get_data()
@@ -273,6 +292,9 @@ def add_link(id: int) -> str:
 @login_required
 def download_document(id: int, document_id: int) -> bytes:
     """Recibe el id de un j/a y el id de un documento y lo descarga"""
+    if not check_permission(session, "jya_show"):
+        return unauthorized()
+    
     return people.download_document(document_id)
 
 
@@ -280,6 +302,9 @@ def download_document(id: int, document_id: int) -> bytes:
 @login_required
 def edit_document(id: int, document_id: int) -> str:
     """Recibe el id de un j/a y el id de un documento y lo edita en la BD"""
+    if not check_permission(session, "jya_update"):
+        return unauthorized()
+    
     document = people.get_document_by_id(document_id)
     form = DocumentForm(document_id=document.id, obj=document)
     if form.validate_on_submit():
@@ -300,6 +325,9 @@ def edit_document(id: int, document_id: int) -> str:
 @login_required
 def edit_link(id: int, document_id: int) -> str:
     """Recibe el id de un j/a y el id de un link y lo edita en la BD"""
+    if not check_permission(session, "jya_update"):
+        return unauthorized()
+    
     document = people.get_document_by_id(document_id)
     form = LinkForm(document_id=document.id, obj=document)
     if form.validate_on_submit():
@@ -320,6 +348,9 @@ def edit_link(id: int, document_id: int) -> str:
 @login_required
 def destroy_document(id: int, document_id: int) -> str:
     """Recibe el id de un j/a y el id de un documento y lo elimina de la BD"""
+    if not check_permission(session, "jya_destroy"):
+        return unauthorized()
+    
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")
     return redirect(url_for("jya.show", id=id))
