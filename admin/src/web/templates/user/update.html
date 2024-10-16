@@ -1,48 +1,38 @@
 {% extends "layout.html" %}
-{% block title %}CEDICA - Actualizar usuario{% endblock %}
+{% block title %}Gestion de usuarios{% endblock %}
  
 {% block head %}
 {{ super() }}
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
 
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    button {
+        margin: 10px 0;
+        padding: 15px 30px;
+        font-size: 16px;
+        width: 200px;
+        cursor: pointer;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<h1 class="text-primary mb-4">Actualizar usuario</h1>
-
-<a href="{{ url_for('user.update_password' , email=user.email) }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-    <i class="fas fa-user-plus"></i> Cambiar contraseña
-</a>
-
-<!-- Botón para bloquear o desbloquear usuario -->
-{% if user.isActive %}
-
-    <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}"
-    onsubmit="return confirm('¿Seguro que quiere bloquear al usuario {{user.alias}}?');">
-        {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
-        <input type="hidden" name="action" value="block">
-        <button type="submit" class="btn btn-danger" style="margin-top: 10px;">
-            Bloquear usuario
-        </button>
-    </form>
-
-{% else %}
-
-    <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}">
-        {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
-        <input type="hidden" name="action" value="unblock">
-        <button type="submit" class="btn btn-success" style="margin-top: 10px;">
-            Desbloquear usuario
-        </button>
-    </form>
-    
-{% endif %}
-
-
-<!-- Fin de boton para bloquear o desbloquear usuario -->
-
-<br>
-
-<p>Formulario para actualizar datos y roles de un usuario</p>
+<h1>Actualizar usuario</h1>
+<p>Formulario para actualizar usuario : {{ user.email }}</p>
+<p>(Todos los campos son opcionales)</p>
 
 <main>
     
@@ -50,60 +40,52 @@
 
         {{ form.csrf_token }}
 
-        <form method="POST" class="p-4 bg-light rounded shadow">
-            {{ form.csrf_token }}
-        
-            <!-- Alias field -->
-            <div class="form-group mb-3">
-                {{ form.alias.label(class="form-label") }}
-                {{ form.alias(class="form-control") }}
-                {% for error in form.alias.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-        
-            <!-- Email field -->
-            <div class="form-group mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control") }}
-                {% for error in form.email.errors %}
-                    <span class="text-danger">{{ error }}</span>
-                {% endfor %}
-            </div>
-        
-            <!-- Roles to delete field -->
+        <div>
+            {{ form.alias.label }} {{ form.alias() }}
+            {% for error in form.alias.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-            {% if form.roles_to_delete.choices %}
-               
-                <div class="form-group mb-3">
-                    {{ form.roles_to_delete.label(class="form-label") }}
-                    {{ form.roles_to_delete(class="form-control")}}
-                    {% for error in form.roles_to_delete.errors %}
-                        <span class="text-danger">{{ error }}</span>
-                    {% endfor %}
-                </div>
+        <div>
+            {{ form.email.label }} {{ form.email() }}
+            {% for error in form.email.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-            {% endif %}
+        <div>
+            {{ form.password.label }} {{ form.password() }}
+            {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-            <!-- Roles to add field -->
+        <div>
+            {{ form.confirm_password.label }} {{ form.confirm_password() }}
+            {% for error in form.confirm_password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-            {% if form.roles_to_add.choices %}
+        <div>
+            {{ form.is_active.label }} {{ form.is_active() }}
+            {% for error in form.is_active.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-                <div class="form-group mb-3">
-                    {{ form.roles_to_add.label(class="form-label") }}
-                    {{ form.roles_to_add(class="form-control")}}
-                    {% for error in form.roles_to_add.errors %}
-                        <span class="text-danger">{{ error }}</span>
-                    {% endfor %}
-                </div>
+        <div>
+            {{ form.role.label }} {{ form.role() }}
+            {% for error in form.role.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
 
-            {% endif %}
-        
-            <!-- Submit button -->
-            <div>
-                {{ form.submit(class="btn btn-primary btn-block") }}
-            </div>
-        </form>
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
 
 </main>
 {% endblock %}

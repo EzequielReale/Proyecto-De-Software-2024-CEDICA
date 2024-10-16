@@ -1,6 +1,5 @@
 from minio import Minio
 
-
 class Storage:
     def __init__(self, app=None):
         self._client = None
@@ -12,7 +11,7 @@ class Storage:
         minio_server = app.config.get("MINIO_SERVER")
         minio_access_key = app.config.get("MINIO_ACCESS_KEY")
         minio_secret_key = app.config.get("MINIO_SECRET_KEY")
-        minio_secure = app.config.get("MINIO_SECURE", True)
+        minio_secure = app.config.get("MINIO_SECURE", False)
 
         self._client = Minio(
             minio_server,
