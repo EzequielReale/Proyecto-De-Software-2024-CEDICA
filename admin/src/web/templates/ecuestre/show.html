@@ -257,10 +257,20 @@
                         <td>{{ document.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                         <td>
                             <div class="action-icons">
-                                <!-- Icono de vista / descarga -->
-                                <a href="{{ document.url }}" title="Ver" target="_blank">
-                                    <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                                <!-- Icono de vista -->
+                                <a href=" {{ document.url }}" title="Ver" target="_blank">
+                                    <i style="transform: scale(0.9);"
+                                        class="fa {% if document.isFile %}fa-eye{% else %}fa-link{% endif %}"></i>
                                 </a>
+
+                                {% if document.isFile %}
+                                <!-- Botón de descarga -->
+                                <a id="download-btn-{{ document.id }}" href="{{ document.url }}" title="Descargar"
+                                    download="{{ document.name }}">
+                                    <i style="transform: scale(0.9);" class="fa fa-download"></i>
+                                </a>
+                                {% endif %}
+
                                 <!-- Formulario de eliminación -->
                                 <form
                                     action="{{ url_for('ecuestre.delete_document', id=horse.id, document_id=document.id) }}"
@@ -380,6 +390,33 @@
     </div>
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtener los botones de descarga
+        const downloadButtons = document.querySelectorAll('[id^="download-btn-"]');
+        // Asignar evento de descarga a los botones
+        downloadButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                // Evitar que se abra el enlace
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                const filename = this.getAttribute('download');
+
+                // Descargar el archivo
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    })
+                    .catch(console.error);
+            });
+        });
+    });
+
     // Función para cambiar de página en el formulario
     function changePage(page) {
         // Obtener las secciones del formulario

@@ -75,7 +75,8 @@ def get_horse_documents(horse_id: int, document_type_id: int = None, search: str
             'name': doc.name,
             'type': doc.document_type.name,
             'upload_date': doc.upload_date,
-            'url': doc_url
+            'url': doc_url,
+            'isFile': doc.file_path is not None
         })
     return docs
 
