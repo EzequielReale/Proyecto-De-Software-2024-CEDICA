@@ -22,9 +22,6 @@ def login_required(f):
     return wrapper
 
 
-
-
-
 def check_permission(session, permission):
     user_email = session.get("user")
     user = auth.find_user_email(user_email)
