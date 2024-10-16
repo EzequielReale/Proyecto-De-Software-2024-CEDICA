@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% block title %}CEDICA - Ver miembro{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: #0056b3;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .btn-icon {
+        margin-left: 10px;
+    }
+
+    .btn {
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<h1 style="color: #007bff; margin-bottom: 20px;">Detalle de usuario</h1>
+<p class="lead mb-4">Información detallada de Usuario</p>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ user.alias }}</h5>
+        <p class="card-text">
+            <strong>Email:</strong> {{ user.email }}<br>
+            <strong>Estado:</strong> 
+                {% if user.isActive %}
+                    Activo
+                {% else %}
+                    Inactivo
+                {% endif %}<br>
+            <strong>Roles:</strong>
+            {% if user.roles|length == 0 %}
+                Sin roles asignados
+            {% endif %}
+            {% for role in user.roles %}
+                {{ role.name }}{% if not loop.last %}, {% endif %}
+            {% endfor %}<br>
+        </p>
+    </div>
+</div>
+<br>
+
+<div class="button-group">
+    <a href="{{ url_for('user.index') }}" class="btn btn-primary btn-icon">
+        <i class="fas fa-arrow-left"></i> Volver al listado de usuarios
+    </a>
+</div>
+{% endblock %}
+{% block footer %}
+{% endblock %}

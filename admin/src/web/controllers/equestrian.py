@@ -1,10 +1,20 @@
-from flask import Blueprint
-from flask import render_template
-from flask import request,redirect, flash, session, url_for
-from flask import session
-from src.web.handlers.autenticacion import login_required
-from src.core import equestrian
-from src.core import people
+from datetime import datetime
+
+from flask import (
+    Blueprint,
+    flash,
+    json,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
+
+from src.core import equestrian, people
+from src.core.database import db
+from src.web.handlers.autenticacion import check_permission, login_required
+from src.web.handlers.error import unauthorized
 
 bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 
@@ -207,3 +217,69 @@ def destroy(id: int):
     horse = equestrian.horse_delete(id)
     flash(f"Caballo {horse.name} eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.index'))
+
+
+@bp.route('/<int:id>/add_document', methods=['POST'])
+def upload(id: int):
+    """Recibe el ID de un caballo y agrega un documento a su lista de documentos"""
+    if 'file' not in request.files:
+        equestrian.horse_attach_document(id, request.form['doc-type'], request.form['doc-url'], request.form['doc-name'])
+    else:
+        equestrian.horse_add_document(id, request.form['doc-type'], request.files['file'])
+    
+    flash(f"Documento agregado exitosamente", "success")
+    return redirect(url_for('ecuestre.show', id=id, initial_page=1))
+
+
+@bp.post("/<int:id>/delete_document/<int:document_id>")
+def delete_document(id: int, document_id: int)->str:
+    """Recibe el ID de un caballo y el ID de un documento y lo elimina de la BD"""
+    equestrian.delete_document(document_id)
+    flash(f"Documento eliminado exitosamente", "success")
+    return redirect(url_for('ecuestre.show', id=id, initial_page=1))
+
+
+def validate_horse_form(data):
+    errors = []
+
+    # Validar nombre
+    if not data.get('name') or len(data['name']) > 100:
+        errors.append("El nombre es obligatorio y debe tener menos de 100 caracteres.")
+    
+    # Validar fecha de nacimiento
+    try:
+        datetime.strptime(data['birth_date'], '%Y-%m-%d')
+    except ValueError:
+        errors.append("La fecha de nacimiento es obligatoria y debe tener el formato YYYY-MM-DD.")
+    
+    # Validar fecha de entrada
+    try:
+        datetime.strptime(data['entry_date'], '%Y-%m-%d')
+    except ValueError:
+        errors.append("La fecha de entrada es obligatoria y debe tener el formato YYYY-MM-DD.")
+        
+    # Validar que la fecha de nacimiento sea anterior a la fecha de entrada
+    if data['birth_date'] >= data['entry_date']:
+        errors.append("La fecha de nacimiento debe ser anterior a la fecha de entrada.")
+    
+    # Validar género
+    if data.get('gender') not in ['0', '1']:
+        errors.append("El género es obligatorio y debe ser Macho o Hembra.")
+    
+    # Validar origen
+    if data.get('origin') not in ['0', '1']:
+        errors.append("El origen es obligatorio y debe ser Compra o Donación.")
+    
+    # Validar raza
+    if not data.get('race') or len(data['race']) > 100:
+        errors.append("La raza es obligatoria y debe tener menos de 100 caracteres.")
+    
+    # Validar pelaje
+    if not data.get('coat') or len(data['coat']) > 100:
+        errors.append("El pelaje es obligatorio y debe tener menos de 100 caracteres.")
+    
+    # Validar ubicación asignada
+    if not data.get('assigned_location') or len(data['assigned_location']) > 100:
+        errors.append("La ubicación asignada es obligatoria y debe tener menos de 100 caracteres.")
+
+    return errors
