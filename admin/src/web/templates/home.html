@@ -56,13 +56,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container px-5">
     <img src="{{ url_for('static', filename='logos/Logo CEDICA.png') }}" alt="Logo" class="logo">
     <h1>Bienvenido a CEDICA</h1>
     {% if not is_authenticated(session) %}
-        <p>Accede a tu cuenta para explorar nuestras funcionalidades</p>
+    <p>Accede a tu cuenta para explorar nuestras funcionalidades</p>
     {% else %}
-        <p>Explora nuestras funcionalidades en la barra superior</p>
+    <p>Explora nuestras funcionalidades en la barra superior</p>
     {% endif %}
 </div>
 {% endblock %}
