@@ -1,6 +1,7 @@
 from src.core.database import db
 from src.core.bcrypt import bcrypt
 from src.core import database_functions as dbf
+from src.core.people.member_rider import UserMember
 from src.core.user_role_permission.upr_models import Role, User, UserRole
 from src.core.user_role_permission.operations.role_operations import get_role_by_name
 
@@ -37,11 +38,19 @@ def user_update_password(user_email, new_password):
     return user
 
 
+def user_unlink_member(email):
+    """ Elimina la relación entre un usuario y un miembro """
+    user = get_user_by_email(email)
+    user_update(user.id, member=None)
+    dbf.delete_by_field(UserMember, "user_id", user.id)
+    return user
+
+
 def delete_user(user_email)->User:
     """ Elimina un usuario de la BD """
     user = get_user_by_email(user_email)
-    db.session.delete(user)
-    db.session.commit()
+    user_unlink_member(user_email)
+    dbf.delete(User, user.id)
     return user
 
 

@@ -95,3 +95,11 @@ def delete(model, item_id: int) -> object:
     db.session.delete(item)
     db.session.commit()
     return item
+
+def delete_by_field(model, field: str, value) -> object:
+    """Elimina un elemento por un campo específico y su valor"""
+    item = get_by_field(model, field, value)
+    if item:
+        db.session.delete(item)
+        db.session.commit()
+    return item

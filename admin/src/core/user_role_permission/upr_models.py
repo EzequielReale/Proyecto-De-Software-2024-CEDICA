@@ -12,7 +12,8 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     isActive = db.Column(db.Boolean, default=True)
 
-    roles = db.relationship('Role', secondary='user_roles', back_populates='users') # OK
+    roles = db.relationship('Role', secondary='user_roles', back_populates='users')
+    member = db.relationship('Member', secondary='user_member', back_populates='user', uselist=False, lazy=True)
 
     created_at = db.Column(db.DateTime,default= datetime.now)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)

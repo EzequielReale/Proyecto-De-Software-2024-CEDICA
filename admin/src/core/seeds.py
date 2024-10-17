@@ -216,7 +216,8 @@ def run():
             condition="Voluntario",
             active=True,
             profession_id=1,
-            job_id=1
+            job_id=1,
+            user=user1
     )
     pago = registro_pagos.pago_create(
         monto = 2000,
