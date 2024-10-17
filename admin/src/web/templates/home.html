@@ -10,13 +10,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 80vh;
+        height: 90vh;
         margin: 0;
         background-color: #f4f4f4;
         font-family: Arial, sans-serif;
     }
 
-    .container {
+    .main-container {
         text-align: center;
         background-color: white;
         padding: 2rem;
@@ -56,7 +56,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container px-5">
+<div class="main-container p-5">
     <img src="{{ url_for('static', filename='logos/Logo CEDICA.png') }}" alt="Logo" class="logo">
     <h1>Bienvenido a CEDICA</h1>
     {% if not is_authenticated(session) %}

@@ -4,6 +4,22 @@
 
 {% block head %}
 {{ super() }}
+<style>
+  @media screen and (max-width: 768px) {
+
+    /* Ocultar columnas en pantallas pequeñas */
+    tr>td:nth-child(3),
+    tr>td:nth-child(4),
+    tr>td:nth-child(5),
+    tr>td:nth-child(6),
+    tr>th:nth-child(3),
+    tr>th:nth-child(4),
+    tr>th:nth-child(5),
+    tr>th:nth-child(6) {
+      display: none;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -44,8 +60,8 @@
       {% endfor %}
     </select>
   </div>
-  <button type="submit" class="btn btn-primary"
-    style="background-color: #007bff; border-color: #007bff;"><i class="fas fa-search"></i> Buscar
+  <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;"><i
+      class="fas fa-search"></i> Buscar
   </button>
   <a href="{{ url_for('team.index') }}" class="btn btn-secondary"
     style="background-color: #6c757d; border-color: #6c757d;"><i class="fas fa-eraser"></i> Limpiar filtros
@@ -53,7 +69,7 @@
 </form>
 
 <a href="{{ url_for('team.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-  <i class="fas fa-user-plus"></i> Crear nuevo miembro 
+  <i class="fas fa-user-plus"></i> Crear nuevo miembro
 </a>
 
 <table class="table table-striped"
