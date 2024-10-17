@@ -47,7 +47,7 @@ def index() -> str:
     return render_template(
         "jya/index.html",
         riders=riders,
-        members=db.filter(Member, {"job_id": 2}),  # Terapeutas
+        members=db.filter(Member, {"job_id": 2, "active":True}),  # Terapeutas
         filters=filters,
         page=page,
         total_pages=total_pages,
@@ -91,11 +91,11 @@ def _get_data_from_db() -> tuple:
     localities_list = adressing.list_localities()
     provinces_list = adressing.list_provinces()
     horse_list = db.list_all(Horse)
-    assigned_professionals_list = db.filter(Member, {"job_id": 2})  # Terapeuta
-    professor_list = db.filter(Member, {"job_id": 9})  # Profesor de equitación
+    assigned_professionals_list = db.filter(Member, {"job_id": 2, "active":True})  # Terapeuta
+    professor_list = db.filter(Member, {"job_id": 9, "active":True})  # Profesor de equitación
     professor_list = list(professor_list) + list(assigned_professionals_list)
-    assistant_list = db.filter(Member, {"job_id": 4})  # Asistente de pista
-    horse_rider_list = db.filter(Member, {"job_id": 3})  # Conductor
+    assistant_list = db.filter(Member, {"job_id": 4, "active":True})  # Asistente de pista
+    horse_rider_list = db.filter(Member, {"job_id": 3, "active":True})  # Conductor
     return (
         disability_types_list,
         disabilities_list,

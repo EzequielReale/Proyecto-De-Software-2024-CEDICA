@@ -36,6 +36,7 @@ def index() -> str:
         "dni": request.args.get("dni"),
         "email": request.args.get("email"),
         "job_id": request.args.get("job_id"),
+        "active": request.args.get("active"),
     }
     sort_by = request.args.get("sort_by", "name")
     sort_direction = request.args.get("sort_direction", "asc")

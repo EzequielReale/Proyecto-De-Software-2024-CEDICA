@@ -127,46 +127,42 @@ def run():
         description="Enseñanza"
     )
     job1 = professions.job_new(
-        name="Docente de capacitación",
-        description="Enseñanza para nuevos miembros"
-    )
-    job2 = professions.job_new(
         name="Administrativo/a",
         description="Gestiona tareas administrativas en oficinas, asegurando la eficiencia operativa diaria."
     )
-    job3 = professions.job_new(
+    job2 = professions.job_new(
         name="Terapeuta",
         description="Facilita procesos de sanación y desarrollo personal mediante técnicas terapéuticas."
     )
-    job4 = professions.job_new(
+    job3 = professions.job_new(
         name="Conductor",
         description="Monta caballos y se encarga de su manejo durante el transporte y las actividades diarias."
     )
-    job5 = professions.job_new(
+    job4 = professions.job_new(
         name="Auxiliar de pista",
         description="Asiste en la gestión y cuidado de caballos en pistas de equitación, garantizando seguridad."
     )
-    job6 = professions.job_new(
+    job5 = professions.job_new(
         name="Herrero",
         description="Artesano que forja metales, creando herramientas y piezas personalizadas a medida."
     )
-    job7 = professions.job_new(
+    job6 = professions.job_new(
         name="Veterinario",
         description="Diagnostica y trata enfermedades en animales, ofreciendo cuidados preventivos y educativos."
     )
-    job8 = professions.job_new(
+    job7 = professions.job_new(
         name="Entrenador de Caballos",
         description="Forma y entrena caballos para competencias o trabajo, desarrollando habilidades específicas."
     )
-    job9 = professions.job_new(
+    job8 = professions.job_new(
         name="Domador",
         description="Adiestra caballos para establecer confianza y control entre el animal y el jinete."
     )
-    job10 = professions.job_new(
+    job9 = professions.job_new(
         name="Profesor de Equitación",
         description="Enseña técnicas de monta y manejo de caballos, promoviendo seguridad en la práctica."
     )
-    job11 = professions.job_new(
+    job10 = professions.job_new(
         name="Auxiliar de mantenimiento",
         description="Realiza mantenimiento preventivo y correctivo en instalaciones para asegurar su óptimo funcionamiento."
     )
