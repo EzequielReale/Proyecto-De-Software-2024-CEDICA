@@ -1,3 +1,4 @@
+from src.core import database_functions as dbf
 from src.core.database import db
 from src.core.registro_pagos.Pagos import Pago, Tipo_pago
 
@@ -24,43 +25,32 @@ def pago_create(**kwargs):
     return pago
 
 
-#mod
-def administracion_index(request):
-    """devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""   
-    #filtros
-    fecha_inicio = request.args.get('fecha_inicio')
-    fecha_fin = request.args.get('fecha_fin')
-    tipo_pago = request.args.get('tipo_pago')
-    
-     #orden
-    order_by = request.args.get('order_by', 'fecha_pago')  # por defecto, ordenar por fecha_pago
-    order = request.args.get('order', 'desc')  # por defecto, de más nuevo a más viejo
-
-    # consulta base
+def administracion_index(filtros: dict, page: int, per_page: int, order_by: str, orden: str) -> tuple:
+    """Devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""
     query = Pago.query
-    
-    # rango de fechas
+
+    # Rango de fechas
+    fecha_inicio = filtros.get("fecha_inicio")
+    fecha_fin = filtros.get("fecha_fin")
     if fecha_inicio:
         query = query.filter(Pago.fecha_pago >= fecha_inicio)
     if fecha_fin:
         query = query.filter(Pago.fecha_pago <= fecha_fin)
-    
-    # tipo de pago
+
+    # Tipo de pago
+    tipo_pago = filtros.get("tipo_pago")
     if tipo_pago and tipo_pago != "Todos los tipos":
-        print("tipo pago: ",tipo_pago)
         query = query.join(Pago.tipo_pago).filter(Tipo_pago.tipo == tipo_pago)
-    
-    #orden de las fechas
-    if order_by == 'fecha_pago':
-        if order == 'asc':
-            query = query.order_by(Pago.fecha_pago.asc())
-        else:
-            query = query.order_by(Pago.fecha_pago.desc())
 
+    # Orden de las fechas
+    query = dbf.order_by(Pago, query, order_by, orden)
 
-    pagos = query.all()
-    return pagos 
-    
+    # Paginación
+    query_paginada = query.paginate(page=page, per_page=per_page, error_out=False)
+    pagos = query_paginada.items
+    total_paginas = query_paginada.pages
+
+    return pagos, total_paginas
     
 
 
