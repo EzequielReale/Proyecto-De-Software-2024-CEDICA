@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS public.job_proposals
         ON DELETE NO ACTION,
     CONSTRAINT job_proposals_horse_id_fkey FOREIGN KEY (horse_id)
         REFERENCES public.horses (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT job_proposals_member_horse_rider_id_fkey FOREIGN KEY (member_horse_rider_id)
         REFERENCES public.members (id) MATCH SIMPLE
         ON UPDATE NO ACTION
