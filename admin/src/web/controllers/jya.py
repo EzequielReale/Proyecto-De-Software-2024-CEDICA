@@ -90,7 +90,7 @@ def _get_data_from_db() -> tuple:
     disabilities_list = disabilities.list_disability_diagnosis()
     localities_list = adressing.list_localities()
     provinces_list = adressing.list_provinces()
-    horse_list = Horse.query.all()  # Hago una funcion en init para esto?
+    horse_list = db.list_all(Horse)
     assigned_professionals_list = db.filter(Member, {"job_id": 2})  # Terapeuta
     professor_list = db.filter(Member, {"job_id": 9})  # Profesor de equitación
     professor_list = list(professor_list) + list(assigned_professionals_list)

@@ -34,7 +34,7 @@ class Person(db.Model):
     )  # Campo utilizado para la discriminación de la herencia
 
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f"Person {self.id}"

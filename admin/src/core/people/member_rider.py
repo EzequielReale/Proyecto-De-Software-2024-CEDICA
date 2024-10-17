@@ -14,7 +14,7 @@ class RiderMember(db.Model):
     rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), primary_key=True)
     member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Member(Person):
@@ -76,7 +76,7 @@ class Rider(Person):
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
     # school
-    school = db.relationship("School", backref="rider", lazy=True, overlaps="rider_school,school")
+    school = db.relationship("School", backref="rider", uselist=False, lazy=True, overlaps="rider_school,school")
 
     # tutors
     tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
@@ -85,7 +85,7 @@ class Rider(Person):
     tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
 
     # job
-    job_proposal = db.relationship("JobProposal", backref="rider", lazy=True)
+    job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", lazy=True)
 
     
     def __repr__(self):

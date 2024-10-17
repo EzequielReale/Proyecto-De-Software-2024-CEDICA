@@ -21,7 +21,7 @@ class PersonDocument(db.Model):
     person = db.relationship("Person", back_populates="documents")
 
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f"<PersonDocument {self.id}>"

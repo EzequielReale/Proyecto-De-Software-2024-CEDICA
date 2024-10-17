@@ -1,70 +1,69 @@
 {% extends "layout.html" %}
 {% block title %}CEDICA - Nuevo usuario{% endblock %}
- 
+
 {% block head %}
 {{ super() }}
-
 {% endblock %}
 
-
-
 {% block content %}
-<h1 class="text-primary mb-4">Crear usuario</h1>
-<p>Formulario para crear un nuevo usuario</p>
+<h1 class="text-primary mb-4 text-center">Crear usuario</h1>
+<p class="text-center">Formulario para crear un nuevo usuario</p>
 
-    
-<form method="POST" class="w-50 p-4 bg-light rounded shadow">
-    {{ form.csrf_token }}
+<div class="d-flex justify-content-center">
+    <form method="POST" class="w-50 p-4 bg-light rounded shadow">
+        {{ form.csrf_token }}
 
-    <!-- Alias field -->
-    <div class="form-group mb-3">
-        {{ form.alias.label(class="form-label") }}
-        {{ form.alias(class="form-control") }}
-        {% for error in form.alias.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Alias field -->
+        <div class="form-group mb-3">
+            {{ form.alias.label(class="form-label") }}
+            {{ form.alias(class="form-control") }}
+            {% for error in form.alias.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Email field -->
-    <div class="form-group mb-3">
-        {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control") }}
-        {% for error in form.email.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Email field -->
+        <div class="form-group mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Password field -->
-    <div class="form-group mb-3">
-        {{ form.password.label(class="form-label") }}
-        {{ form.password(class="form-control") }}
-        {% for error in form.password.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Password field -->
+        <div class="form-group mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control") }}
+            {% for error in form.password.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Confirm Password field -->
-    <div class="form-group mb-3">
-        {{ form.confirm_password.label(class="form-label") }}
-        {{ form.confirm_password(class="form-control") }}
-        {% for error in form.confirm_password.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Confirm Password field -->
+        <div class="form-group mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control") }}
+            {% for error in form.confirm_password.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Role field -->
-    <div class="form-group mb-3">
-        {{ form.role.label(class="form-label") }}
-        {{ form.role(class="form-control")}}
-        {% for error in form.role.errors %}
-            <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-    </div>
+        <!-- Role field -->
+        <div class="form-group mb-3">
+            {{ form.role.label(class="form-label") }}
+            {{ form.role(class="form-control")}}
+            {% for error in form.role.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
 
-    <!-- Submit button -->
-    <div>
-        {{ form.submit(class="btn btn-primary btn-block") }}
-    </div>
-</form>
+        <!-- Submit and Cancel buttons -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('user.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Cancelar</a>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
 
 {% endblock %}

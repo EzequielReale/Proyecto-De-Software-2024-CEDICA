@@ -122,13 +122,6 @@ def run():
     tipo3= registro_pagos.tipo_new(
         tipo="Varios"
     )
-    pago = registro_pagos.pago_create(
-        monto = 2000,
-        beneficiario = user1,
-        tipo_pago = tipo1,
-        fecha_pago= datetime.now(),
-        descripcion = "h"
-    )
     profession1 = professions.profession_new(
         name="Docente",
         description="Enseñanza"
@@ -184,6 +177,13 @@ def run():
         name = "Ensenada",
         province = province1
     )
+    province2 = adressing.province_new(
+        name="CABA"
+    )   
+    locality2 = adressing.locality_new(
+        name = "Palermo",
+        province = province2
+    )
     horse_document_type1 = equestrian.horse_document_type_new(
         name="Ficha general"
     )
@@ -217,6 +217,13 @@ def run():
             active=True,
             profession_id=1,
             job_id=1
+    )
+    pago = registro_pagos.pago_create(
+        monto = 2000,
+        beneficiario = member1,
+        tipo_pago = tipo1,
+        fecha_pago= datetime.now(),
+        descripcion = "h"
     )
     activity1 = equestrian.activity_new(
         name="Hipoterapia"

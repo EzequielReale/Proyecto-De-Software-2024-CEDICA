@@ -16,8 +16,8 @@ class Pago(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     
     # Clave foránea con User
-    beneficiario_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    beneficiario = db.relationship('User', backref='pagos')
+    beneficiario_id = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=True)
+    beneficiario = db.relationship('Member', backref='pagos')
     
     monto = db.Column(db.Integer, nullable=False)  
     fecha_pago = db.Column(db.DateTime,nullable=False)  

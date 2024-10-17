@@ -20,7 +20,7 @@ def logout():
         del session["user"]
         session.clear()
     else:
-        flash("No se encontro ninguna sesion activa","error")
+        flash("No se encontró ninguna sesión activa","error")
     return redirect(url_for("auth.login"))
 
 
@@ -36,7 +36,7 @@ def authenticate():
        flash("Usuario bloqueado", "error")
        return redirect(url_for("auth.login"))
    session["user"] = user.email
-   flash("La sesion se inicio correctamente!", "success")
+   flash("La sesión se inició correctamente!", "success")
    return render_template("home.html")
 
 

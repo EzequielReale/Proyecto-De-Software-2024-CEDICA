@@ -23,12 +23,11 @@ from src.core import people
 
 class RiderForm(FlaskForm):
     """Formulario para la creación y edición de jinetes/amazonas"""
-    
+
     def __init__(self, *args, **kwargs):
         """Inicializa el formulario"""
         self.rider_id = kwargs.pop('rider_id', None)
         super(RiderForm, self).__init__(*args, **kwargs)
-
 
     name = StringField(
         "Nombre",
@@ -57,7 +56,7 @@ class RiderForm(FlaskForm):
         [
             DataRequired(),
             Regexp(r"^[0-9]+$", message="DNI debe contener solo números"),
-            Length(max=9),
+            Length(min=7, max=9, message="DNI debe tener entre 7 y 9 caracteres"),
         ],
     )
     phone = StringField(
@@ -161,7 +160,7 @@ class RiderForm(FlaskForm):
         ],
     )
     has_guardianship = SelectField(
-        "¿Tiene tutela legal?",
+        "¿Tiene curantela?",
         [DataRequired()],
         choices=[("True", "Sí"), ("False", "No")],
     )
@@ -179,7 +178,7 @@ class RiderForm(FlaskForm):
         [
             Optional(),
             Regexp(r"^[0-9]+$", message="DNI debe contener solo números"),
-            Length(max=9),
+            Length(min=7, max=9, message="DNI debe tener entre 7 y 9 caracteres"),
         ],
     )
     tutor1_name = StringField("Nombre", [Optional(), Length(max=64)])
@@ -219,7 +218,7 @@ class RiderForm(FlaskForm):
         [
             Optional(),
             Regexp(r"^[0-9]+$", message="DNI debe contener solo números"),
-            Length(max=9),
+            Length(min=7, max=9, message="DNI debe tener entre 7 y 9 caracteres"),
         ],
     )
     tutor2_name = StringField("Nombre", [Optional(), Length(max=64)])
@@ -336,7 +335,6 @@ class RiderForm(FlaskForm):
     )
     horse_id = SelectField("Caballo", [Optional()], choices=[], coerce=int)
 
-
     def process(self, formdata=None, obj=None, **kwargs):
         """Preprocesa los datos antes de la validación y pasa los nombres a mayúsculas"""
         super().process(formdata, obj, **kwargs)
@@ -356,7 +354,6 @@ class RiderForm(FlaskForm):
             self.tutor2_name.data = self.tutor2_name.data.title()
         if self.tutor2_last_name.data:
             self.tutor2_last_name.data = self.tutor2_last_name.data.title()
-
 
     def validate(self, extra_validators=None):
         if not super(RiderForm, self).validate(extra_validators=extra_validators):
@@ -439,25 +436,24 @@ class RiderForm(FlaskForm):
                 if not getattr(self, field).data:
                     getattr(self, field).errors.append("Este campo es obligatorio.")
                     return False
-        
+
         return True
 
-
-    def validate_dni(form, field):
+    def validate_dni(self, field):
         """Valida que el DNI no esté repetido"""
-        if people.get_rider_by_field('dni', field.data, exclude_id=form.rider_id):
+        if people.get_rider_by_field('dni', field.data, exclude_id=self.rider_id):
             raise ValidationError("Ya existe un jinete/amazona con ese DNI")
-        
+        if (self.has_tutor_1.data == "True" and self.dni.data == self.tutor1_dni.data
+        ) or (self.has_tutor_2.data == "True" and self.dni.data == self.tutor2_dni.data):
+            raise ValidationError("El DNI y el DNI del tutor no pueden ser iguales")
 
     def validate_phone(form, field):
         """Valida que el teléfono no sea igual al teléfono de emergencia"""
         if field.data == form.emergency_phone.data:
             raise ValidationError("El teléfono y el teléfono de emergencia no pueden ser el mismo")
-        
 
     def validate_birth_date(form, field):
         """Valida que el jinete/amazona tenga al menos 3 años"""
-
         birth_year = field.data.year
         current_year = datetime.now().year
 
@@ -488,7 +484,6 @@ class RiderForm(FlaskForm):
             "has_guardianship": self.has_guardianship.data == "True",
         }
 
-
     def get_school_data(self):
         return {
             "name": self.school_name.data,
@@ -498,7 +493,6 @@ class RiderForm(FlaskForm):
             "year": self.school_year.data,
             "observations": self.school_observations.data,
         }
-
 
     def get_tutor_data(self, tutor_number):
         if tutor_number == 1:
@@ -526,7 +520,6 @@ class RiderForm(FlaskForm):
                 "job": self.tutor2_job.data,
             }
 
-
     def _get_days_data(self):
         """Obtiene los días seleccionados como una lista de nombres de días"""
         days_mapping = {
@@ -540,7 +533,6 @@ class RiderForm(FlaskForm):
         }
         return [days_mapping[day] for day in self.days.data]
 
-
     def get_job_proposal_data(self):
         return {
             "institutional_work_proposal": self.institutional_work_proposal.data,
@@ -552,4 +544,3 @@ class RiderForm(FlaskForm):
             "member_horse_rider_id": self.member_horse_rider_id.data,
             "horse_id": self.horse_id.data,
         }
-        

@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from src.core.user_role_permission.operations.user_operations import get_user_by_id,list_users
-from src.core import  registro_pagos
+from src.core import registro_pagos, people, database_functions as db
 from src.web.handlers.autenticacion import check_permission
 from src.web.handlers.error import unauthorized
 from src.web.handlers.autenticacion import login_required
@@ -34,6 +35,8 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
     if not fecha_pago:
         return False, "Debe ingresar una fecha de pago", None, None
     
+    if fecha_pago > datetime.now().strftime('%Y-%m-%d'):
+        return False, "La fecha de pago no puede ser futura", None, None
     
     if not des or len(des) > 255:
         return False, "La descripción es obligatoria y debe tener un máximo de 255 caracteres", None, None
@@ -46,7 +49,7 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
 
 
     if beneficiario_id:
-        beneficiario = get_user_by_id(beneficiario_id)
+        beneficiario = people.get_member_by_field('id', beneficiario_id)
         if not beneficiario:
             return False, "El beneficiario seleccionado no es válido", None, None
     
@@ -75,7 +78,7 @@ def update(id):
         else:
             flash(mensaje, 'danger')
     #es la primera vez q entra o hubo algun error en el envio
-    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users= list_users()) #lo devuelvo al mismo lug con los mismos datos
+    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users=db.list_all(people.Member)) #lo devuelvo al mismo lug con los mismos datos
 
 
 
