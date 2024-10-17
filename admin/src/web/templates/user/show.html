@@ -82,6 +82,12 @@
             {% for role in user.roles %}
                 {{ role.name }}{% if not loop.last %}, {% endif %}
             {% endfor %}<br>
+            {% if user.member %}
+                <strong>Asociado al empleado:</strong><br>
+                <strong style="margin-left: 20px;">DNI:</strong> {{ user.member.dni }}<br>
+                <strong style="margin-left: 20px;">Nombre:</strong> {{ user.member.name }}<br>
+                <strong style="margin-left: 20px;">Apellido:</strong> {{ user.member.last_name }}<br>
+            {% endif %}
         </p>
     </div>
 </div>

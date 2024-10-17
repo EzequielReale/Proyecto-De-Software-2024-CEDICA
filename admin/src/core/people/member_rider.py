@@ -3,10 +3,6 @@ from datetime import datetime
 from src.core.database import db
 from src.core.people.person import Person
 
-# Estos imports no se usan, pero sqlalchemy lo necesita para crear 1ro las tablas referenciadas
-from src.core.disabilities.disability_diagnosis import DisabilityDiagnosis
-from src.core.people.tutor import Tutor
-
 
 class RiderMember(db.Model):
     __tablename__ = "rider_member"
@@ -39,9 +35,19 @@ class Member(Person):
     job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"), nullable=False)
     job = db.relationship("Job", backref="members", lazy=True)
     riders = db.relationship("Rider", secondary="rider_member", back_populates="members")
+    user = db.relationship("User", secondary="user_member", back_populates="member", uselist=False, lazy=True)
 
     def __repr__(self):
         return f"Member {self.id}"
+    
+
+class UserMember(db.Model):
+    __tablename__ = "user_member"
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Rider(Person):

@@ -19,12 +19,11 @@ def __apply_filters(model, query:Query, field:any, value:any) -> Query:
             query = query.filter(getattr(related_model, 'id').in_(value))
         else:
             query = query.filter(getattr(related_model, 'id') == value)
-    # Comprobar si es un entero o un enum
-    elif isinstance(column.type, (Integer, Enum)):
-        query = query.filter(column == value)
     # Comprobar si es un tipo de columna string
     elif isinstance(column.type, (String, Text)):
         query = query.filter(column.ilike(f"%{value}%"))
+    else:
+        query = query.filter(column == value)
     
     return query
 
@@ -94,4 +93,12 @@ def delete(model, item_id: int) -> object:
     item = get_by_field(model, "id", item_id)
     db.session.delete(item)
     db.session.commit()
+    return item
+
+def delete_by_field(model, field: str, value) -> object:
+    """Elimina un elemento por un campo específico y su valor"""
+    item = get_by_field(model, field, value)
+    if item:
+        db.session.delete(item)
+        db.session.commit()
     return item

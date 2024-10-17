@@ -7,7 +7,7 @@ from minio.error import S3Error
 
 from src.core import adressing, database_functions as db_fun, professions
 from src.core.database import db
-from src.core.people.member_rider import Member, Rider
+from src.core.people.member_rider import Member, Rider, UserMember
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
@@ -167,6 +167,11 @@ def member_delete(member_id: int) -> Member:
     job_proposals.update(db_fun.filter(professions.JobProposal, {"assistant_id": member_id}))
     for job_proposal in job_proposals:
         professions.job_proposal_delete(job_proposal.id)
+
+    # Borrar la relación con el usuario asociado (si tiene)
+    user_member = db_fun.get_by_field(UserMember, "member_id", member_id)
+    if user_member:
+        db_fun.delete_by_field(UserMember, "member_id", member_id)
 
     return db_fun.delete(Member, member_id)
 

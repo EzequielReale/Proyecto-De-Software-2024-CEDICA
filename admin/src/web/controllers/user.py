@@ -5,9 +5,12 @@ from flask import flash
 from flask import request
 from flask import session
 
+# Importación de people
+from src.core import people
+
 # Importación funciones de modelo User
 from src.core.user_role_permission.operations.user_operations import get_user_by_email, list_users_advance, user_exists
-from src.core.user_role_permission.operations.user_operations import user_new, delete_user, user_update, user_update_password
+from src.core.user_role_permission.operations.user_operations import user_new, delete_user, user_unlink_member, user_update, user_update_password
 from src.core.user_role_permission.operations.user_operations import add_role_to_user, delete_role_from_user
 
 # Importación funciones de modelo Role
@@ -19,9 +22,9 @@ from src.web.forms.user_update_form import UpdateForm
 from src.web.forms.user_update_form import UpdatePassword
 
 # Importación funciones de adicionales
+from src.core import database_functions as dbf
 from src.web.handlers.autenticacion import login_required
 from src.web.handlers.autenticacion import check_permission,login_required
-from src.web.controllers.auth import logout
 from src.web.handlers.error import unauthorized
 
 
@@ -349,10 +352,34 @@ def block_user(email: str):
     
     return redirect("/user")
 
+
+@login_required
+@bp.get("/link_employee/<string:email>")
+def link_employee(email: str) -> str:
+    """Vincula un usuario a un empleado a través de su email"""
+    if  not check_permission(session,"user_update"):
+         return unauthorized()
     
+    user = get_user_by_email(email)
+    employee = people.get_member_by_field("email", user.email)
+    if employee:
+        user.member = employee
+        user_update(user.id, member=employee)
+        flash("Empleado vinculado exitosamente.", "success")
+    else:
+        flash("No se encontró un empleado con el email del usuario.", "danger")
 
+    return redirect("/user")
+
+
+@login_required
+@bp.get("/unlink_employee/<string:email>")
+def unlink_employee(email: str) -> str:
+    """Desvincula un usuario de un empleado a través de su email"""
+    if  not check_permission(session,"user_update"):
+         return unauthorized()
     
+    user = user_unlink_member(email)
+    flash("Empleado desvinculado exitosamente.", "success")
 
-    
-
-
+    return redirect("/user")
