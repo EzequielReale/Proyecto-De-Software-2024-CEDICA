@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from src.core import (
     adressing,
@@ -215,13 +215,16 @@ def run():
             job_id=1,
             user=user1
     )
-    pago = registro_pagos.pago_create(
-        monto = 2000,
-        beneficiario = member1,
-        tipo_pago = tipo1,
-        fecha_pago= datetime.now(),
-        descripcion = "h"
-    )
+    for i in range(55):
+        tipo_pago = tipo1 if i % 3 == 0 else tipo2 if i % 3 == 1 else tipo3
+        fecha_pago = datetime.now() - timedelta(days=i)
+        pago = registro_pagos.pago_create(
+            monto=2000 + i,
+            beneficiario=member1,
+            tipo_pago=tipo_pago,
+            fecha_pago=fecha_pago,
+            descripcion=f"Pago de {tipo_pago.tipo}",
+        )
     activity1 = equestrian.activity_new(
         name="Hipoterapia"
     )

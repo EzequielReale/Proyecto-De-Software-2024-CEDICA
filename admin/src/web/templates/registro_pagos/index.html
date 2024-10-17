@@ -256,10 +256,11 @@
         <!-- Botón de búsqueda -->
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Buscar</button>
+            <a href="{{ url_for('registro_pagos.index') }}" class="btn btn-secondary">Limpiar filtros</a>
         </div>
     </form>
 
-    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo</a>
+    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i></a>
 </div>
 
 
@@ -291,7 +292,7 @@
         <tr class="pago-info" data-id="{{ pago.id }}">
             <td>{{ pago.beneficiario.email }}</td>
             <td>{{ pago.monto }}</td>
-            <td>{{ pago.fecha_pago.strftime('%Y-%m-%d') }}</td>
+            <td>{{ pago.fecha_pago.strftime('%d-%m-%Y') }}</td>
             <td>{{ pago.tipo_pago.tipo }}</td>
             <td>{{ pago.descripcion }}</td>
             <td class="action-icons">
@@ -316,8 +317,8 @@
         <!-- Fila de detalles adicionales -->
         <tr id="detalles-{{ pago.id }}" class="detalles-pago">
             <td colspan="6">
-                <strong>Fecha de modificación:</strong> {{ pago.updated_at.strftime('%Y-%m-%d') }}<br>
-                <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%Y-%m-%d') }}<br>
+                <strong>Fecha de modificación:</strong> {{ pago.updated_at.strftime('%d-%m-%Y') }}<br>
+                <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%d-%m-%Y') }}<br>
 
                 {% if pago.beneficiario %}
                 <strong>Datos del beneficiario:</strong> {{ pago.beneficiario.name }} {{ pago.beneficiario.last_name }}
@@ -331,6 +332,35 @@
     </tbody>
 </table>
 {% endif %}
+
+<!-- Paginación -->
+<nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
+    <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
+      {% if page > 1 %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page-1, **filters) }}" aria-label="Previous"
+          style="color: #0056b3;">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %}
+      {% for p in range(1, total_pages + 1) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=p, **filters) }}"
+          style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+          p }}</a>
+      </li>
+      {% endfor %}
+      {% if page < total_pages %} <li class="page-item">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page+1, **filters) }}" aria-label="Next"
+          style="color: #0056b3;">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+        {% endif %}
+    </ul>
+  </nav>
+
 
 <script>
     function toggleDetalles(id) {
