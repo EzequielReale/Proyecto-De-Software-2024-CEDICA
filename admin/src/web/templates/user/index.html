@@ -74,7 +74,7 @@
 
     <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;"><i
             class="fas fa-search"></i> Buscar</button>
-    <a href="{{ url_for('team.index') }}" class="btn btn-secondary"
+    <a href="{{ url_for('user.index') }}" class="btn btn-secondary"
         style="background-color: #6c757d; border-color: #6c757d;"> <i class="fas fa-eraser"></i> Limpiar filtros</a>
 
 </form>
@@ -165,34 +165,36 @@
             <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
 
             <td>
-              <div class="action-icons">
-                <!-- Icono de vista   -->
-                <a href="{{ url_for('user.show', email=user.email)}}" title="Ver detalles" style="cursor:pointer;">
-                    <i class="fas fa-file-text"></i>
-                </a>
-                <!-- Icono de edición -->
-                <a href="{{ url_for('user.update', email=user.email)}}" title="Editar" style="cursor:pointer;">
-                    <i class="fas fa-edit"></i>
-                </a>
-                <!-- Icono de vinculación -->
-                 {% if not user.member %}
-                    <a href="{{ url_for('user.link_employee', email=user.email)}}" title="Vincular" style="cursor:pointer;">
+                <div class="action-icons">
+                    <!-- Icono de vista   -->
+                    <a href="{{ url_for('user.show', email=user.email)}}" title="Ver detalles" style="cursor:pointer;">
+                        <i class="fas fa-file-text"></i>
+                    </a>
+                    <!-- Icono de edición -->
+                    <a href="{{ url_for('user.update', email=user.email)}}" title="Editar" style="cursor:pointer;">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <!-- Icono de vinculación -->
+                    {% if not user.member %}
+                    <a href="{{ url_for('user.link_employee', email=user.email)}}" title="Vincular"
+                        style="cursor:pointer;">
                         <i class="fas fa-link"></i>
                     </a>
-                {% else %}
-                    <a href="{{ url_for('user.unlink_employee', email=user.email)}}" title="Desvincular" style="cursor:pointer;">
+                    {% else %}
+                    <a href="{{ url_for('user.unlink_employee', email=user.email)}}" title="Desvincular"
+                        style="cursor:pointer;">
                         <i class="fas fa-unlink"></i>
                     </a>
-                {% endif %}
-                <!-- Formulario de eliminación -->
-                <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;"
-                    onsubmit="return confirm('¿Quieres eliminar al usuario {{user.alias}} y todos sus datos?');">
-                    <button type="submit" title="Eliminar" role="button"
-                        style="border: none; background: none; color: #0099CC;">
-                        <i class="fas fa-trash-alt"></i>
-                    </button>
-                </form>
-    
+                    {% endif %}
+                    <!-- Formulario de eliminación -->
+                    <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('¿Quieres eliminar al usuario {{user.alias}} y todos sus datos?');">
+                        <button type="submit" title="Eliminar" role="button"
+                            style="border: none; background: none; color: #0099CC;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+
             </td>
 
         </tr>
