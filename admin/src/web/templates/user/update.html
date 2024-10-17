@@ -1,109 +1,96 @@
 {% extends "layout.html" %}
 {% block title %}CEDICA - Actualizar usuario{% endblock %}
- 
+
 {% block head %}
 {{ super() }}
-
 {% endblock %}
 
 {% block content %}
-<h1 class="text-primary mb-4">Actualizar usuario</h1>
+<h1 class="text-primary mb-4 text-center">Actualizar usuario</h1>
 
-<a href="{{ url_for('user.update_password' , email=user.email) }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-    <i class="fas fa-user-plus"></i> Cambiar contraseña
-</a>
+<div class="d-flex justify-content-center flex-column align-items-center">
+    <a href="{{ url_for('user.update_password' , email=user.email) }}" class="btn btn-primary mb-3" style="margin-top: 10px;">
+        <i class="fas fa-user-plus"></i> Cambiar contraseña
+    </a>
 
-<!-- Botón para bloquear o desbloquear usuario -->
-{% if user.isActive %}
-
-    <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}"
-    onsubmit="return confirm('¿Seguro que quiere bloquear al usuario {{user.alias}}?');">
-        {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
-        <input type="hidden" name="action" value="block">
-        <button type="submit" class="btn btn-danger" style="margin-top: 10px;">
-            Bloquear usuario
-        </button>
-    </form>
-
-{% else %}
-
-    <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}">
-        {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
-        <input type="hidden" name="action" value="unblock">
-        <button type="submit" class="btn btn-success" style="margin-top: 10px;">
-            Desbloquear usuario
-        </button>
-    </form>
-    
-{% endif %}
-
-
+    <!-- Botón para bloquear o desbloquear usuario -->
+    {% if user.isActive %}
+        <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}"
+        onsubmit="return confirm('¿Seguro que quiere bloquear al usuario {{user.alias}}?');">
+            {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
+            <input type="hidden" name="action" value="block">
+            <button type="submit" class="btn btn-danger" style="margin-top: 10px;">
+                <i class="fas fa-user-lock"></i>
+                Bloquear usuario
+            </button>
+        </form>
+    {% else %}
+        <form method="POST" action="{{ url_for('user.block_user', email=user.email) }}">
+            {{ form.hidden_tag() }}  <!-- Agrega CSRF token para la seguridad -->
+            <input type="hidden" name="action" value="unblock">
+            <button type="submit" class="btn btn-success" style="margin-top: 10px;">
+                <i class="fas fa-user-check"></i>
+                Desbloquear usuario
+            </button>
+        </form>
+    {% endif %}
+</div>
 <!-- Fin de boton para bloquear o desbloquear usuario -->
 
 <br>
 
-<p>Formulario para actualizar datos y roles de un usuario</p>
-
-<main>
-    
-    <form method="POST">
-
+<p class="text-center">Formulario para actualizar datos y roles de un usuario</p>
+<main class="d-flex justify-content-center">
+    <form method="POST" class="p-4 bg-light rounded shadow" style="width: 100%; max-width: 600px;">
         {{ form.csrf_token }}
-
-        <form method="POST" class="p-4 bg-light rounded shadow">
-            {{ form.csrf_token }}
         
-            <!-- Alias field -->
+        <!-- Alias field -->
+        <div class="form-group mb-3">
+            {{ form.alias.label(class="form-label") }}
+            {{ form.alias(class="form-control", value=user.alias) }}
+            {% for error in form.alias.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <!-- Email field -->
+        <div class="form-group mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", value=user.email) }}
+            {% for error in form.email.errors %}
+                <span class="text-danger">{{ error }}</span>
+            {% endfor %}
+        </div>
+        
+        <!-- Roles to delete field -->
+        {% if form.roles_to_delete.choices %}
             <div class="form-group mb-3">
-                {{ form.alias.label(class="form-label") }}
-                {{ form.alias(class="form-control") }}
-                {% for error in form.alias.errors %}
+                {{ form.roles_to_delete.label(class="form-label") }}
+                {{ form.roles_to_delete(class="form-control")}}
+                {% for error in form.roles_to_delete.errors %}
                     <span class="text-danger">{{ error }}</span>
                 {% endfor %}
             </div>
+        {% endif %}
         
-            <!-- Email field -->
+        <!-- Roles to add field -->
+        {% if form.roles_to_add.choices %}
             <div class="form-group mb-3">
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(class="form-control") }}
-                {% for error in form.email.errors %}
+                {{ form.roles_to_add.label(class="form-label") }}
+                {{ form.roles_to_add(class="form-control")}}
+                {% for error in form.roles_to_add.errors %}
                     <span class="text-danger">{{ error }}</span>
                 {% endfor %}
             </div>
+        {% endif %}
         
-            <!-- Roles to delete field -->
-
-            {% if form.roles_to_delete.choices %}
-               
-                <div class="form-group mb-3">
-                    {{ form.roles_to_delete.label(class="form-label") }}
-                    {{ form.roles_to_delete(class="form-control")}}
-                    {% for error in form.roles_to_delete.errors %}
-                        <span class="text-danger">{{ error }}</span>
-                    {% endfor %}
-                </div>
-
-            {% endif %}
-
-            <!-- Roles to add field -->
-
-            {% if form.roles_to_add.choices %}
-
-                <div class="form-group mb-3">
-                    {{ form.roles_to_add.label(class="form-label") }}
-                    {{ form.roles_to_add(class="form-control")}}
-                    {% for error in form.roles_to_add.errors %}
-                        <span class="text-danger">{{ error }}</span>
-                    {% endfor %}
-                </div>
-
-            {% endif %}
-        
-            <!-- Submit button -->
-            <div>
-                {{ form.submit(class="btn btn-primary btn-block") }}
-            </div>
-        </form>
-
+        <!-- Submit and cancel buttons -->
+        <div class="d-flex justify-content-between">
+            <a href="{{ url_for('user.index') }}" class="btn btn-secondary" style="margin-top: 10px;">
+                <i class="fas fa-arrow-left"></i> Cancelar
+            </a>
+            {{ form.submit(class="btn btn-primary btn-block") }}
+        </div>
+    </form>
 </main>
 {% endblock %}

@@ -44,7 +44,7 @@
             <strong style="margin-left: 20px;">Lugar de nacimiento:</strong> {{ rider.city_of_birth.name }}, provincia
             de {{rider.city_of_birth.province.name}}<br>
             <strong style="margin-left: 20px;">Tiene certificado de discapacidad:</strong> {% if rider.disability_id
-            %}Sí. {{ rider.disability.name }}{% else %}No{% endif %}<br>
+            %}Sí. Discapacidad {{ rider.disability.type.name }}: {{ rider.disability.name }}{% else %}No{% endif %}<br>
             <strong style="margin-left: 20px;">Tiene pensión:</strong> {% if rider.pension_benefit %}Sí. {{
             rider.pension_benefit }}{% else %}No{% endif %}<br>
             <strong style="margin-left: 20px;">Recibe asignación familiar:</strong> {% if rider.family_allowance %}{{
@@ -55,19 +55,17 @@
                 previsional:</strong>
             <strong style="margin-left: 20px;">Obra social:</strong> {{ rider.health_insurance }}<br>
             <strong style="margin-left: 20px;">Número de obra social:</strong> {{ rider.health_insurance_number }}<br>
-            <strong style="margin-left: 20px;">Tiene tutela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{%
+            <strong style="margin-left: 20px;">Tiene curantela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{%
             endif %}<br>
             {% if rider.school %}
-            {% for school in rider.school %}
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Institución escolar a
                 la que concurre:</strong>
-            <strong style="margin-left: 20px;">Nombre:</strong> {{ school.name }}<br>
-            <strong style="margin-left: 20px;">Dirección:</strong> {{ school.address }}<br>
-            <strong style="margin-left: 20px;">Teléfono:</strong> {{ school.phone }}<br>
-            <strong style="margin-left: 20px;">Nivel educativo:</strong> {{ school.level }}<br>
-            <strong style="margin-left: 20px;">Año lectivo:</strong> {{ school.year }}°<br>
-            <strong style="margin-left: 20px;">Observaciones:</strong> {{ school.observations }}<br>
-            {% endfor %}
+            <strong style="margin-left: 20px;">Nombre:</strong> {{ rider.school.name }}<br>
+            <strong style="margin-left: 20px;">Dirección:</strong> {{ rider.school.address }}<br>
+            <strong style="margin-left: 20px;">Teléfono:</strong> {{ rider.school.phone }}<br>
+            <strong style="margin-left: 20px;">Nivel educativo:</strong> {{ rider.school.level }}<br>
+            <strong style="margin-left: 20px;">Año lectivo:</strong> {{ rider.school.year }}°<br>
+            <strong style="margin-left: 20px;">Observaciones:</strong> {{ rider.school.observations }}<br>
             {% endif %}
             {% if rider.tutor_1_id or rider.tutor_2_id %}
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos del
@@ -109,20 +107,18 @@
             {% if rider.job_proposal %}
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Trabajo en
                 CEDICA:</strong>
-            {% for job in rider.job_proposal %}
             <strong style="margin-left: 20px;">Propuesta de trabajo institucional:</strong> {{
-            job.institutional_work_proposal }}<br>
-            <strong style="margin-left: 20px;">Condición:</strong> {{ job.condition }}<br>
-            <strong style="margin-left: 20px;">Sede:</strong> {{ job.headquarters }}<br>
-            <strong style="margin-left: 20px;">Días:</strong> {{ job.days | join(', ') }}<br>
-            <strong style="margin-left: 20px;">Profesor:</strong> {{ job.professor.name }} {{ job.professor.last_name
+            rider.job_proposal.institutional_work_proposal }}<br>
+            <strong style="margin-left: 20px;">Condición:</strong> {{ rider.job_proposal.condition }}<br>
+            <strong style="margin-left: 20px;">Sede:</strong> {{ rider.job_proposal.headquarters }}<br>
+            <strong style="margin-left: 20px;">Días:</strong> {{ rider.job_proposal.days | join(', ') }}<br>
+            <strong style="margin-left: 20px;">Profesor:</strong> {{ rider.job_proposal.professor.name }} {{ rider.job_proposal.professor.last_name
             }}<br>
-            <strong style="margin-left: 20px;">Conductor del caballo:</strong> {{ job.member_horse_rider.name }} {{
-            job.member_horse_rider.last_name }}<br>
-            <strong style="margin-left: 20px;">Caballo:</strong> {{ job.horse.name }}<br>
-            <strong style="margin-left: 20px;">Asistente:</strong> {{ job.assistant.name }} {{ job.assistant.last_name
+            <strong style="margin-left: 20px;">Conductor del caballo:</strong> {{ rider.job_proposal.member_horse_rider.name }} {{
+            rider.job_proposal.member_horse_rider.last_name }}<br>
+            <strong style="margin-left: 20px;">Caballo:</strong> {{ rider.job_proposal.horse.name }}<br>
+            <strong style="margin-left: 20px;">Asistente:</strong> {{ rider.job_proposal.assistant.name }} {{ rider.job_proposal.assistant.last_name
             }}<br>
-            {% endfor %}
             {% endif %}
         </p>
     </div>
@@ -165,12 +161,10 @@
                 </select>
             </div>
             <button type="submit" class="btn btn-primary"
-                style="background-color: #007bff; border-color: #007bff;">Buscar
-                <i class="fas fa-search"></i>
+                style="background-color: #007bff; border-color: #007bff;"><i class="fas fa-search"></i> Buscar
             </button>
             <a href="{{ url_for('jya.show', id=rider.id) }}" class="btn btn-secondary"
-                style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros
-                <i class="fas fa-eraser"></i>
+                style="background-color: #6c757d; border-color: #6c757d;"><i class="fas fa-eraser"></i> Limpiar filtros
             </a>
         </form>
 

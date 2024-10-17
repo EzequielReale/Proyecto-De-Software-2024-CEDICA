@@ -7,12 +7,12 @@ CREATE TABLE disability_diagnoses (
 
 INSERT INTO disability_diagnoses (name, type_id) 
 VALUES 
-('ECNE, Lesión post-traumática', 2), -- Ejemplo: Motora
+('ECNE, Lesión post-traumática', 2),
 ('Mielomeningocele', 2),
 ('Esclerosis Múltiple', 2),
 ('Escoliosis Leve', 2),
 ('Secuelas de ACV', 2),
-('Discapacidad Intelectual', 1), -- Ejemplo: Mental
+('Discapacidad Intelectual', 1),
 ('Trastorno del Espectro Autista', 1),
 ('Trastorno del Aprendizaje', 1),
 ('Trastorno por Déficit de Atención/Hiperactividad', 1),

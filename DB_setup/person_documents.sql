@@ -1,3 +1,12 @@
+CREATE TYPE document_type_enum AS ENUM (
+    'Entrevista',
+    'Evaluación',
+    'Planificaciones',
+    'Evolución',
+    'Crónicas',
+    'Documental'
+);
+
 CREATE TABLE person_documents (
     id SERIAL PRIMARY KEY,
     document_name VARCHAR(255) NOT NULL,
@@ -8,13 +17,4 @@ CREATE TABLE person_documents (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (person_id) REFERENCES persons(id)
-);
-
-CREATE TYPE document_type_enum AS ENUM (
-    'Entrevista',
-    'Evaluación',
-    'Planificaciones',
-    'Evolución',
-    'Crónicas',
-    'Documental'
 );

@@ -244,11 +244,9 @@ def rider_delete(rider_id: int) -> Rider:
     if rider.tutor_2:
         db_fun.delete(Tutor, rider.tutor_2.id)
     if rider.school:
-        for school in rider.school:
-            professions.school_delete(school.id)
+        professions.school_delete(rider.school.id)
     if rider.job_proposal:
-        for job_proposal in rider.job_proposal:
-            professions.job_proposal_delete(job_proposal.id)
+        professions.job_proposal_delete(rider.job_proposal.id)
 
     return db_fun.delete(Rider, rider_id)
 

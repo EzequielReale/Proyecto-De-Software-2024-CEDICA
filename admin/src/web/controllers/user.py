@@ -187,7 +187,7 @@ def update(email: str):
 
         # Valida que el email no exista
         if email:
-            if user_exists(email):
+            if user_exists(email) and email != user.email:
                 flash("El email ingresado ya está en uso.", "danger")
                 return redirect("/user")
             
@@ -311,7 +311,7 @@ def update_password(email: str):
         flash("Contraseña actualizada exitosamente.", "success")
         return redirect("/user")
                 
-    return render_template('user/update.html', user=user, form=form)
+    return render_template('user/update_password.html', user=user, form=form)
 
 
 @login_required

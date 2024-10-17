@@ -11,5 +11,5 @@ CREATE TABLE riders (
     tutor_2_id INTEGER REFERENCES tutors(id)
 );
 
-INSERT INTO riders (id, birth_date, grant_percentage, family_allowance, pension_benefit, has_guardianship, disability_id, city_of_birth_id, tutor_1_id, tutor_2_id)
-VALUES (1, '2002-01-01', 20.0, 'Asignación universal por hijo', 'Nacional', TRUE, 1, 1, 1, 2);
+--INSERT INTO riders (id, birth_date, grant_percentage, family_allowance, pension_benefit, has_guardianship, disability_id, city_of_birth_id, tutor_1_id, tutor_2_id)
+--VALUES (1, '2002-01-01', 20.0, 'Asignación universal por hijo', 'Nacional', TRUE, 1, 1, 1, 2);

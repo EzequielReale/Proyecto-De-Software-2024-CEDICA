@@ -270,7 +270,7 @@ tr:last-child td {
                     <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%Y-%m-%d') }}<br>
 
                     {% if pago.beneficiario %}
-                    <strong>Datos del beneficiario:</strong> Alias - {{ pago.beneficiario.alias }}<br>
+                    <strong>Datos del beneficiario:</strong> {{ pago.beneficiario.name }} {{ pago.beneficiario.last_name }} - DNI: {{ pago.beneficiario.dni }}<br>
                     {% endif %}
                 </td>
             </tr>

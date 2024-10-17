@@ -45,8 +45,8 @@ class JobProposal(db.Model):
     professor = db.relationship("Member", foreign_keys=[professor_id], lazy=True)
     member_horse_rider_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
     member_horse_rider = db.relationship("Member", foreign_keys=[member_horse_rider_id], lazy=True)
-    horse_id = db.Column(db.Integer, db.ForeignKey("horses.id"), nullable=False)
-    horse = db.relationship("Horse", backref="riders", lazy=True)
+    horse_id = db.Column(db.Integer, db.ForeignKey("horses.id", ondelete="CASCADE"), nullable=False)
+    horse = db.relationship("Horse", backref=db.backref("job_proposal", uselist=False, cascade="all, delete-orphan"), lazy=True)
     assistant_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
     assistant = db.relationship("Member", foreign_keys=[assistant_id], lazy=True)
 
