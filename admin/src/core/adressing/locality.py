@@ -10,7 +10,6 @@ class Locality(db.Model):
     name = db.Column(db.String(64), nullable=False)
     province_id = db.Column(db.Integer, db.ForeignKey("provinces.id"), nullable=False)
     province = db.relationship("Province", backref="localities", lazy=True)
-    persons = db.relationship("Person", back_populates="locality")
 
 
     def __repr__(self):
