@@ -206,7 +206,6 @@ def create() -> str:
         "jya/create.html",
         rider=rider,
         disability_types=disability_types_list,
-        disabilities=disabilities_list,
         localities=localities_list,
         provinces=provinces_list,
         assigned_professionals=assigned_professionals_list,
