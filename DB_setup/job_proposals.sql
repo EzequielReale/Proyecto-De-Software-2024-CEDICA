@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS public.job_proposals;
 
 CREATE TABLE IF NOT EXISTS public.job_proposals
 (
-    id SERIAL NOT NULL,  -- Cambiado a SERIAL para auto-incrementar
+    id SERIAL NOT NULL,
     institutional_work_proposal institutional_work_proposals NOT NULL,
     condition conditions NOT NULL,
     headquarters headquarters NOT NULL,
