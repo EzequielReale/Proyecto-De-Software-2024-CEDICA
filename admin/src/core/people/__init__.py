@@ -3,6 +3,7 @@ from os import fstat
 import uuid
 
 from flask import current_app, send_file
+from flask import request
 from minio.error import S3Error
 
 from src.core import adressing, database_functions as db_fun, professions
@@ -11,6 +12,11 @@ from src.core.people.member_rider import Member, Rider, UserMember
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
+<<<<<<< HEAD
+=======
+from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm
+from src.core.people.person_document import PersonDocument as Document
+>>>>>>> bc82377 (back de actualizacion general y tutores lista)
 
 
 """Funciones de documentos"""

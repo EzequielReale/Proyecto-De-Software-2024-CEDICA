@@ -9,7 +9,7 @@ from src.core import (
     people,
 )
 from src.core.equestrian.horse import Horse
-from src.core.people.member_rider import Member
+from src.core.people.member_rider import Member,Rider
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm

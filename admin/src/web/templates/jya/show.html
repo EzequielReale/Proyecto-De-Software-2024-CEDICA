@@ -15,9 +15,7 @@
     <a href="{{ url_for('jya.index') }}" class="btn btn-primary btn-icon">
         <i class="fas fa-arrow-left"></i> Volver al listado de jinetes y amazonas
     </a>
-    <a href="{{ url_for('team.update', id=rider.id) }}" class="btn btn-warning btn-icon">
-        <i class="fas fa-edit"></i> Editar
-    </a>
+   
     <form action="{{ url_for('jya.destroy', id=rider.id) }}" method="POST" onsubmit="return confirmDeleteRider();"
         style="display:inline;">
         <button type="submit" class="btn btn-danger btn-icon">
@@ -52,13 +50,15 @@
             rider.family_allowance }}{% else %}No{% endif %}<br>
             <strong style="margin-left: 20px;">Está becado:</strong> {% if rider.grant_percentage %}Sí. Porcentaje: {{
             rider.grant_percentage }}%{% else %}No{% endif %}<br>
+
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Situación
                 previsional:</strong>
             <strong style="margin-left: 20px;">Obra social:</strong> {{ rider.health_insurance }}<br>
             <strong style="margin-left: 20px;">Número de obra social:</strong> {{ rider.health_insurance_number }}<br>
-            <strong style="margin-left: 20px;">Tiene curantela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{%
-            endif %}<br>
-
+            <strong style="margin-left: 20px;">Tiene tutela:</strong> {% if rider.has_guardianship %}Sí{% else %}No{%
+            endif %}
+            <br>
+            <br>
             <a href="{{ url_for('jya.update_general', id=rider.id) }}" class="btn btn-warning btn-icon">
                 <i class="fas fa-edit"></i> Editar Información general
             </a>

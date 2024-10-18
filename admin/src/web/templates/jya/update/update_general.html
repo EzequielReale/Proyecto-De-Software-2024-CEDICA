@@ -1,0 +1,470 @@
+{% extends "layout.html" %}
+
+{% block title %}Edicion de jinete/amazona{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .form-group label {
+        font-weight: 500;
+    }
+
+    form a,
+    form a:hover {
+        color: #0077AA !important;
+        text-decoration: none !important;
+    }
+
+    form a.active {
+        color: #222 !important;
+    }
+
+    .btn {
+        transition: 0.2s !important;
+    }
+
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    .btn-outline-custom {
+        color: #0077AA !important;
+        border-color: #0077AA !important;
+    }
+
+    .btn-outline-custom:hover {
+        background-color: #0077AA !important;
+        color: white !important;
+    }
+
+    #activities-list li {
+        transition: 0.2s;
+    }
+
+    #activities-list li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #assign-buttons-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    #assign-buttons-container button {
+        color: #333;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    #assign-buttons-container button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .selected {
+        background-color: #0077AA !important;
+        border-color: #0077AA !important;
+        color: white !important;
+    }</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Edicion de jinete/amazona</h2>
+    <p>Formulario para editar un jinete/amazona</p>
+   
+    <form action="{{ url_for('jya.update_general' , id=rider.id) }}" method="POST">
+        {{ csrf_token() }}
+        <ul id="form-tabs" class="mt-4 nav nav-tabs gap-1">
+            <li class="nav-item">
+                <a role="button" class="nav-link active" aria-current="page" onclick="changePage(0)">Información
+                    general</a>
+            </li>
+            
+        </ul>
+
+        <div class="d-flex flex-column gap-3 p-4 border border-top-0 rounded-bottom">
+            <!-- Información general -->
+            <section class="d-flex flex-column gap-3">
+                <div>
+                    <h5 class="border-bottom border-dark pb-2">Información general</h5>
+                    <p class="mt-0 mb-3">Detalles básicos del jinete/amazona.</p>
+                </div>
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="name" class="mb-1">Nombre</label>
+                        <input class="form-control" type="text" id="name" name="name" value="{{rider.name}}" required maxlength="64">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="last_name" class="mb-1">Apellido</label>
+                        <input class="form-control" type="text" id="last_name" name="last_name" value="{{rider.last_name}}" required maxlength="64">
+                    </div>
+                </div>
+
+                <div class="form-group w-50">
+                    <label for="dni" class="mb-1">DNI</label>
+                    <input class="form-control" type="text" id="dni" name="dni" value="{{ rider.dni }}" required pattern="[0-9]+" maxlength="9">
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="phone" class="mb-1">Teléfono</label>
+                        <input class="form-control" type="text" id="phone" name="phone" value="{{ rider.phone}}" required maxlength="15">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="emergency_phone" class="mb-1">Teléfono de emergencia</label>
+                        <input class="form-control" type="text" id="emergency_phone" name="emergency_phone" value="{{ rider.emergency_phone }}" required maxlength="15">
+                    </div>
+                </div>
+                
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="birth_date" class="mb-1">Fecha de nacimiento</label>
+                        <input class="form-control" type="date" id="birth_date" name="birth_date" value="{{ rider.birth_date.strftime('%d-%m-%Y') }}" required>
+                    </div>
+                    
+                    <div class="form-group w-50">
+                        <label for="province_of_birth" class="mb-1">Provincia de nacimiento</label>
+                        <select class="form-select" id="province_of_birth" name="province_of_birth" required>
+                            <option value="{{ rider.city_of_birth.province.id }}"" selected>{{ rider.city_of_birth.province.name }}</option>
+                            {% for province in provinces %}
+                            <option value="{{ province.id }}">{{ province.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="form-group w-50">
+                        <label for="city_of_birth" class="mb-1">Localidad de nacimiento</label>
+                        <select class="form-select" id="city_of_birth" name="city_of_birth" data-selected="{{ rider.city_of_birth_id }}" required>
+                            <option selected>{{ rider.city_of_birth.name }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group w-100">
+                    <label for="has_disability_certificate" class="mb-1">¿Tiene certificado de discapacidad?</label>
+                    <select class="form-select" id="has_disability_certificate" name="has_disability_certificate" required>
+                         {% if rider.disability.id %}
+                        <option value="True" selected>Sí</option>
+                        <option value="False">No</option>
+                        {% else %}
+                        <option value="False" selected>No</option>
+                        <option value="True">Si</option>
+                        {% endif %}
+                    </select>
+                </div>
+                {% if rider.disability.id %}
+                <div id="disability_group" style="display: none;">
+                    <div class="w-100 d-flex flex-row gap-3">
+                        <div class="form-group w-50">
+                            <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
+                            <select class="form-select" id="disability_type" name="disability_type">
+                                <option value="{{ rider.disability.type.id }}"  selected>{{ rider.disability.type }}</option>
+                                {% for disability_type in disability_types %}
+                                <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>  
+                
+                        <div class="form-group w-50">
+                            <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
+                            <select class="form-select" id="disability_id" name="disability_id">
+                                <option value="{{ rider.disability.id }}" selected>{{ rider.disability.name }}</option>
+                                {% for disability in disabilities %}
+                                <option value="{{ disability.id }}">{{ disability.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                {% endif %} 
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="health_insurance" class="mb-1">Obra social</label>
+                        <input class="form-control" type="text" id="health_insurance" name="health_insurance" value="{{ rider.health_insurance }}" required maxlength="32">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="health_insurance_number" class="mb-1">Número de obra social</label>
+                        <input class="form-control" type="text" id="health_insurance_number" name="health_insurance_number" value="{{ rider.health_insurance_number }}" pattern="[0-9]+" required maxlength="32">
+                    </div>
+                </div>
+
+                <div>
+                    <br>
+                    <h5 class="border-bottom border-dark pb-2">Domicilio</h5>
+                    <p class="mt-0 mb-3">Ingrese la dirección del jinete/amazona.</p>
+                </div>
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="province_id" class="mb-1">Provincia de domicilio</label>
+                        <select class="form-select" id="province_id" name="province_id" required>
+                            <option value="{{ rider.locality.province.id }}" selected>{{rider.locality.province.name}}</option>
+                            {% for province in provinces %}
+                            <option value="{{ province.id }}">{{ province.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group w-50">
+                        <label for="locality_id" class="mb-1">Localidad de domicilio</label>
+                        <select class="form-select" id="locality_id" name="locality_id" data-selected="{{ rider.locality_id }}" required>
+                            <option disabled selected>{{ rider.locality.name }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="street" class="mb-1">Calle</label>
+                        <input class="form-control" type="text" id="street" name="street" value="{{ rider.street }}" required maxlength="64">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="number" class="mb-1">Número</label>
+                        <input class="form-control" type="text" id="number" name="number" value="{{ rider.number }}" required maxlength="10" pattern="[0-9]+">
+                    </div>
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="floor" class="mb-1">Piso</label>
+                        <input class="form-control" type="text" id="floor" name="floor" {% if rider.floor %} value="{{ rider.floor }}" {% endif %} maxlength="10">
+                    </div>
+
+                    <div class="form-group w-50">
+                        <label for="apartment" class="mb-1">Departamento</label>
+                        <input class="form-control" type="text" id="apartment" name="apartment" {% if rider.apartment %} value="{{ rider.apartment }}" {% endif %} maxlength="10">
+                    </div>
+                </div>
+
+                <div>
+                    <br>
+                    <h5 class="border-bottom border-dark pb-2">Asignaciones</h5>
+                    <p class="mt-0 mb-3">Asignaciones del jinete/amazona.</p>
+                </div>
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="has_family_allowance" class="mb-1">¿Recibe asignación familiar?</label>
+                        <select class="form-select" id="has_family_allowance" name="has_family_allowance" required>
+                            {% if rider.family_allowance %}
+                            <option value="True" selected>Sí</option>
+                            <option value="False">No</option>
+                            {% else %}
+                            <option value="False" selected>No</option>
+                            <option value="True">Sí</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    {% if rider.family_allowance %}
+                    <div class="form-group w-50" id="family_allowance_group" style="display: none;">
+                        <label for="family_allowance" class="mb-1">Asignación familiar</label>
+                        <select class="form-select" id="family_allowance" name="family_allowance">
+                            <option value="{{rider.family_allowance}}" selected>{{rider.family_allowance }}</option>
+                            <option value="Asignación universal por hijo">Asignación universal por hijo</option>
+                            <option value="Asignación universal por hijo con discapacidad">Asignación universal por hijo con discapacidad</option>
+                            <option value="Asignación por ayuda escolar anual">Asignación por ayuda escolar anual</option>
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="has_pension" class="mb-1">¿Recibe pensión?</label>
+                        <select class="form-select" id="has_pension" name="has_pension" onchange="updatePensionBenefit()" required>
+                            {% if rider.pension_benefit %}
+                            <option value="True" selected>Sí</option>
+                            <option value="False">No</option>
+                            {%else%}
+                            <option value="False" selected>No</option>
+                            <option value="True">Sí</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="form-group w-50" id="pension_group" style="display: none;">
+                        <label for="pension_benefit" class="mb-1">Tipo de pensión</label>
+                        <select class="form-select" id="pension_benefit" name="pension_benefit">
+                            <option value="{{ rider.pension_benefit }}" selected>{% if rider.pension_benefit != None %}{{rider.pension_benefit}} {%endif%}</option>
+                            {%if rider.pension_benefit == "Nacional" %}
+                            <option value="Provincial">Provincial</option>
+                            {%else%}
+                               {%if rider.pension_benefit == "Provincial" %}
+                                   <option value="Nacional">Nacional</option>
+                                {% else %}
+                                <option value="Nacional">Nacional</option>
+                                <option value="Provincial">Provincial</option>
+                                 {%endif%}
+                            {%endif%}
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="has_grant" class="mb-1">¿Está becado?</label>
+                        <select class="form-select" id="has_grant" name="has_grant" required>
+                            {% if rider.grant_percentage != None %}
+                            <option value="True" selected>Sí</option>
+                            <option value="False">No</option>
+                            {%else%}
+                            <option value="False" selected>No</option>
+                            <option value="True">Sí</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="form-group w-50" id="grant_group" style="display: none;">
+                        <label for="grant_percentage" class="mb-1">Porcentaje de beca</label>
+                        <input class="form-control" type="number" id="grant_percentage" name="grant_percentage" placeholder="{{rider.grant_percentage }}" min="0" max="100" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="has_guardianship" class="mb-1">¿Tiene tutela legal?</label>
+                    <select class="form-select" id="has_guardianship" name="has_guardianship" required>
+                        {% if rider.has_guardianship %}
+                            <option value="True" selected>Sí</option>
+                            <option value="False">No</option>
+                            {%else%}
+                            <option value="False" selected>No</option>
+                            <option value="True">Sí</option>
+                            {% endif %}
+                    </select>
+                </div>
+            </section>
+
+           
+        <div class="d-flex flex-row justify-content-end mt-3 gap-2">
+            <button type="submit" class="btn btn-primary">Editar jinete/amazona</button>
+            <a href="{{ url_for('jya.show' , id=rider.id) }}" class="btn btn-secondary text-white">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var provinceOfBirthSelect = document.getElementById('province_of_birth');
+        var cityOfBirthSelect = document.getElementById('city_of_birth');
+        var selectedCityOfBirthId = cityOfBirthSelect.getAttribute('data-selected');
+    
+        var provinceIdSelect = document.getElementById('province_id');
+        var localitySelect = document.getElementById('locality_id');
+        var selectedLocalityId = localitySelect.getAttribute('data-selected');
+    
+        function loadLocalities(provinceId, localitySelect, selectedLocalityId) {
+            if (provinceId) {
+                fetch('/localities/get/' + provinceId)
+                    .then(response => response.json())
+                    .then(data => {
+                        localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+                        data.forEach(function (locality) {
+                            var option = document.createElement('option');
+                            option.value = locality.id;
+                            option.text = locality.name;
+                            if (locality.id == selectedLocalityId) {
+                                option.selected = true;
+                            }
+                            localitySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error al cargar localidades:', error));
+            }
+        }
+    
+        // Cargar las localidades al cargar la página
+        loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
+        loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
+    
+        // Cargar las localidades al cambiar la provincia de nacimiento
+        provinceOfBirthSelect.addEventListener('change', function () {
+            loadLocalities(this.value, cityOfBirthSelect, null);
+        });
+    
+        // Cargar las localidades al cambiar la provincia de domicilio
+        provinceIdSelect.addEventListener('change', function () {
+            loadLocalities(this.value, localitySelect, null);
+        });
+    });    
+
+
+    function setupDynamicField(triggerId, targetId, expectedValue) {
+        var triggerElement = document.getElementById(triggerId);
+        var targetElement = document.getElementById(targetId);
+
+        triggerElement.addEventListener('change', function() {
+            if (this.value === expectedValue) {
+                targetElement.style.display = 'block';
+
+            } else {
+                targetElement.style.display = 'none';
+
+            }
+        });
+    }
+
+    // Inicializar todos los grupos dinámicos
+    document.addEventListener('DOMContentLoaded', function() {
+        setupDynamicField('has_disability_certificate', 'disability_group', 'True');
+        setupDynamicField('has_family_allowance', 'family_allowance_group', 'True');
+        setupDynamicField('has_pension', 'pension_group', 'True');
+        setupDynamicField('has_grant', 'grant_group', 'True');
+        
+    });
+    
+
+    //para cambiar el valor por aca porque no me deja acceder a has_pension en le back
+    function updatePensionBenefit() {
+    const hasPensionSelect = document.getElementById('has_pension');
+    const pensionGroup = document.getElementById('pension_group');
+    const pensionBenefitSelect = document.getElementById('pension_benefit');
+
+    const selectedValue = hasPensionSelect.value;
+
+    // Lógica para manejar el campo pension_benefit
+    if (selectedValue === 'False') {
+        pensionBenefitSelect.value = 'None'; // Cambia a 'None' o el valor que el backend espera
+        pensionGroup.style.display = 'none'; // Oculta el grupo de selección de tipo de pensión
+    } else {
+        pensionGroup.style.display = 'block'; // Muestra el grupo si selecciona 'Sí'
+    }
+
+    console.log(pensionBenefitSelect.value); // Muestra el valor actualizado en la consola
+}
+
+
+function updateFamilyAllowance() {
+    const hasAllowanceSelect = document.getElementById('has_family_allowance');
+    const allowanceGroup = document.getElementById('family_allowance_group');
+    const allowanceSelect = document.getElementById('family_allowance');
+
+    const selectedValue = hasPensionSelect.value;
+
+    // Lógica para manejar el campo pension_benefit
+    if (selectedValue === 'False') {
+        allowanceSelect.value = 'None'; // Cambia a 'None' o el valor que el backend espera
+        allowanceGroup.style.display = 'none'; // Oculta el grupo de selección de tipo de pensión
+    } else {
+        alGroup.style.display = 'block'; // Muestra el grupo si selecciona 'Sí'
+    }
+
+    console.log(pensionBenefitSelect.value); // Muestra el valor actualizado en la consola
+}
+  
+
+
+</script>
+
+
+
+{% endblock %}
+{% endblock %}

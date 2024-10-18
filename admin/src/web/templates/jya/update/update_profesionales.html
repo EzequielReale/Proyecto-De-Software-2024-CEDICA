@@ -1,0 +1,15 @@
+   <!-- Profesionales que lo atienden -->
+   <div>
+    <br>
+    <h5 class="border-bottom border-dark pb-2">Profesionales</h5>
+    <p class="mt-0 mb-3">Seleccione los profesionales que atienden al jinete/amazona.</p>
+</div>
+
+<!-- lo veo despues -->
+<div class="w-100 d-flex flex-row gap-3">
+    <select class="form-select" id="assigned_professionals" name="assigned_professionals" multiple required>
+        {% for member in assigned_professionals %}
+        <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+        {% endfor %}
+    </select>
+</div>
