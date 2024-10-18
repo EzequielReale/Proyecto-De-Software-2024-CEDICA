@@ -1,4 +1,3 @@
-<!-- Escuela 
 {% extends "layout.html" %}
 {% block title %}Editar información escolar{% endblock %}
 {% block head %}
@@ -25,6 +24,7 @@
     <h2>Editar información escolar</h2>
     <p>Formulario para editar la información escolar del jinete/amazona.</p>
     <form action="{{ url_for('jya.update_school_job', id=rider.id) }}" method="POST">
+        {{ csrf_token() }}
         <div class="form-group w-100">
             <label for="has_school" class="mb-1">¿Asiste a la escuela?</label>
             <select class="form-select" id="has_school" name="has_school" required>
@@ -56,7 +56,7 @@
                 <div class="form-group w-50">
                     <label for="school_level" class="mb-1">Nivel educativo</label>
                     <select class="form-select" id="school_level" name="school_level">
-                        <option value="{{ rider.school.school_level }}" selected>{{ rider.school.school_level }}</option>
+                        <option value="{{ rider.school.level }}" selected>{{ rider.school.level }}</option>
                         <option value="Inicial">Inicial</option>
                         <option value="Primario">Primario</option>
                         <option value="Secundario">Secundario</option>
@@ -84,18 +84,26 @@
         <div class="form-group w-100">
             <label for="has_job_proposal" class="mb-1">¿Tiene una oferta de trabajo con nosotros?</label>
             <select class="form-select" id="has_job_proposal" name="has_job_proposal" required>
-                <option disabled selected>{%if rider.institutional_work_proposal%}{{rider.institutional_work_proposal}}{% else %} Seleccione una opcion..{%endif%}</option>
-                <option value="True">Sí</option>
-                <option value="False">No</option>
+                {%if rider.job_proposal.institutional_work_proposal %}
+                    <option value="True" selected>Sí</option>
+                    <option value="False">No</option>
+                {% else %}
+                    <option value="False" selected>No</option>
+                    <option value="True">Sí</option>
+                {% endif %}
             </select>
         </div>
 
-        <div id="job_group" style="display: none;">
+        <div id="job_group">
             <div class="w-100 d-flex flex-row gap-3">
-                <div class="form-group w-50">
+                <div class="form-group w-50"  {% if rider.job_proposal %} style="display: block;"{% else %}style="display: none;"{% endif %}>
                     <label for="institutional_work_proposal" class="mb-1">Propuesta de trabajo institucional</label>
                     <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal">
-                        <option disabled selected>{%if rider.institutional_work_proposal%}{{rider.institutional_work_proposal}}{% else %} Seleccione una opcion..{%endif%}</option>
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option selected>{{rider.job_proposal.institutional_work_proposal}}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         <option value="Hipoterapia">Hipoterapia</option>
                         <option value="Monta Terapéutica">Monta Terapéutica</option>
                         <option value="Deporte Ecuestre Adaptado">Deporte Ecuestre Adaptado</option>
@@ -107,7 +115,11 @@
                 <div class="form-group w-50">
                     <label for="condition" class="mb-1">Condición</label>
                     <select class="form-select" id="condition" name="condition">
-                        <option disabled selected>Seleccione una condición...</option>
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option selected>{{rider.job_proposal.condition}}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         <option value="Regular">Regular</option>
                         <option value="De baja">De baja</option>
                     </select>
@@ -118,7 +130,11 @@
                 <div class="form-group w-50">
                     <label for="headquarters" class="mb-1">Sede</label>
                     <select class="form-select" id="headquarters" name="headquarters">
-                        <option  selected>{{rider.job_proposal.headquarters}}</option>
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option selected>{{rider.job_proposal.headquarters}}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         <option value="CASJ">CASJ</option>
                         <option value="HLP">HLP</option>
                         <option value="OTRO">OTRO</option>
@@ -143,8 +159,12 @@
                 <div class="form-group w-50">
                     <label for="professor_id" class="mb-1">Profesor o terapeuta</label>
                     <select class="form-select" id="professor_id" name="professor_id">
-                        <option  selected>{{ rider.job_proposal.professor.name }} {{ rider.job_proposal.professor.last_name
-                        }}</option>
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option value="{{ rider.job_proposal.professor.id }}" selected>{{ rider.job_proposal.professor.name }} {{ rider.job_proposal.professor.last_name}}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
+
                         {% for member in professors %}
                         <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                         {% endfor %}
@@ -154,8 +174,12 @@
                 <div class="form-group w-50">
                     <label for="assistant_id" class="mb-1">Auxiliar de pista</label>
                     <select class="form-select" id="assistant_id" name="assistant_id">
-                        <option selected>{{ rider.job_proposal.assistant.name }} {{ rider.job_proposal.assistant.last_name
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option value="{{ rider.job_proposal.assistant.id }}" selected>{{ rider.job_proposal.assistant.name }} {{ rider.job_proposal.assistant.last_name
                         }}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         {% for member in assistants %}
                         <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                         {% endfor %}
@@ -167,8 +191,13 @@
                 <div class="form-group w-50">
                     <label for="member_horse_rider_id" class="mb-1">Conductor del caballo</label>
                     <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id">
-                        <option  selected>{{ rider.job_proposal.member_horse_rider.name }} {{
+                        
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option value="{{ rider.job_proposal.member_horse_rider.id }}" selected>{{ rider.job_proposal.member_horse_rider.name }} {{
                             rider.job_proposal.member_horse_rider.last_name }}</option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         {% for member in horse_riders %}
                         <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                         {% endfor %}
@@ -178,7 +207,11 @@
                 <div class="form-group w-50">
                     <label for="horse_id" class="mb-1">Caballo</label>
                     <select class="form-select" id="horse_id" name="horse_id">
-                        <option  selected> {{ rider.job_proposal.horse.name }}</option>
+                        {%if rider.job_proposal.institutional_work_proposal %}
+                        <option value="{{ rider.job_proposal.horse.id }}" selected>{{ rider.job_proposal.horse.name }} </option>
+                        {% else %} 
+                        <option disabled selected>Seleccione una opcion..</option>
+                        {%endif%}
                         {% for horse in horses %}
                         <option value="{{ horse.id }}">{{ horse.name }}</option>
                         {% endfor %}
@@ -231,4 +264,3 @@
 
 </script>
 {% endblock %}
--->

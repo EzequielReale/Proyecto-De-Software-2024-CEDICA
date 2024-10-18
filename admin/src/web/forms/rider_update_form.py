@@ -1,20 +1,22 @@
 from datetime import datetime
 
 from flask_wtf import FlaskForm
-
 from wtforms import (
     DateField,
+    IntegerField,
     SelectField,
+    SelectMultipleField,
     StringField,
 )
 from wtforms.validators import (
     DataRequired,
-    Length,
     Email,
+    Length,
+    NumberRange,
     Optional,
     Regexp,
     ValidationError,
-)
+) 
 from src.core import people
 
 
@@ -238,8 +240,174 @@ class PartialRiderForm(FlaskForm):
         }
     
 
-class SchoolRiderForm(FlaskForm):
-    pass
+class SchoolJobRiderForm(FlaskForm):
+    def __init__(self, *args, **kwargs):
+        """Inicializa el formulario"""
+        self.rider_id = kwargs.pop('rider_id', None)
+        super(SchoolJobRiderForm, self).__init__(*args, **kwargs)
+
+  
+    has_school = SelectField(
+        "¿Asiste a la escuela?",
+        [DataRequired()],
+        choices=[("True", "Sí"), ("False", "No")],
+    )
+    school_name = StringField("Nombre de la escuela", [Optional(), Length(max=64)])
+    school_address = StringField(
+        "Dirección de la escuela", [Optional(), Length(max=128)]
+    )
+    school_phone = StringField(
+        "Teléfono de la escuela",
+        [
+            Optional(),
+            Regexp(
+                r"^[0-9\s-]+$", message="Teléfono de la escuela no puede tener letras"
+            ),
+            Length(max=16),
+        ],
+    )
+    school_level = SelectField(
+        "Nivel educativo",
+        [Optional()],
+        choices=[
+            ("Inicial", "Inicial"),
+            ("Primario", "Primario"),
+            ("Secundario", "Secundario"),
+            ("Terciario", "Terciario"),
+            ("Universitario", "Universitario"),
+        ],
+    )
+    school_year = IntegerField(
+        "Año",
+        [
+            Optional(),
+            NumberRange(min=1, max=12, message="Año debe ser un número entre 1 y 12"),
+        ],
+    )
+    school_observations = StringField("Observaciones", [Optional()])
+
+    has_job_proposal = SelectField(
+        "¿Tiene una oferta de trabajo con nosotros?",
+        [DataRequired()],
+        choices=[("True", "Sí"), ("False", "No")],
+    )
+    institutional_work_proposal = SelectField(
+        "Propuesta de trabajo institucional",
+        [Optional()],
+        choices=[
+            ("Hipoterapia", "Hipoterapia"),
+            ("Monta Terapéutica", "Monta Terapéutica"),
+            ("Deporte Ecuestre Adaptado", "Deporte Ecuestre Adaptado"),
+            ("Actividades Recreativas", "Actividades Recreativas"),
+            ("Equitación", "Equitación"),
+        ],
+    )
+    condition = SelectField(
+        "Condición",
+        [Optional()],
+        choices=[("Regular", "Regular"), ("De baja", "De baja")],
+    )
+    headquarters = SelectField(
+        "Sede",
+        [Optional()],
+        choices=[("CASJ", "CASJ"), ("HLP", "HLP"), ("OTRO", "OTRO")],
+    )
+    days = SelectMultipleField(
+        "Días",
+        [Optional()],
+        choices=[
+            ("1", "Lunes"),
+            ("2", "Martes"),
+            ("3", "Miércoles"),
+            ("4", "Jueves"),
+            ("5", "Viernes"),
+            ("6", "Sábado"),
+            ("7", "Domingo"),
+        ],
+        coerce=int,
+    )
+    professor_id = SelectField("Profesor o terapeuta", [Optional()], choices=[], coerce=int)
+    assistant_id = SelectField("Auxiliar de pista", [Optional()], choices=[], coerce=int)
+    member_horse_rider_id = SelectField(
+        "Conductor del caballo", [Optional()], choices=[], coerce=int
+    )
+    horse_id = SelectField("Caballo", [Optional()], choices=[], coerce=int)
+  
+    def process(self, formdata=None, obj=None, **kwargs):
+        """Preprocesa los datos antes de la validación y pasa los nombres a mayúsculas"""
+        super().process(formdata, obj, **kwargs)
+        if self.school_name.data:
+            self.school_name.data = self.school_name.data.title()
+        
+
+    def validate(self, extra_validators=None):
+        if not super(SchoolJobRiderForm, self).validate(extra_validators=extra_validators):
+            return False
+        if self.has_job_proposal.data == "True":
+            required_fields = [
+                "institutional_work_proposal",
+                "condition",
+                "headquarters",
+                "days",
+                "professor_id",
+                "assistant_id",
+                "member_horse_rider_id",
+                "horse_id",
+            ]
+            for field in required_fields:
+                if not getattr(self, field).data:
+                    getattr(self, field).errors.append("Este campo es obligatorio.")
+                    return False
+        if self.has_school.data == "True":
+            required_school_fields = [
+                "school_name",
+                "school_address",
+                "school_phone",
+                "school_level",
+                "school_year",
+            ]
+            for field in required_school_fields:
+                if not getattr(self, field).data:
+                    getattr(self, field).errors.append("Este campo es obligatorio.")
+                    return False
+
+        return True
+    
+    def get_school_data(self):
+        return {
+            "name": self.school_name.data,
+            "address": self.school_address.data,
+            "phone": self.school_phone.data,
+            "level": self.school_level.data,
+            "year": self.school_year.data,
+            "observations": self.school_observations.data,
+        }
+    
+    def _get_days_data(self):
+        """Obtiene los días seleccionados como una lista de nombres de días"""
+        days_mapping = {
+            1: "Lunes",
+            2: "Martes",
+            3: "Miércoles",
+            4: "Jueves",
+            5: "Viernes",
+            6: "Sábado",
+            7: "Domingo",
+        }
+        return [days_mapping[day] for day in self.days.data]
+    
+    def get_job_proposal_data(self):
+        return {
+            "institutional_work_proposal": self.institutional_work_proposal.data,
+            "condition": self.condition.data,
+            "headquarters": self.headquarters.data,
+            "days": self._get_days_data(),
+            "professor_id": self.professor_id.data,
+            "assistant_id": self.assistant_id.data,
+            "member_horse_rider_id": self.member_horse_rider_id.data,
+            "horse_id": self.horse_id.data,
+        }
+    
 
 
 class TutorRiderForm(FlaskForm):

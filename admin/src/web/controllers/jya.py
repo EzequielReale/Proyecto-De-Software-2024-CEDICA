@@ -13,7 +13,7 @@ from src.core.people.member_rider import Member,Rider
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
-from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm
+from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm,SchoolJobRiderForm
 from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
 
@@ -270,10 +270,46 @@ def update_general(id: int) -> str:
 @bp.route("/<int:id>/edit_escuela_trabajo", methods=["GET", "POST"])
 def update_school_job(id: int) -> str:
      rider = people.get_rider_by_field("id", id) 
-     #for job in rider.job_proposal:
-         #print(job.professor.name)
+     form_data = request.form.to_dict(flat=True)
 
-     return render_template("jya/update/update_school_job.html", rider=rider)
+     
+     
+
+     disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list = _get_data_from_db()
+
+     form = SchoolJobRiderForm(rider_id=rider.id, data=form_data)
+    # Configura las opciones de SelectField
+     form.professor_id.choices = [(professor.id, f"{professor.name} {professor.last_name}") for professor in professor_list]
+     form.assistant_id.choices = [(assistant.id, f"{assistant.name} {assistant.last_name}") for assistant in assistant_list]
+     form.member_horse_rider_id.choices = [(rider.id, f"{rider.name} {rider.last_name}") for rider in horse_rider_list]
+     form.horse_id.choices = [(horse.id, horse.name) for horse in horse_list]
+
+     if request.method == "POST" : 
+        print("Form Data:", form_data)
+        print("Professor Choices:", form.professor_id.choices)
+        print("Assistant Choices:", form.assistant_id.choices)
+        print("Horse Rider Choices:", form.member_horse_rider_id.choices)
+        print("Horse Choices:", form.horse_id.choices) 
+        if form.validate():
+            people.update_school_job(rider.id, form)
+            flash(f"{rider.name} {rider.last_name} ha sido actualizado exitosamente", "success")
+            return redirect(url_for("jya.show", id=rider.id))
+        elif form.errors:
+            print(form.errors)
+            error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+            flash(f"Error en el formulario: {error_messages}", "danger") 
+
+     return render_template(
+        "jya/update/update_school_job.html",
+        rider=rider,
+        professors=professor_list,
+        assistants=assistant_list,
+        horse_riders=horse_rider_list,
+        horses=horse_list,
+        csrf_token=(form.csrf_token if hasattr(form, "csrf_token") else None),
+    )
+
+
    
 @bp.route("/<int:id>/edit_tutor", methods=["GET", "POST"])
 def update_tutor(id: int) -> str:

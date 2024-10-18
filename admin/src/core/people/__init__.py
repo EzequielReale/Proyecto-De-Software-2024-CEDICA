@@ -12,11 +12,7 @@ from src.core.people.member_rider import Member, Rider, UserMember
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
-<<<<<<< HEAD
-=======
-from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm
-from src.core.people.person_document import PersonDocument as Document
->>>>>>> bc82377 (back de actualizacion general y tutores lista)
+from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm, SchoolJobRiderForm
 
 
 """Funciones de documentos"""
@@ -277,6 +273,32 @@ def update_rider_tutor(rider_id: int, form: TutorRiderForm) -> Rider:
     else:
         rider.tutor_2=None
 
+    db.session.commit()
+    return rider
+
+
+def update_school_job(rider_id: int, form: SchoolJobRiderForm) -> Rider:
+    """Actualiza y/o crea la información de la escuela y/o trabajo del rider, y lo devuelve """
+    rider = get_rider_by_field("id", rider_id)
+    school_data = form.get_school_data()  
+    job_data = form.get_job_proposal_data()
+    
+    if form.has_school.data =="True":
+        if rider.school is not None:
+            for attr, value in school_data.items():
+              setattr(rider.school, attr, value) #actualizo
+        else:
+            rider.school == school_new_seed(**school_data) #creo y asigno
+    else: #lo quiere eliminar
+        rider.school = None
+    if form.has_job_proposal.data == "True":
+        if rider.job_proposal is not None:
+            for attr, value in job_data.items():
+              setattr(rider.job_proposal, attr, value) #actualizo
+        else:
+            rider.job_proposal == job_proposal_new_seed(**job_data)
+    else: 
+        rider.job_proposal = None
     db.session.commit()
     return rider
 
