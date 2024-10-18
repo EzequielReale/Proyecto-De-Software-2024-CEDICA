@@ -13,6 +13,7 @@ from src.core.people.member_rider import Member
 from src.web.forms.person_document_form import PersonDocumentForm as DocumentForm
 from src.web.forms.person_link_form import PersonLinkForm as LinkForm
 from src.web.forms.rider_form import RiderForm
+from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm
 from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
 
@@ -217,18 +218,99 @@ def create() -> str:
     )
 
 
+
+
 @bp.route("/<int:id>/edit", methods=["GET", "POST"])
 @login_required
-def update(id: int) -> str:
-    """Recibe el id de un j/a y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
-    rider = people.get_rider_by_field("id", id)
+def update_general(id: int) -> str:
+    """Recibe el id de un jinete/amazona y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
+    rider = people.get_rider_by_field("id", id)  
+    if not rider:
+        flash("Jinete no encontrado", "danger")
+        return render_template("jya/update_general.html")
 
-    # Para después
+    form_data = request.form.to_dict(flat=True)
+
+    disability_types_list, disabilities_list, provinces_list, localities_list,assigned_professionals_list,professor_list, assistant_list,horse_rider_list,horse_list = _get_data_from_db()
+    form = PartialRiderForm(rider_id=rider.id, data=form_data)
+
+    # Configura las opciones de SelectField
+    form.province_of_birth.choices = [(province.id, province.name) for province in provinces_list]
+    form.city_of_birth.choices = [(locality.id, locality.name) for locality in localities_list]
+    form.province_id.choices = [(province.id, province.name) for province in provinces_list]
+    form.locality_id.choices = [(locality.id, locality.name) for locality in localities_list]
+    form.disability_type.choices = [(disability_type.id, disability_type.name) for disability_type in disability_types_list]
+    form.disability_id.choices = [(disability.id, disability.name) for disability in disabilities_list]
+
+    # Validar el formulario
+    if form.validate():
+        # Actualiza los datos del jinete/amazona con la información del formulario
+        people.rider_update(rider.id, form)
+        flash(f"{rider.name} {rider.last_name} ha sido actualizado exitosamente", "success")
+        return redirect(url_for("jya.show", id=rider.id))
+
+    # Si hay errores en el formulario
+    elif form.errors:
+        print(form.errors)
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+        flash(f"Error en el formulario: {error_messages}", "danger")
 
     return render_template(
-        "jya/update.html",
+        "jya/update/update_general.html",
         rider=rider,
+        disability_types=disability_types_list,
+        disabilities=disabilities_list,
+        localities=localities_list,
+        provinces=provinces_list,
+        csrf_token=(form.csrf_token if hasattr(form, "csrf_token") else None),
     )
+
+
+
+@bp.route("/<int:id>/edit_escuela_trabajo", methods=["GET", "POST"])
+def update_school_job(id: int) -> str:
+     rider = people.get_rider_by_field("id", id) 
+     #for job in rider.job_proposal:
+         #print(job.professor.name)
+
+     return render_template("jya/update/update_school_job.html", rider=rider)
+   
+@bp.route("/<int:id>/edit_tutor", methods=["GET", "POST"])
+def update_tutor(id: int) -> str:
+    rider = people.get_rider_by_field("id", id) 
+    if not rider:
+        flash("Jinete no encontrado", "danger")
+        return render_template("jya/update_general.html")
+
+    form_data = request.form.to_dict(flat=True)
+    form = TutorRiderForm(rider_id=rider.id, data=form_data)
+    
+    if form.validate():
+        # Actualiza los datos del jinete/amazona con la información del formulario        
+        people.update_rider_tutor(rider.id,form)
+        flash(f"{rider.name} {rider.last_name} ha sido actualizado exitosamente", "success")
+        return redirect(url_for("jya.show", id=rider.id))
+
+    # Si hay errores en el formulario
+    elif form.errors:
+        print(form.errors)
+        error_messages = [f"{field}: {', '.join(errors)}" for field, errors in form.errors.items()]
+        flash(f"Error en el formulario: {error_messages}", "danger")
+
+    return render_template(
+        "jya/update/update_tutor.html",
+        rider=rider,
+        csrf_token=(form.csrf_token if hasattr(form, "csrf_token") else None),
+    )
+
+
+def update_profesionales(id: int) -> str:
+    pass
+
+
+
+
+
 
 
 @bp.post("/<int:id>/delete")

@@ -231,9 +231,51 @@ def rider_new(form:RiderForm) -> str:
     return rider
 
 
-def rider_update(rider_id: int, **kwargs) -> Rider:
+
+def rider_update(rider_id: int,  form: PartialRiderForm) -> Rider:
     """Actualiza un jinete por ID y lo devuelve"""
-    return db_fun.update(Rider, rider_id, **kwargs)
+    rider = get_rider_by_field("id", rider_id)
+    rider_data = form.get_rider_data() 
+    print(rider_data)
+
+    rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
+    rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
+
+    for attr, value in rider_data.items():
+        setattr(rider, attr, value)  
+
+    db.session.commit()  
+    return rider 
+
+
+def update_rider_tutor(rider_id: int, form: TutorRiderForm) -> Rider:
+    """Actualiza la información de los tutores de un jinete/amazona por ID y lo devuelve"""
+    rider = get_rider_by_field("id", rider_id)
+    tutor1_data = form.get_tutor_data(1)  
+    tutor2_data = form.get_tutor_data(2)
+
+    if form.has_tutor_1.data == "True": #No va a pasar que esto sea false por las validaciones
+         if rider.tutor_1 is not None:
+           for attr, value in tutor1_data.items():
+             setattr(rider.tutor_1, attr, value)
+         else:
+             rider.tutor_1 = tutor_new_seed(**tutor1_data)  #lo creo y asigno
+    
+
+    if form.has_tutor_2.data == "True":
+         if rider.tutor_2 is not None:
+           for attr, value in tutor2_data.items():
+             setattr(rider.tutor_2, attr, value)
+         else:
+             rider.tutor_2= tutor_new_seed(**tutor2_data)
+    else:
+        rider.tutor_2=None
+
+    db.session.commit()
+    return rider
+
+
+
 
 
 def rider_delete(rider_id: int) -> Rider:
