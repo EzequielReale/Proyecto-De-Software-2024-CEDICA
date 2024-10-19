@@ -12,6 +12,8 @@ from flask import (
 )
 
 from src.core import equestrian, people
+from src.core.equestrian.activity import Activity
+from src.core.people.member_rider import Member
 from src.core.database import db
 from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
@@ -76,7 +78,7 @@ def create():
             selected_activities = json.loads(selected_activities)
         else:
             selected_activities = []
-            
+        
         # Obtener los miembros asignados
         assigned_members = request.form.get('assigned_members')
         if assigned_members:
@@ -104,18 +106,29 @@ def create():
             coat=form_data['coat'],
             assigned_location=form_data['assigned_location']
         ) 
-
-        # Asignar actividades al caballo
-        for activity_id in selected_activities:
-            activity = equestrian.get_activity_by_id(activity_id)
-            if activity:
-                horse.activities.append(activity)
         
-        # Asignar miembros al caballo
-        for member_id in assigned_members:
-            member = people.get_member_by_field('id', member_id)
-            if member:
-                horse.assigned_members.append(member)
+        print("Caballo")
+        print(horse)
+
+        print("Actividades")
+        print(selected_activities)
+
+        # Verificar y agregar actividades
+        if selected_activities:
+            for activity_id in selected_activities:
+                activity = Activity.query.filter_by(id=activity_id).first()
+                if activity:
+                    horse.activities.append(activity)
+        
+        print("Miembros")
+        print(assigned_members)
+        
+        # Verificar y agregar miembros
+        if assigned_members:
+            for member_id in assigned_members:
+                member = Member.query.filter_by(id=member_id).first()
+                if member:
+                    horse.assigned_members.append(member)
         
         db.session.commit()
         
