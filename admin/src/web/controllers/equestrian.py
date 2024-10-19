@@ -107,22 +107,13 @@ def create():
             assigned_location=form_data['assigned_location']
         ) 
         
-        print("Caballo")
-        print(horse)
-
-        print("Actividades")
-        print(selected_activities)
-
         # Verificar y agregar actividades
         if selected_activities:
             for activity_id in selected_activities:
                 activity = Activity.query.filter_by(id=activity_id).first()
                 if activity:
                     horse.activities.append(activity)
-        
-        print("Miembros")
-        print(assigned_members)
-        
+                
         # Verificar y agregar miembros
         if assigned_members:
             for member_id in assigned_members:
