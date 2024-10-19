@@ -1,6 +1,7 @@
 from io import BytesIO
 from os import fstat
 import uuid
+from typing import List
 
 from flask import current_app, send_file
 from flask import request
@@ -212,15 +213,20 @@ def _create_rider(form:RiderForm) -> int:
     return db_fun.new(Rider, **rider_data)
 
 
+def tutor_new(**kwargs) -> Tutor:
+    """Crea un tutor y lo guarda en la BD"""
+    return db_fun.new(Tutor, **kwargs)
+
+
 def _create_tutors(form:RiderForm) -> Tutor:
     """Recibe el formulario y retorna los tutores creados"""
     tutor_1 = None
     tutor_2 = None
 
     if form.has_tutor_1.data == "True":
-        tutor_1 = db_fun.new(Tutor, **form.get_tutor_data(1))
+        tutor_1 = tutor_new(**form.get_tutor_data(1))
     if form.has_tutor_2.data == "True":
-        tutor_2 = db_fun.new(Tutor, **form.get_tutor_data(2))
+        tutor_2 = tutor_new(**form.get_tutor_data(2))
     
     return tutor_1, tutor_2
 
@@ -238,28 +244,11 @@ def rider_update(rider_id: int,  form: PartialRiderForm) -> Rider:
     """Actualiza un jinete por ID y lo devuelve"""
     rider = get_rider_by_field("id", rider_id)
     rider_data = form.get_rider_data() 
-    print(rider_data)
     
     rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
     rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
 
-    for attr, value in rider_data.items():
-        setattr(rider, attr, value)  
-
-    if form.has_disability_certificate.data == "False":
-        rider.disability=None
-        rider.disability_id=None
-
-    if form.has_pension.data == "False":
-        rider.pension_benefit=None
-
-    if form.has_family_allowance.data == "False":
-        rider.family_allowance=None
-
-    if form.has_grant.data == "False":
-        rider.grant_percentage=None
-
-    db.session.commit()  
+    db_fun.update(Rider, rider_id, **rider_data) 
     return rider 
 
 
@@ -269,24 +258,26 @@ def update_rider_tutor(rider_id: int, form: TutorRiderForm) -> Rider:
     tutor1_data = form.get_tutor_data(1)  
     tutor2_data = form.get_tutor_data(2)
 
-    if form.has_tutor_1.data == "True": #No va a pasar que esto sea false por las validaciones
-         if rider.tutor_1 is not None:
-           for attr, value in tutor1_data.items():
-             setattr(rider.tutor_1, attr, value)
-         else:
-             rider.tutor_1 = tutor_new_seed(**tutor1_data)  #lo creo y asigno
-    
-
-    if form.has_tutor_2.data == "True":
-         if rider.tutor_2 is not None:
-           for attr, value in tutor2_data.items():
-             setattr(rider.tutor_2, attr, value)
-         else:
-             rider.tutor_2= tutor_new_seed(**tutor2_data)
+    if form.has_tutor_1.data == "True":
+        if rider.tutor_1 is not None:
+           db_fun.update(Tutor, rider.tutor_1.id, **tutor1_data)  # si existe lo actualizo
+        else:
+            rider.tutor_1 = tutor_new(**tutor1_data)  # si no existe lo creo y asigno
     else:
-        rider.tutor_2=None
+        if rider.tutor_1 is not None:
+            db_fun.delete(Tutor, rider.tutor_1.id) # si lo quiere eliminar (y existe) lo elimino
 
-    db.session.commit()
+    if form.has_tutor_1.data == "True" and form.has_tutor_2.data == "True":
+        print("entro")
+        if rider.tutor_2 is not None:
+            db_fun.update(Tutor, rider.tutor_2.id, **tutor2_data)
+        else:
+            rider.tutor_2 = tutor_new(**tutor2_data)
+            db.session.commit()
+    else:
+        if rider.tutor_2 is not None:
+            db_fun.delete(Tutor, rider.tutor_2.id)
+
     return rider
 
 
@@ -299,55 +290,34 @@ def update_school_job(rider_id: int, form: SchoolJobRiderForm) -> Rider:
 
     if form.has_school.data =="True":
         if rider.school is not None:
-            for attr, value in school_data.items():
-                setattr(rider.school, attr, value) #actualizo
+            db_fun.update(professions.School, rider.school.id, **school_data) # si existe lo actualizo
         else:
-            new_school = school_new_seed(rider_id=rider.id,**school_data)  #lo crea 
-            rider.school = new_school
-            db.session.add(new_school)
-
+            professions.school_new(form, rider_id=rider.id) # si no existe lo creo
     else: #lo quiere eliminar
         if rider.school is not None:
-            db.session.delete(rider.school) 
-        rider.school = None
+            professions.school_delete(rider.school.id) # si existe y lo quiere eliminar lo elimino
 
     if form.has_job_proposal.data == "True":
         if rider.job_proposal is not None:
-            for attr, value in job_data.items():
-                setattr(rider.job_proposal, attr, value) #actualizo
+            db_fun.update(professions.JobProposal, rider.job_proposal.id, **job_data)
         else:
-            new_job = job_proposal_new_seed(rider_id=rider.id,**job_data)
-            rider.job_proposal = new_job
-            db.session.add(new_job)
+            professions.job_proposal_new(form, rider_id=rider.id)
     else: 
         if rider.job_proposal is not None:
-            db.session.delete(rider.job_proposal) 
-        rider.job_proposal = None
-    db.session.commit()
+            professions.job_proposal_delete(rider.job_proposal.id)
     return rider
-
-
-from typing import List
-
-def get_professionals_by_ids(ids: List[int]):
-    """Obtiene profesionales por una lista de IDs."""
-    return db.session.query(Member).filter(Member.id.in_(ids)).all()
 
 
 def update_professional_rider(rider_id: int, professional_ids: list) -> Rider:
     rider = get_rider_by_field("id", rider_id)
-    assigned_professionals = get_professionals_by_ids(professional_ids)
+    assigned_professionals = db.session.query(Member).filter(Member.id.in_(professional_ids)).all()
     
-    # Actualiza los profesionales asignados
     rider.members.clear()  # Elimina los profesionales asignados anteriormente
-    rider.members.extend(assigned_professionals)  
-
+    rider.members.extend(assigned_professionals) # Asigna los nuevos profesionales 
     db.session.commit()
     return rider
 
-
 #-----
-
 
 def rider_delete(rider_id: int) -> Rider:
     """Elimina un jinete por ID y lo devuelve"""
@@ -378,18 +348,16 @@ def rider_add_document(rider_id: int, file: bytes, type:str) -> Document:
 
 """Seeds"""
 
-def rider_new_seed(**kwargs) -> Rider:
-    """Crea un jinete con datos de prueba y lo guarda en la BD"""
-    return db_fun.new(Rider, **kwargs)
-
 def school_new_seed(**kwargs) -> professions.School:
     """Crea una escuela con datos de prueba y la guarda en la BD"""
     return db_fun.new(professions.School, **kwargs)
+
 
 def job_proposal_new_seed(**kwargs) -> professions.JobProposal:
     """Crea una propuesta de trabajo con datos de prueba y la guarda en la BD"""
     return db_fun.new(professions.JobProposal, **kwargs)
 
-def tutor_new_seed(**kwargs) -> Tutor:
-    """Crea un tutor con datos de prueba y lo guarda en la BD"""
-    return db_fun.new(Tutor, **kwargs)
+
+def rider_new_seed(**kwargs) -> Rider:
+    """Crea un jinete con datos de prueba y lo guarda en la BD"""
+    return db_fun.new(Rider, **kwargs)

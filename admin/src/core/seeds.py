@@ -271,7 +271,7 @@ def run():
         name="Autismo",
         type_id=disability_type1.id
     )
-    parent1 = people.tutor_new_seed(
+    parent1 = people.tutor_new(
         relationship="Padre",
         name="Juan",
         last_name="Perez",
@@ -282,7 +282,7 @@ def run():
         education_level="Primario",
         job="Docente"
     )
-    parent2 = people.tutor_new_seed(
+    parent2 = people.tutor_new(
         relationship="Madre",
         name="Maria",
         last_name="Gomez",
@@ -357,3 +357,4 @@ def run():
             horse_id=horse1.id,
             assistant_id=member.id
         )
+    print("Seeds ejecutadas con exito")

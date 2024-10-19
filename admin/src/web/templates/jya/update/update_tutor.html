@@ -191,9 +191,11 @@
             </div>
         </div> 
 
-        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+        <div class="d-flex flex-row justify-content-end mt-3 gap-2">
+            <button type="submit" class="btn btn-primary">Editar jinete/amazona</button>
+            <a href="{{ url_for('jya.show' , id=rider.id) }}" class="btn btn-secondary text-white">Cancelar</a>
+        </div>
     </form>
-    <a href="{{ url_for('jya.show', id=rider.id) }}" class="btn btn-secondary">Cancelar</a>
 
 </div>
 <script>

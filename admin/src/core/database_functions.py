@@ -14,7 +14,6 @@ def __apply_filters(model, query:Query, field:any, value:any) -> Query:
         related_model = column.property.mapper.class_
         query = query.join(column)
         # Si hay más de un valor (o sea, un getlist), convertirlo en una lista
-        print(f"Field: {field}, Value: {value}, Type: {type(value)}")
         if isinstance(value, list):
             query = query.filter(getattr(related_model, 'id').in_(value))
         else:

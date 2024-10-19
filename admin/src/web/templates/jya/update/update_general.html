@@ -167,8 +167,7 @@
                         <div class="form-group w-50">
                             <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
                             <select class="form-select" id="disability_type" name="disability_type">
-                                <option value="{{ rider.disability.type.id if rider.disability else '' }}" selected>{{ rider.disability.type if rider.disability }}</option>
-
+                                <option value="{{ rider.disability.type.id if rider.disability else '' }}" selected>{{ rider.disability.type.name if rider.disability }}</option>
                                 {% for disability_type in disability_types %}
                                 <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
                                 {% endfor %}
@@ -177,11 +176,8 @@
                 
                         <div class="form-group w-50">
                             <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
-                            <select class="form-select" id="disability_id" name="disability_id">
-                                <option value="{{ rider.disability.id }}" selected>{{ rider.disability.name }}</option>
-                                {% for disability in disabilities %}
-                                <option value="{{ disability.id }}">{{ disability.name }}</option>
-                                {% endfor %}
+                            <select class="form-select" id="disability_id" name="disability_id" data-selected="{{ rider.disability.id if rider.disability else '' }}">
+                                <option value="{{ rider.disability.id if rider.disability else '' }}" selected>{{ rider.disability.name if rider.disability }}</option>
                             </select>
                         </div>
                     </div>
@@ -344,7 +340,6 @@
 
 {% block scripts %}
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         var provinceOfBirthSelect = document.getElementById('province_of_birth');
         var cityOfBirthSelect = document.getElementById('city_of_birth');
@@ -355,9 +350,15 @@
         var selectedLocalityId = localitySelect.getAttribute('data-selected');
     
         function loadLocalities(provinceId, localitySelect, selectedLocalityId) {
-            if (provinceId) {
-                fetch('/localities/get/' + provinceId)
-                    .then(response => response.json())
+            // Verificar si el valor de la provincia es válido
+            if (provinceId && provinceId !== "Seleccione una provincia...") {
+                fetch('/resources/localities/' + provinceId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
                         data.forEach(function (locality) {
@@ -374,9 +375,14 @@
             }
         }
     
-        // Cargar las localidades al cargar la página
-        loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
-        loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
+        // Cargar las localidades al cargar la página si hay un valor válido
+        if (provinceOfBirthSelect.value && provinceOfBirthSelect.value !== "Seleccione una provincia...") {
+            loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
+        }
+    
+        if (provinceIdSelect.value && provinceIdSelect.value !== "Seleccione una provincia...") {
+            loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
+        }
     
         // Cargar las localidades al cambiar la provincia de nacimiento
         provinceOfBirthSelect.addEventListener('change', function () {
@@ -387,8 +393,66 @@
         provinceIdSelect.addEventListener('change', function () {
             loadLocalities(this.value, localitySelect, null);
         });
-    });    
+    });
 
+    function loadDisabilityDiagnoses(disabilityTypeId, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId) {
+        // Verificar si el valor del tipo de discapacidad es válido
+        if (disabilityTypeId && disabilityTypeId !== "Seleccione un tipo de discapacidad...") {
+            fetch('/resources/disabilities/' + disabilityTypeId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    disabilityDiagnosisSelect.innerHTML = '<option value="">Seleccione una discapacidad...</option>';
+                    data.forEach(function (diagnosis) {
+                        var option = document.createElement('option');
+                        option.value = diagnosis.id;
+                        option.text = diagnosis.name;
+                        if (diagnosis.id == selectedDisabilityDiagnosisId) {
+                            option.selected = true;
+                        }
+                        disabilityDiagnosisSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar diagnósticos de discapacidad:', error));
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var disabilityTypeSelect = document.getElementById('disability_type');
+        var disabilityDiagnosisSelect = document.getElementById('disability_id');
+        var selectedDisabilityDiagnosisId = disabilityDiagnosisSelect.getAttribute('data-selected');
+
+        function loadDisabilityDiagnoses(disabilityTypeId, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId) {
+            if (disabilityTypeId && disabilityTypeId !== "Seleccione un tipo de discapacidad...") {
+                fetch('/resources/disabilities/' + disabilityTypeId)
+                    .then(response => response.json())
+                    .then(data => {
+                        disabilityDiagnosisSelect.innerHTML = '<option value="">Seleccione una discapacidad...</option>';
+                        data.forEach(function (diagnosis) {
+                            var option = document.createElement('option');
+                            option.value = diagnosis.id;
+                            option.text = diagnosis.name;
+                            if (diagnosis.id == selectedDisabilityDiagnosisId) {
+                                option.selected = true;
+                            }
+                            disabilityDiagnosisSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error al cargar diagnósticos de discapacidad:', error));
+            }
+        }
+
+        // Cargar los diagnósticos de discapacidad al cargar la página
+        loadDisabilityDiagnoses(disabilityTypeSelect.value, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId);
+
+        // Cargar los diagnósticos de discapacidad al cambiar el tipo de discapacidad
+        disabilityTypeSelect.addEventListener('change', function () {
+            loadDisabilityDiagnoses(this.value, disabilityDiagnosisSelect, null);
+        });
+    });
 
     function setupDynamicField(triggerId, targetId, expectedValue) {
         var triggerElement = document.getElementById(triggerId);

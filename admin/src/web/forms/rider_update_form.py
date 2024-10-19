@@ -226,7 +226,7 @@ class PartialRiderForm(FlaskForm):
             "emergency_phone": self.emergency_phone.data,
             "birth_date": self.birth_date.data,
             "city_of_birth": int(self.city_of_birth.data),
-            "disability_id": int(self.disability_id.data) if self.disability_id.data else None,
+            "disability_id": int(self.disability_id.data) if self.has_disability_certificate.data == "True" else None,
             "health_insurance": self.health_insurance.data,
             "health_insurance_number": self.health_insurance_number.data,
             "locality_id": int(self.locality_id.data),
@@ -234,9 +234,9 @@ class PartialRiderForm(FlaskForm):
             "number": self.number.data,
             "floor": self.floor.data,
             "apartment": self.apartment.data,
-            "family_allowance": self.family_allowance.data,
-            "pension_benefit": self.pension_benefit.data,
-            "grant_percentage": float(self.grant_percentage.data) if self.grant_percentage.data else None,
+            "family_allowance": self.family_allowance.data if self.has_family_allowance.data == "True" else None,
+            "pension_benefit": self.pension_benefit.data if self.has_pension.data == "True" else None,
+            "grant_percentage": float(self.grant_percentage.data) if self.has_grant.data == "True" else None,
             "has_guardianship": self.has_guardianship.data == "True",
         }
     
@@ -479,9 +479,6 @@ class TutorRiderForm(FlaskForm):
         if not super(TutorRiderForm, self).validate(extra_validators=extra_validators):
             return False
         
-        if self.has_tutor_1.data == "False":
-            self.has_tutor_1.errors.append("Debe tener al menos 1 tutor.")
-            return False
         if self.has_tutor_1.data == "True":
             required_tutor1_fields = [
                 "tutor1_relationship",
@@ -498,7 +495,7 @@ class TutorRiderForm(FlaskForm):
                 if not getattr(self, field).data:
                     getattr(self, field).errors.append("Este campo es obligatorio.")
                     return False
-        if self.has_tutor_2.data == "True":
+        if self.has_tutor_1.data == "True" and self.has_tutor_2.data == "True":
             required_tutor2_fields = [
                 "tutor2_relationship",
                 "tutor2_dni",
@@ -514,6 +511,9 @@ class TutorRiderForm(FlaskForm):
                 if not getattr(self, field).data:
                     getattr(self, field).errors.append("Este campo es obligatorio.")
                     return False
+        else:
+            self.has_tutor_2.data == "False"
+        
         return True
 
     def get_tutor_data(self, tutor_number):
