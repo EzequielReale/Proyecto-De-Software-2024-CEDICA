@@ -223,7 +223,9 @@ def create() -> str:
 @bp.route("/<int:id>/edit", methods=["GET", "POST"])
 @login_required
 def update_general(id: int) -> str:
-    """Recibe el id de un jinete/amazona y muestra el formulario para editarlo, al mismo tiempo que lo actualiza en la BD"""
+    """Recibe el id de un jinete/amazona y muestra el formulario para editar los datos personales"""
+    if not check_permission(session, "jya_update"):
+        return unauthorized()
     rider = people.get_rider_by_field("id", id)  
 
     form_data = request.form.to_dict(flat=True)
@@ -268,6 +270,9 @@ def update_general(id: int) -> str:
 
 @bp.route("/<int:id>/edit_escuela_trabajo", methods=["GET", "POST"])
 def update_school_job(id: int) -> str:
+     """Recibe el id de un jinete/amazona y muestra el formulario para editar los datos del la escuela y/o trabajo"""
+     if not check_permission(session, "jya_update"):
+        return unauthorized()
      rider = people.get_rider_by_field("id", id) 
      form_data = request.form.to_dict(flat=True)
      disability_types_list, disabilities_list, provinces_list, localities_list, assigned_professionals_list, professor_list, assistant_list, horse_rider_list, horse_list = _get_data_from_db()
@@ -308,6 +313,10 @@ def update_school_job(id: int) -> str:
    
 @bp.route("/<int:id>/edit_tutor", methods=["GET", "POST"])
 def update_tutor(id: int) -> str:
+    """Recibe el id de un jinete/amazona y muestra el formulario para editar los datos de los tutores"""
+    if not check_permission(session, "jya_update"):
+        return unauthorized()
+    
     rider = people.get_rider_by_field("id", id) 
 
     form_data = request.form.to_dict(flat=True)
@@ -335,6 +344,9 @@ def update_tutor(id: int) -> str:
 
 @bp.route("/<int:id>/edit_professional", methods=["GET", "POST"])
 def update_professional(id: int) -> str:
+    """Recibe el id de un jinete/amazona y muestra el formulario para editar la lista de los profesionales que lo atienden"""
+    if not check_permission(session, "jya_update"):
+        return unauthorized()
     rider = people.get_rider_by_field("id", id)
     form_data = request.form.to_dict(flat=True)
     
