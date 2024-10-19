@@ -420,7 +420,7 @@ class RiderForm(FlaskForm):
                 if not getattr(self, field).data:
                     getattr(self, field).errors.append("Este campo es obligatorio.")
                     return False
-        if self.has_tutor_2.data == "True":
+        if self.has_tutor_1.data == "True" and self.has_tutor_2.data == "True":
             required_tutor2_fields = [
                 "tutor2_relationship",
                 "tutor2_dni",

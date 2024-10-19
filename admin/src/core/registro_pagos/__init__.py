@@ -57,7 +57,6 @@ def administracion_index(filtros: dict, page: int, per_page: int, order_by: str,
 def administracion_destroy(id):
     """busco el registro de pago mediante el id y si existe lo borro fisicamente de la BD"""
     pago = Pago.query.get(id)  
-    print(pago.beneficiario)
     if pago:
         db.session.delete(pago)
         db.session.commit()
