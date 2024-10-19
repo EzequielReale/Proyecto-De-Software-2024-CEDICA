@@ -232,19 +232,32 @@ def rider_new(form:RiderForm) -> str:
     professions.job_proposal_new(form, rider.id)
     return rider
 
-
+#updates----
 
 def rider_update(rider_id: int,  form: PartialRiderForm) -> Rider:
     """Actualiza un jinete por ID y lo devuelve"""
     rider = get_rider_by_field("id", rider_id)
     rider_data = form.get_rider_data() 
     print(rider_data)
-
+    
     rider_data['locality'] = adressing.get_locality_by_id(rider_data['locality_id'])
     rider_data['city_of_birth'] = adressing.get_locality_by_id(rider_data['city_of_birth'])
 
     for attr, value in rider_data.items():
         setattr(rider, attr, value)  
+
+    if form.has_disability_certificate.data == "False":
+        rider.disability=None
+        rider.disability_id=None
+
+    if form.has_pension.data == "False":
+        rider.pension_benefit=None
+
+    if form.has_family_allowance.data == "False":
+        rider.family_allowance=None
+
+    if form.has_grant.data == "False":
+        rider.grant_percentage=None
 
     db.session.commit()  
     return rider 
@@ -282,28 +295,58 @@ def update_school_job(rider_id: int, form: SchoolJobRiderForm) -> Rider:
     rider = get_rider_by_field("id", rider_id)
     school_data = form.get_school_data()  
     job_data = form.get_job_proposal_data()
-    
+
+
     if form.has_school.data =="True":
         if rider.school is not None:
             for attr, value in school_data.items():
-              setattr(rider.school, attr, value) #actualizo
+                setattr(rider.school, attr, value) #actualizo
         else:
-            rider.school == school_new_seed(**school_data) #creo y asigno
+            new_school = school_new_seed(rider_id=rider.id,**school_data)  #lo crea 
+            rider.school = new_school
+            db.session.add(new_school)
+
     else: #lo quiere eliminar
+        if rider.school is not None:
+            db.session.delete(rider.school) 
         rider.school = None
+
     if form.has_job_proposal.data == "True":
         if rider.job_proposal is not None:
             for attr, value in job_data.items():
-              setattr(rider.job_proposal, attr, value) #actualizo
+                setattr(rider.job_proposal, attr, value) #actualizo
         else:
-            rider.job_proposal == job_proposal_new_seed(**job_data)
+            new_job = job_proposal_new_seed(rider_id=rider.id,**job_data)
+            rider.job_proposal = new_job
+            db.session.add(new_job)
     else: 
+        if rider.job_proposal is not None:
+            db.session.delete(rider.job_proposal) 
         rider.job_proposal = None
     db.session.commit()
     return rider
 
 
+from typing import List
 
+def get_professionals_by_ids(ids: List[int]):
+    """Obtiene profesionales por una lista de IDs."""
+    return db.session.query(Member).filter(Member.id.in_(ids)).all()
+
+
+def update_professional_rider(rider_id: int, professional_ids: list) -> Rider:
+    rider = get_rider_by_field("id", rider_id)
+    assigned_professionals = get_professionals_by_ids(professional_ids)
+    
+    # Actualiza los profesionales asignados
+    rider.members.clear()  # Elimina los profesionales asignados anteriormente
+    rider.members.extend(assigned_professionals)  
+
+    db.session.commit()
+    return rider
+
+
+#-----
 
 
 def rider_delete(rider_id: int) -> Rider:

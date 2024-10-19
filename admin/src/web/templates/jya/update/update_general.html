@@ -127,13 +127,14 @@
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label for="birth_date" class="mb-1">Fecha de nacimiento</label>
-                        <input class="form-control" type="date" id="birth_date" name="birth_date" value="{{ rider.birth_date.strftime('%d-%m-%Y') }}" required>
+                        <input class="form-control" type="date" id="birth_date" name="birth_date" value="{{ rider.birth_date.strftime('%Y-%m-%d') }}" required>
+                    
                     </div>
                     
                     <div class="form-group w-50">
                         <label for="province_of_birth" class="mb-1">Provincia de nacimiento</label>
                         <select class="form-select" id="province_of_birth" name="province_of_birth" required>
-                            <option value="{{ rider.city_of_birth.province.id }}"" selected>{{ rider.city_of_birth.province.name }}</option>
+                            <option value="{{ rider.city_of_birth.province.id }}" selected>{{ rider.city_of_birth.province.name }}</option>
                             {% for province in provinces %}
                             <option value="{{ province.id }}">{{ province.name }}</option>
                             {% endfor %}
@@ -143,7 +144,7 @@
                     <div class="form-group w-50">
                         <label for="city_of_birth" class="mb-1">Localidad de nacimiento</label>
                         <select class="form-select" id="city_of_birth" name="city_of_birth" data-selected="{{ rider.city_of_birth_id }}" required>
-                            <option selected>{{ rider.city_of_birth.name }}</option>
+                            <option value="{{ rider.city_of_birth.id }}" selected>{{ rider.city_of_birth.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -160,13 +161,14 @@
                         {% endif %}
                     </select>
                 </div>
-                {% if rider.disability.id %}
-                <div id="disability_group" style="display: none;">
+                
+                <div id="disability_group" {% if rider.disability.id %} style="display: block;"{% else %}style="display: none;"{% endif %}>
                     <div class="w-100 d-flex flex-row gap-3">
                         <div class="form-group w-50">
                             <label for="disability_type" class="mb-1">Tipo de discapacidad</label>
                             <select class="form-select" id="disability_type" name="disability_type">
-                                <option value="{{ rider.disability.type.id }}"  selected>{{ rider.disability.type }}</option>
+                                <option value="{{ rider.disability.type.id if rider.disability else '' }}" selected>{{ rider.disability.type if rider.disability }}</option>
+
                                 {% for disability_type in disability_types %}
                                 <option value="{{ disability_type.id }}">{{ disability_type.name }}</option>
                                 {% endfor %}
@@ -184,7 +186,7 @@
                         </div>
                     </div>
                 </div>
-                {% endif %} 
+                
 
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
@@ -217,7 +219,7 @@
                     <div class="form-group w-50">
                         <label for="locality_id" class="mb-1">Localidad de domicilio</label>
                         <select class="form-select" id="locality_id" name="locality_id" data-selected="{{ rider.locality_id }}" required>
-                            <option disabled selected>{{ rider.locality.name }}</option>
+                            <option value="{{rider.locality.id}}"selected>{{ rider.locality.name }}</option>
                         </select>
                     </div>
                 </div>
@@ -264,23 +266,22 @@
                             {% endif %}
                         </select>
                     </div>
-                    {% if rider.family_allowance %}
-                    <div class="form-group w-50" id="family_allowance_group" style="display: none;">
+                    
+                    <div class="form-group w-50" id="family_allowance_group" {% if rider.family_allowance %} style="display: block;"{% else %}style="display: none;"{% endif %} >
                         <label for="family_allowance" class="mb-1">Asignación familiar</label>
                         <select class="form-select" id="family_allowance" name="family_allowance">
-                            <option value="{{rider.family_allowance}}" selected>{{rider.family_allowance }}</option>
-                            <option value="Asignación universal por hijo">Asignación universal por hijo</option>
-                            <option value="Asignación universal por hijo con discapacidad">Asignación universal por hijo con discapacidad</option>
-                            <option value="Asignación por ayuda escolar anual">Asignación por ayuda escolar anual</option>
+                            <option value="" {% if rider.family_allowance == "" %}selected{% endif %}></option>
+                            <option value="Asignación universal por hijo" {% if rider.family_allowance == "Asignación universal por hijo" %}selected{% endif %}>Asignación universal por hijo</option>
+                            <option value="Asignación universal por hijo con discapacidad" {% if rider.family_allowance == "Asignación universal por hijo con discapacidad" %}selected{% endif %}>Asignación universal por hijo con discapacidad</option>
+                            <option value="Asignación por ayuda escolar anual" {% if rider.family_allowance == "Asignación por ayuda escolar anual" %}selected{% endif %}>Asignación por ayuda escolar anual</option>
                         </select>
                     </div>
-                </div>
-                {% endif %}
+                </div> 
 
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label for="has_pension" class="mb-1">¿Recibe pensión?</label>
-                        <select class="form-select" id="has_pension" name="has_pension" onchange="updatePensionBenefit()" required>
+                        <select class="form-select" id="has_pension" name="has_pension"  required>
                             {% if rider.pension_benefit %}
                             <option value="True" selected>Sí</option>
                             <option value="False">No</option>
@@ -290,21 +291,12 @@
                             {% endif %}
                         </select>
                     </div>
-                    <div class="form-group w-50" id="pension_group" style="display: none;">
+                    <div class="form-group w-50" id="pension_group" {% if rider.pension_benefit %} style="display: block;"{% else %}style="display: none;"{% endif %}>
                         <label for="pension_benefit" class="mb-1">Tipo de pensión</label>
-                        <select class="form-select" id="pension_benefit" name="pension_benefit">
-                            <option value="{{ rider.pension_benefit }}" selected>{% if rider.pension_benefit != None %}{{rider.pension_benefit}} {%endif%}</option>
-                            {%if rider.pension_benefit == "Nacional" %}
-                            <option value="Provincial">Provincial</option>
-                            {%else%}
-                               {%if rider.pension_benefit == "Provincial" %}
-                                   <option value="Nacional">Nacional</option>
-                                {% else %}
-                                <option value="Nacional">Nacional</option>
-                                <option value="Provincial">Provincial</option>
-                                 {%endif%}
-                            {%endif%}
-
+                        <select class="form-select" id="pension_benefit" name="pension_benefit"> 
+                            <option value="" {% if rider.pension_benefit == "" %}selected{% endif %}></option>
+                            <option value="Nacional" {% if rider.pension_benefit == "Nacional" %}selected{% endif %}>Nacional</option>
+                            <option value="Provincial" {% if rider.pension_benefit == "Provincial" %}selected{% endif %}>Provincial</option>
                         </select>
                     </div>
                 </div>
@@ -322,9 +314,9 @@
                             {% endif %}
                         </select>
                     </div>
-                    <div class="form-group w-50" id="grant_group" style="display: none;">
+                    <div class="form-group w-50" id="grant_group" {% if rider.grant_percentage %} style="display: block;"{% else %}style="display: none;"{% endif %}>
                         <label for="grant_percentage" class="mb-1">Porcentaje de beca</label>
-                        <input class="form-control" type="number" id="grant_percentage" name="grant_percentage" placeholder="{{rider.grant_percentage }}" min="0" max="100" step="0.01">
+                        <input class="form-control" type="number" id="grant_percentage" name="grant_percentage" value="{{rider.grant_percentage }}" min="0" max="100" step="0.01">
                     </div>
                 </div>
 
@@ -352,6 +344,7 @@
 
 {% block scripts %}
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
         var provinceOfBirthSelect = document.getElementById('province_of_birth');
         var cityOfBirthSelect = document.getElementById('city_of_birth');
@@ -441,27 +434,7 @@
     console.log(pensionBenefitSelect.value); // Muestra el valor actualizado en la consola
 }
 
-
-function updateFamilyAllowance() {
-    const hasAllowanceSelect = document.getElementById('has_family_allowance');
-    const allowanceGroup = document.getElementById('family_allowance_group');
-    const allowanceSelect = document.getElementById('family_allowance');
-
-    const selectedValue = hasPensionSelect.value;
-
-    // Lógica para manejar el campo pension_benefit
-    if (selectedValue === 'False') {
-        allowanceSelect.value = 'None'; // Cambia a 'None' o el valor que el backend espera
-        allowanceGroup.style.display = 'none'; // Oculta el grupo de selección de tipo de pensión
-    } else {
-        alGroup.style.display = 'block'; // Muestra el grupo si selecciona 'Sí'
-    }
-
-    console.log(pensionBenefitSelect.value); // Muestra el valor actualizado en la consola
-}
   
-
-
 </script>
 
 

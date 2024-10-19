@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block title %}Editar información de los profesionales{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .form-group label { font-weight: 500; }
+    form a, form a:hover { color: #0077AA !important; text-decoration: none !important; }
+    form a.active { color: #222 !important; }
+    .btn { transition: 0.2s !important; }
+    #btn-back { transition: 0.2s; color: #222 !important; }
+    #btn-back:hover { background-color: #ddd !important; }
+    .btn-outline-custom { color: #0077AA !important; border-color: #0077AA !important; }
+    .btn-outline-custom:hover { background-color: #0077AA !important; color: white !important; }
+    #activities-list li { transition: 0.2s; }
+    #activities-list li:hover { background-color: #f0f0f0; }
+    #assign-buttons-container { display: flex; flex-wrap: wrap; gap: 10px; }
+    #assign-buttons-container button { color: #333; font-weight: 500; transition: 0.2s; }
+    #assign-buttons-container button:hover { background-color: #f0f0f0; }
+    .selected { background-color: #0077AA !important; border-color: #0077AA !important; color: white !important; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Editar información de los profesionales </h2>
+    <p>Formulario para editar la información de los profesionales que atienden al jinete/amazona.</p>
+    <form action="{{ url_for('jya.update_professional', id=rider.id) }}" method="POST">
+       {{ csrf_token() }}
+
+            <div class="w-100 d-flex flex-row gap-3">
+                <select class="form-select" id="assigned_professionals" name="assigned_professionals" multiple required>
+                    {% for member in assigned_professionals %}
+                        <option value="{{ member.id }}" {% if member in rider.members %} selected {% endif %}>{{ member.name }} {{ member.last_name }}</option>
+                    {% endfor %}
+                </select>
+                
+            </div>
+
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
+    <a href="{{ url_for('jya.show', id=rider.id) }}" class="btn btn-secondary">Cancelar</a>
+
+</div>
+<script>
+
+
+        hasSchoolSelect.addEventListener('change', function() {
+            if (this.value === 'True') {
+                schoolGroup.style.display = 'block';
+            } else {
+                schoolGroup.style.display = 'none';
+            }
+        });
+   
+
+</script>
+{% endblock %}
+
+ 

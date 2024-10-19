@@ -136,6 +136,7 @@ class PartialRiderForm(FlaskForm):
                 "Asignación por ayuda escolar anual",
                 "Asignación por ayuda escolar anual",
             ),
+            ("",""),
         ],
     )
     has_pension = SelectField(
@@ -144,7 +145,7 @@ class PartialRiderForm(FlaskForm):
     pension_benefit = SelectField(
         "Tipo de pensión",
         [Optional()],
-        choices=[("Nacional", "Nacional"), ("Provincial", "Provincial")],
+        choices=[("",""),("Nacional", "Nacional"), ("Provincial", "Provincial")],
     )
     has_grant = SelectField(
         "¿Está becado?", [DataRequired()], choices=[("True", "Sí"), ("False", "No")]
@@ -343,6 +344,7 @@ class SchoolJobRiderForm(FlaskForm):
     def validate(self, extra_validators=None):
         if not super(SchoolJobRiderForm, self).validate(extra_validators=extra_validators):
             return False
+        
         if self.has_job_proposal.data == "True":
             required_fields = [
                 "institutional_work_proposal",
@@ -541,4 +543,12 @@ class TutorRiderForm(FlaskForm):
             }
 
 
-
+class ProfessionalRiderForm(FlaskForm):
+    def __init__(self, *args, **kwargs):
+        """Inicializa el formulario"""
+        self.rider_id = kwargs.pop('rider_id', None)
+        super(ProfessionalRiderForm, self).__init__(*args, **kwargs)
+    
+    assigned_professionals = SelectMultipleField(
+        "Profesionales", [Optional()], choices=[], coerce=int
+    )

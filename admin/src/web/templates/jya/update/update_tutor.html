@@ -42,17 +42,16 @@
             </select>
         </div>
 
-        <div id="tutor_1_group" >
+        <div id="tutor_1_group" {% if rider.tutor_1 %}style="display: block;"{% else %}style="display: none;"{% endif %}>
             <!-- Tutor 1 -->
             <h5 class="border-bottom border-dark pb-2">1er tutor</h5>
             <div class="w-100 d-flex flex-row gap-3">
                 <div class="form-group w-50">
                     <label for="tutor1_relationship" class="mb-1">Relación</label>
                     <select class="form-select" id="tutor1_relationship" name="tutor1_relationship">
-                        <option selected>{% if rider.tutor_1 %} {{rider.tutor_1.relationship}} {% endif %}</option>
-                        <option value="Padre">Padre</option>
-                        <option value="Madre">Madre</option>
-                        <option value="Tutor">Tutor</option>
+                        <option value="Padre" {% if rider.tutor_2.relationship == "Padre" %} selected {%endif%}>Padre</option>
+                        <option value="Madre" {% if rider.tutor_2.relationship == "Madre" %} selected {%endif%}>Madre</option>
+                        <option value="Tutor" {% if rider.tutor_2.relationship == "Tutor" %} selected {%endif%}>Tutor</option>
                     </select>
                 </div>
             
@@ -95,11 +94,10 @@
                 <div class="form-group w-50">
                     <label for="tutor1_education_level" class="mb-1">Nivel educativo</label>
                     <select class="form-select" id="tutor1_education_level" name="tutor1_education_level">
-                        <option  selected>{%if rider.tutor_1 %}{{rider.tutor_1.education_level}} {% endif %}</option>
-                        <option value="Primario">Primario</option>
-                        <option value="Secundario">Secundario</option>
-                        <option value="Terciario">Terciario</option>
-                        <option value="Universitario">Universitario</option>
+                        <option value="Primario"{%if rider.tutor_1.education_level == "Primario"%} selected {%endif%}>Primario</option>
+                        <option value="Secundario" {%if rider.tutor_1.education_level == "Secundario"%} selected {%endif%}>Secundario</option>
+                        <option value="Terciario" {%if rider.tutor_1.education_level == "Terciario"%} selected {%endif%}>Terciario</option>
+                        <option value="Universitario" {%if rider.tutor_1.education_level == "Universitario"%} selected {%endif%}>Universitario</option>
                     </select>
                 </div>
             
@@ -126,16 +124,15 @@
             </div>
             <br>
             
-            <div id="tutor_2_group" >
+            <div id="tutor_2_group"  {% if rider.tutor_2 %}style="display: block;"{% else %}style="display: none;"{% endif %}>
                 <h5 class="border-bottom border-dark pb-2">2do tutor</h5>
                 <div class="w-100 d-flex flex-row gap-3">
                     <div class="form-group w-50">
                         <label for="tutor2_relationship" class="mb-1">Relación</label>
                         <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" >
-                            <option  selected>{% if rider.tutor_2 %} {{rider.tutor_2.relationship}} {% endif %}</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Madre">Madre</option>
-                            <option value="Tutor">Tutor</option>
+                            <option value="Padre" {% if rider.tutor_2.relationship == "Padre" %} selected {%endif%}>Padre</option>
+                            <option value="Madre" {% if rider.tutor_2.relationship == "Madre" %} selected {%endif%}>Madre</option>
+                            <option value="Tutor" {% if rider.tutor_2.relationship == "Tutor" %} selected {%endif%}>Tutor</option>
                         </select>
                     </div>
                 
@@ -179,10 +176,10 @@
                         <label for="tutor2_education_level" class="mb-1">Nivel educativo</label>
                         <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" >
                             <option selected>{%if rider.tutor_2 %}{{rider.tutor_2.education_level}} {% endif %}</option>
-                            <option value="Primario">Primario</option>
-                            <option value="Secundario">Secundario</option>
-                            <option value="Terciario">Terciario</option>
-                            <option value="Universitario">Universitario</option>
+                            <option value="Primario"{%if rider.tutor_2.education_level == "Primario"%} selected {%endif%}>Primario</option>
+                        <option value="Secundario" {%if rider.tutor_2.education_level == "Secundario"%} selected {%endif%}>Secundario</option>
+                        <option value="Terciario" {%if rider.tutor_2.education_level == "Terciario"%} selected {%endif%}>Terciario</option>
+                        <option value="Universitario" {%if rider.tutor_2.education_level == "Universitario"%} selected {%endif%}>Universitario</option>
                         </select>
                     </div>
                 
