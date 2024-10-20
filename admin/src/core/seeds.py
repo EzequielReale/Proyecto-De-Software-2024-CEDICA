@@ -114,7 +114,7 @@ def run():
         alias = "giu",
         password="123",
         isActive=True,
-        roles=[rol4,rol5]
+        roles=[rol4]
     )
     user2 = User.user_new(
         email="lau@gmail.com",
