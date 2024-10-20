@@ -6,24 +6,13 @@ from src.core.registro_pagos.Pagos import Pago, Tipo_pago
 
 def tipo_new(**kwargs):
     """Crea un tipo de pago, lo guarda en la BD y lo devuelve"""
-    tipo = Tipo_pago(**kwargs)
-    db.session.add(tipo)
-    db.session.commit()
-    return tipo
+    return dbf.new(Tipo_pago, **kwargs)
 
 def get_tipo_pago(id):
     """ obtiene un tipo de pago mediante el id y lo devuelve"""
-    return Tipo_pago.query.filter_by(id=id).first()
+    return dbf.get_by_field(Tipo_pago, "id", id)
 
 ####------------
-
-def pago_create(**kwargs):
-    """Crea un pago, lo guarda en la BD y lo devuelve"""
-    pago = Pago(**kwargs)
-    db.session.add(pago)
-    db.session.commit()
-    return pago
-
 
 def administracion_index(filtros: dict, page: int, per_page: int, order_by: str, orden: str) -> tuple:
     """Devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""
@@ -86,11 +75,6 @@ def administracion_update(id,monto,tipo_pago,fecha_pago,des,beneficiario):
      db.session.commit() #guardo cambios
      
 
-
-
 def administracion_create(**kwargs):
     """creo un nuevo registro de pago, lo guardo en la BD y lo devuelvo"""
-    pago = Pago(**kwargs)
-    db.session.add(pago)
-    db.session.commit()
-    return pago
+    return dbf.new(Pago, **kwargs)

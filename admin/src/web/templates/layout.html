@@ -79,6 +79,12 @@
                             href="{{ url_for('registro_pagos.index') }}">Registro de Pagos</a>
                     </li>
                     {% endif %}
+                    {% if check_permission(session,'reg_cobros_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'registro_pagos_jya' in request.endpoint %}active{% endif %}"
+                            href="{{ url_for('registro_pagos_jya.index') }}">Registro de Cobros</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
                 </ul>
 

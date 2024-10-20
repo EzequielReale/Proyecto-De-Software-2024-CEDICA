@@ -20,6 +20,10 @@ from src.web.handlers.error import unauthorized
 
 bp = Blueprint("jya", __name__, url_prefix="/jya")
 
+def _has_debt(rider_id: int) -> bool:
+    """Recibe el id de un j/a y retorna True si tiene deuda, False en caso contrario"""
+    return people.has_debt(rider_id)
+
 
 @bp.get("/")
 @login_required
@@ -55,6 +59,7 @@ def index() -> str:
         sort_by=sort_by,
         sort_direction=sort_direction,
         current_year=datetime.now().year,
+        has_debt=_has_debt,
     )
 
 
@@ -82,6 +87,7 @@ def show(id: int) -> str:
         sort_by=sort_by,
         sort_direction=sort_direction,
         current_year=datetime.now().year,
+        has_debt=_has_debt(id),
     )
 
 
