@@ -4,16 +4,65 @@
 
 {% block head %}
 {{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/home.css') }}">
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 90vh;
+        margin: 0;
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+    }
+
+    .main-container {
+        text-align: center;
+        background-color: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    a {
+        display: inline-block;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 1.25rem;
+    }
+
+    a:hover {
+        background-color: #00f7ff;
+    }
+
+    .logo {
+        width: 300px;
+        height: auto;
+        margin-bottom: 1.5rem;
+    }
+</style>
 {% endblock %}
-
-
-{% block aside %}
-{% endblock %}
-
 
 {% block content %}
-<h1>Inicio</h1>
-<p>Pagina de inicio de la aplicacion</p>
-<h5>Hola Mundo!</h5>
-<a href="">Consultas</a>
+<div class="main-container p-5">
+    <img src="{{ url_for('static', filename='logos/Logo CEDICA.png') }}" alt="Logo" class="logo">
+    <h1>Bienvenido a CEDICA</h1>
+    {% if not is_authenticated(session) %}
+    <p>Accede a tu cuenta para explorar nuestras funcionalidades</p>
+    {% else %}
+    <p>Explora nuestras funcionalidades en la barra superior</p>
+    {% endif %}
+</div>
 {% endblock %}

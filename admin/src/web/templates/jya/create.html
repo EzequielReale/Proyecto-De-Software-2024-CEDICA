@@ -177,9 +177,6 @@
                             <label for="disability_id" class="mb-1">Diagnóstico de discapacidad</label>
                             <select class="form-select" id="disability_id" name="disability_id">
                                 <option disabled selected>Seleccione una discapacidad...</option>
-                                {% for disability in disabilities %}
-                                <option value="{{ disability.id }}">{{ disability.name }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -306,7 +303,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="has_guardianship" class="mb-1">¿Tiene tutela legal?</label>
+                    <label for="has_guardianship" class="mb-1">¿Tiene curantela?</label>
                     <select class="form-select" id="has_guardianship" name="has_guardianship" required>
                         <option disabled selected>Seleccione una opción...</option>
                         <option value="True">Sí</option>
@@ -672,50 +669,6 @@
 
 {% block scripts %}
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var provinceOfBirthSelect = document.getElementById('province_of_birth');
-        var cityOfBirthSelect = document.getElementById('city_of_birth');
-        var selectedCityOfBirthId = cityOfBirthSelect.getAttribute('data-selected');
-    
-        var provinceIdSelect = document.getElementById('province_id');
-        var localitySelect = document.getElementById('locality_id');
-        var selectedLocalityId = localitySelect.getAttribute('data-selected');
-    
-        function loadLocalities(provinceId, localitySelect, selectedLocalityId) {
-            if (provinceId) {
-                fetch('/localities/get/' + provinceId)
-                    .then(response => response.json())
-                    .then(data => {
-                        localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
-                        data.forEach(function (locality) {
-                            var option = document.createElement('option');
-                            option.value = locality.id;
-                            option.text = locality.name;
-                            if (locality.id == selectedLocalityId) {
-                                option.selected = true;
-                            }
-                            localitySelect.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error al cargar localidades:', error));
-            }
-        }
-    
-        // Cargar las localidades al cargar la página
-        loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
-        loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
-    
-        // Cargar las localidades al cambiar la provincia de nacimiento
-        provinceOfBirthSelect.addEventListener('change', function () {
-            loadLocalities(this.value, cityOfBirthSelect, null);
-        });
-    
-        // Cargar las localidades al cambiar la provincia de domicilio
-        provinceIdSelect.addEventListener('change', function () {
-            loadLocalities(this.value, localitySelect, null);
-        });
-    });    
-
     function changePage(pageIndex) {
         const sections = document.querySelectorAll('form section');
         const tabs = document.querySelectorAll('#form-tabs .nav-link');
@@ -773,6 +726,120 @@
                 }
             }
         }
+    });
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        var provinceOfBirthSelect = document.getElementById('province_of_birth');
+        var cityOfBirthSelect = document.getElementById('city_of_birth');
+        var selectedCityOfBirthId = cityOfBirthSelect.getAttribute('data-selected');
+    
+        var provinceIdSelect = document.getElementById('province_id');
+        var localitySelect = document.getElementById('locality_id');
+        var selectedLocalityId = localitySelect.getAttribute('data-selected');
+    
+        function loadLocalities(provinceId, localitySelect, selectedLocalityId) {
+            // Verificar si el valor de la provincia es válido
+            if (provinceId && provinceId !== "Seleccione una provincia...") {
+                fetch('/resources/localities/' + provinceId)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+                        data.forEach(function (locality) {
+                            var option = document.createElement('option');
+                            option.value = locality.id;
+                            option.text = locality.name;
+                            if (locality.id == selectedLocalityId) {
+                                option.selected = true;
+                            }
+                            localitySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error al cargar localidades:', error));
+            }
+        }
+    
+        // Cargar las localidades al cargar la página si hay un valor válido
+        if (provinceOfBirthSelect.value && provinceOfBirthSelect.value !== "Seleccione una provincia...") {
+            loadLocalities(provinceOfBirthSelect.value, cityOfBirthSelect, selectedCityOfBirthId);
+        }
+    
+        if (provinceIdSelect.value && provinceIdSelect.value !== "Seleccione una provincia...") {
+            loadLocalities(provinceIdSelect.value, localitySelect, selectedLocalityId);
+        }
+    
+        // Cargar las localidades al cambiar la provincia de nacimiento
+        provinceOfBirthSelect.addEventListener('change', function () {
+            loadLocalities(this.value, cityOfBirthSelect, null);
+        });
+    
+        // Cargar las localidades al cambiar la provincia de domicilio
+        provinceIdSelect.addEventListener('change', function () {
+            loadLocalities(this.value, localitySelect, null);
+        });
+    });
+
+    function loadDisabilityDiagnoses(disabilityTypeId, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId) {
+        // Verificar si el valor del tipo de discapacidad es válido
+        if (disabilityTypeId && disabilityTypeId !== "Seleccione un tipo de discapacidad...") {
+            fetch('/resources/disabilities/' + disabilityTypeId)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la respuesta del servidor: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    disabilityDiagnosisSelect.innerHTML = '<option value="">Seleccione una discapacidad...</option>';
+                    data.forEach(function (diagnosis) {
+                        var option = document.createElement('option');
+                        option.value = diagnosis.id;
+                        option.text = diagnosis.name;
+                        if (diagnosis.id == selectedDisabilityDiagnosisId) {
+                            option.selected = true;
+                        }
+                        disabilityDiagnosisSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error al cargar diagnósticos de discapacidad:', error));
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        var disabilityTypeSelect = document.getElementById('disability_type');
+        var disabilityDiagnosisSelect = document.getElementById('disability_id');
+        var selectedDisabilityDiagnosisId = disabilityDiagnosisSelect.getAttribute('data-selected');
+
+        function loadDisabilityDiagnoses(disabilityTypeId, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId) {
+            if (disabilityTypeId && disabilityTypeId !== "Seleccione un tipo de discapacidad...") {
+                fetch('/resources/disabilities/' + disabilityTypeId)
+                    .then(response => response.json())
+                    .then(data => {
+                        disabilityDiagnosisSelect.innerHTML = '<option value="">Seleccione una discapacidad...</option>';
+                        data.forEach(function (diagnosis) {
+                            var option = document.createElement('option');
+                            option.value = diagnosis.id;
+                            option.text = diagnosis.name;
+                            if (diagnosis.id == selectedDisabilityDiagnosisId) {
+                                option.selected = true;
+                            }
+                            disabilityDiagnosisSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error al cargar diagnósticos de discapacidad:', error));
+            }
+        }
+
+        // Cargar los diagnósticos de discapacidad al cargar la página
+        loadDisabilityDiagnoses(disabilityTypeSelect.value, disabilityDiagnosisSelect, selectedDisabilityDiagnosisId);
+
+        // Cargar los diagnósticos de discapacidad al cambiar el tipo de discapacidad
+        disabilityTypeSelect.addEventListener('change', function () {
+            loadDisabilityDiagnoses(this.value, disabilityDiagnosisSelect, null);
+        });
     });
 </script>
 

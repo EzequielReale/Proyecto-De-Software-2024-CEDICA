@@ -20,7 +20,7 @@ CREATE SEQUENCE public.pagos_id_seq
 ALTER SEQUENCE public.pagos_id_seq OWNED BY public.pagos.id;
 ALTER TABLE ONLY public.pagos ALTER COLUMN id SET DEFAULT nextval('public.pagos_id_seq'::regclass);
 
-INSERT INTO public.pagos VALUES (1, 2, 2000, '2024-10-14 02:24:19.052364', 1, 'h', '2024-10-14 02:24:19.055548', '2024-10-14 02:24:19.05555');
+-- INSERT INTO public.pagos VALUES (1, 2, 2000, '2024-10-14 02:24:19.052364', 1, 'h', '2024-10-14 02:24:19.055548', '2024-10-14 02:24:19.05555');
 
 SELECT pg_catalog.setval('public.pagos_id_seq', 1, true);
 

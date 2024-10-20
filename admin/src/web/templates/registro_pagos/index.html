@@ -9,66 +9,89 @@
 
 {% block aside %}
 
-{% endblock %}  
+{% endblock %}
 
 
 
 {% block content %}
 <style>
     body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa; /* Color de fondo suave */
-    color: #333; /* Color de texto */
-}
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        /* Color de fondo suave */
+        color: #333;
+        /* Color de texto */
+    }
 
-h2 {
-    text-align: center;
-    margin-top: 20px;
-    color: #0099CC; /* Color para el título */
-}
+    h2 {
+        text-align: center;
+        margin-top: 20px;
+        color: #0099CC;
+        /* Color para el título */
+    }
 
-table {
-    width: 80%;
-    margin: 20px auto; /* Centrar la tabla */
-    border-collapse: collapse; /* Eliminar espacios entre celdas */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    border-radius: 8px; /* Bordes redondeados */
-    overflow: hidden; /* Para que los bordes redondeados se apliquen correctamente */
-    background-color: white; /* Fondo blanco para la tabla */
-}
-
-th, td {
-    padding: 12px; /* Espaciado interno */
-    text-align: left; /* Alinear texto a la izquierda */
-    border-bottom: 1px solid #ddd; /* Línea divisoria entre filas */
-}
-
-th {
-    background-color: #0099CC; /* Color de fondo para encabezados */
-    color: white; /* Color de texto para encabezados */
-    font-weight: bold; /* Negrita para los encabezados */
-}
-
-tr:hover {
-    background-color: #f1f1f1; /* Color de fondo al pasar el mouse */
-}
-
-tr:last-child td {
-    border-bottom: none; /* Eliminar borde en la última fila */
-}
-
-/* Responsividad */
-@media (max-width: 600px) {
     table {
-        width: 100%; /* Hacer la tabla más pequeña en pantallas pequeñas */
+        width: 80%;
+        margin: 20px auto;
+        /* Centrar la tabla */
+        border-collapse: collapse;
+        /* Eliminar espacios entre celdas */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
+        border-radius: 8px;
+        /* Bordes redondeados */
+        overflow: hidden;
+        /* Para que los bordes redondeados se apliquen correctamente */
+        background-color: white;
+        /* Fondo blanco para la tabla */
     }
 
-    th, td {
-        padding: 10px; /* Reducir padding en pantallas pequeñas */
+    th,
+    td {
+        padding: 12px;
+        /* Espaciado interno */
+        text-align: left;
+        /* Alinear texto a la izquierda */
+        border-bottom: 1px solid #ddd;
+        /* Línea divisoria entre filas */
     }
-}
 
-.action-icons {
+    th {
+        background-color: #0099CC;
+        /* Color de fondo para encabezados */
+        color: white;
+        /* Color de texto para encabezados */
+        font-weight: bold;
+        /* Negrita para los encabezados */
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
+        /* Color de fondo al pasar el mouse */
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+        /* Eliminar borde en la última fila */
+    }
+
+    /* Responsividad */
+    @media (max-width: 600px) {
+
+        table,
+        .search-container {
+            width: 100% !important;
+            /* Hacer la tabla más pequeña en pantallas pequeñas */
+        }
+
+        th,
+        td {
+            padding: 10px;
+            /* Reducir padding en pantallas pequeñas */
+        }
+    }
+
+    .action-icons {
         display: flex;
         justify-content: space-around;
         align-items: center;
@@ -85,55 +108,64 @@ tr:last-child td {
     }
 
     .nuevo-pago-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 1.2em;
-    background-color: #0099CC;
-    color: white;
-    text-align: center; /* Centrar el texto dentro del botón */
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-    
-    float: left; /* Alinea el botón a la */
-    margin-left: 210px;
-    margin-bottom: 0px;
-}
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 1.2em;
+        background-color: #0099CC;
+        color: white;
+        text-align: center;
+        /* Centrar el texto dentro del botón */
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    }
 
-.nuevo-pago-btn:hover {
-    background-color: #0099CC;
-}
+    .nuevo-pago-btn:hover {
+        background-color: #0099CC;
+    }
 
-.search-container {
-    width: 80%;
-    margin: 20px auto; /* Margen superior para separación del contenido superior */
-    display: flex; /* Usar flexbox para alinear elementos en fila */
-    justify-content: flex-end; /* Alinear elementos al inicio */
-    align-items: center; /* Alinear verticalmente los elementos al centro */
-}
+    .search-container {
+        width: 80%;
+        margin: 20px auto;
+        /* Margen superior para separación del contenido superior */
+        display: flex;
+        /* Usar flexbox para alinear elementos en fila */
+        justify-content: space-around;
+        /* Separación automática entre el form y el botón de añadir */
+        align-items: center;
+        /* Alinear verticalmente los elementos al centro */
+    }
 
-.search-container input[type="date"],
-.search-container select,
-.search-container button {
-    padding: 10px; /* Espaciado interno para todos los elementos del formulario */
-    font-size: 1em; /* Tamaño de fuente */
-    border: 1px solid #ccc; /* Borde gris claro */
-    border-radius: 5px; /* Bordes redondeados */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
-}
+    .search-container input[type="date"],
+    .search-container select,
+    .search-container button {
+        font-size: 1em;
+        /* Tamaño de fuente */
+        border: 1px solid #ccc;
+        /* Borde gris claro */
+        border-radius: 5px;
+        /* Bordes redondeados */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* Sombra suave */
+    }
 
-/* Estilos específicos para el botón */
-.search-container button {
-    background-color: #0099CC; /* Color de fondo del botón */
-    color: white; /* Color de texto del botón */
-    border: none; /* Sin borde */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-}
+    /* Estilos específicos para el botón */
+    .search-container button {
+        background-color: #0099CC;
+        /* Color de fondo del botón */
+        color: white;
+        /* Color de texto del botón */
+        border: none;
+        /* Sin borde */
+        cursor: pointer;
+        /* Cambia el cursor al pasar sobre el botón */
+    }
 
-.search-container button:hover {
-    background-color: #0099CC; /* Color de fondo al pasar el mouse */
-}
+    .search-container button:hover {
+        background-color: #0099CC;
+        /* Color de fondo al pasar el mouse */
+    }
 
 
     .detalles-pago {
@@ -159,127 +191,176 @@ tr:last-child td {
 
 
     h2 {
-    font-size: 2rem; /* Tamaño de fuente más grande */
-    color: #333; /* Color del texto */
-    text-align: center; /* Centrar el texto */
-    margin: 20px 0; /* Margen superior e inferior */
-    font-family: 'Arial', sans-serif; /* Cambiar la fuente */
-    border-bottom: 2px solid #0099CC; /* Línea debajo del título */
-    padding-bottom: 10px; /* Espaciado inferior */
-}
+        font-size: 2rem;
+        /* Tamaño de fuente más grande */
+        color: #333;
+        /* Color del texto */
+        text-align: center;
+        /* Centrar el texto */
+        margin: 20px 0;
+        /* Margen superior e inferior */
+        font-family: 'Arial', sans-serif;
+        /* Cambiar la fuente */
+        border-bottom: 2px solid #0099CC;
+        /* Línea debajo del título */
+        padding-bottom: 10px;
+        /* Espaciado inferior */
+    }
 
+    @media screen and (max-width: 768px) {
 
-
+        /* Ocultar columnas en pantallas pequeñas */
+        .pago-info>td:nth-child(1),
+        .pago-info>td:nth-child(5),
+        tr>th:nth-child(1),
+        tr>th:nth-child(5) {
+            display: none;
+        }
+    }
 </style>
 
-    <h2>Listado de Pagos</h2>
+<h2>Listado de Pagos</h2>
 
-    
-
-    {% if not pagos %}
-    <p style="text-align: center; color: #dc3545;">No hay pagos disponibles en el listado.</p>
+{% if not pagos %}
+<p style="text-align: center; color: #dc3545;">No hay pagos disponibles en el listado.</p>
 {% endif %}
 
- <!-- Buscador -->
- <div class="search-container p-3 mb-4 bg-light rounded">
-    <form action="{{ url_for('registro_pagos.index') }}" method="GET" class="d-flex align-items-end">
-        
+<!-- Buscador -->
+<div class="search-container p-3 mb-4 bg-light rounded-3">
+    <form action="{{ url_for('registro_pagos.index') }}" method="GET" class="d-flex align-items-end flex-wrap">
+
         <!-- Rango de fechas -->
         <div class="form-group mr-3">
             <label for="fecha_inicio" class="font-weight-bold">Fecha de Inicio</label>
-            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" placeholder="Seleccione la fecha de inicio">
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+                placeholder="Seleccione la fecha de inicio">
         </div>
-        
+
         <div class="form-group mr-3">
             <label for="fecha_fin" class="font-weight-bold">Fecha de Fin</label>
-            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" placeholder="Seleccione la fecha de fin">
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+                placeholder="Seleccione la fecha de fin">
         </div>
-        
+
         <!-- Tipo de pago -->
         <div class="form-group mr-3">
             <label for="tipo_pago" class="font-weight-bold">Tipo de Pago</label>
-            <select name="tipo_pago" id="tipo_pago" class="form-control">
+            <select name="tipo_pago" id="tipo_pago" class="form-select">
                 <option value="">Todos los tipos</option>
                 <option value="Honorarios">Honorarios</option>
                 <option value="Proveedor">Proveedor</option>
                 <option value="Varios">Varios</option>
             </select>
         </div>
-        
+
         <!-- Botón de búsqueda -->
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Buscar</button>
+            <a href="{{ url_for('registro_pagos.index') }}" class="btn btn-secondary">Limpiar filtros</a>
         </div>
     </form>
 
-
-
-    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo</a>
+    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i></a>
 </div>
 
 
 {%if pagos %}
 </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Beneficiario</th>
-                <th>Monto</th>
+<table>
+    <thead>
+        <tr>
+            <th>Beneficiario</th>
+            <th>Monto</th>
 
-                <th>
-                    <a href="{{ url_for('registro_pagos.index', order_by='fecha_pago', order=('desc' if request.args.get('order') == 'asc' else 'asc')) }}" style="color: #f8f9fa;">
-                        Fecha
-                        <i class="fas {{ 'fa-sort-up' if request.args.get('order') == 'asc' else 'fa-sort-down' }}" style="color: #f8f9fa;"></i>
-                    </a>
-                </th>
+            <th>
+                <a href="{{ url_for('registro_pagos.index', order_by='fecha_pago', order=('desc' if request.args.get('order') == 'asc' else 'asc')) }}"
+                    style="color: #f8f9fa;">
+                    Fecha
+                    <i class="fas {{ 'fa-sort-up' if request.args.get('order') == 'asc' else 'fa-sort-down' }}"
+                        style="color: #f8f9fa;"></i>
+                </a>
+            </th>
 
-                <th>Tipo de pago</th>
-                <th>Descripcion</th>
-                <th>Acciones</th> 
-            </tr>
-        </thead>
-        <tbody>
-            {% for pago in pagos %}
-            <tr data-id="{{ pago.id }}">
-                    <td>{{ pago.beneficiario.email }}</td>
-                    <td>{{ pago.monto }}</td>
-                    <td>{{ pago.fecha_pago.strftime('%Y-%m-%d') }}</td>
-                    <td>{{ pago.tipo_pago.tipo }}</td>
-                    <td>{{ pago.descripcion }}</td>
-                    <td class="action-icons">
-                        <!-- Icono de edición -->
-                        <a href="{{ url_for('registro_pagos.update', id=pago.id) }}" title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <!-- Formulario de eliminación -->
-                        <form action="{{ url_for('registro_pagos.destroy', id=pago.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este pago?');">
-                            <button type="submit" title="Eliminar" style="border: none; background: none; color: #0099CC; cursor: pointer;">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                         <!-- Botón de "Mostrar más" -->
-                        <button class="mostrar-mas-btn" onclick="toggleDetalles({{pago.id}})">Mostrar más</button>
-                    </td>
-                </tr>
+            <th>Tipo de pago</th>
+            <th>Descripcion</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pago in pagos %}
+        <tr class="pago-info" data-id="{{ pago.id }}">
+            <td>{{ pago.beneficiario.email }}</td>
+            <td>{{ pago.monto }}</td>
+            <td>{{ pago.fecha_pago.strftime('%d-%m-%Y') }}</td>
+            <td>{{ pago.tipo_pago.tipo }}</td>
+            <td>{{ pago.descripcion }}</td>
+            <td class="action-icons">
+                <!-- Icono de edición -->
+                <a href="{{ url_for('registro_pagos.update', id=pago.id) }}" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <!-- Formulario de eliminación -->
+                <form action="{{ url_for('registro_pagos.destroy', id=pago.id) }}" method="POST"
+                    style="display: inline;"
+                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar este pago?');">
+                    <button type="submit" title="Eliminar"
+                        style="border: none; background: none; color: #0099CC; cursor: pointer;">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
+                <!-- Botón de "Mostrar más" -->
+                <button class="mostrar-mas-btn" onclick="toggleDetalles({{pago.id}})">Mostrar más</button>
+            </td>
+        </tr>
 
-            <!-- Fila de detalles adicionales -->
-            <tr id="detalles-{{ pago.id }}" class="detalles-pago">
-                <td colspan="6">
-                    <strong>Fecha de modificación:</strong> {{ pago.updated_at.strftime('%Y-%m-%d') }}<br>
-                    <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%Y-%m-%d') }}<br>
+        <!-- Fila de detalles adicionales -->
+        <tr id="detalles-{{ pago.id }}" class="detalles-pago">
+            <td colspan="6">
+                <strong>Fecha de modificación:</strong> {{ pago.updated_at.strftime('%d-%m-%Y') }}<br>
+                <strong>Fecha de creación:</strong> {{ pago.created_at.strftime('%d-%m-%Y') }}<br>
 
-                    {% if pago.beneficiario %}
-                    <strong>Datos del beneficiario:</strong> Alias - {{ pago.beneficiario.alias }}<br>
-                    {% endif %}
-                </td>
-            </tr>
+                {% if pago.beneficiario %}
+                <strong>Datos del beneficiario:</strong> {{ pago.beneficiario.name }} {{ pago.beneficiario.last_name }}
+                - DNI: {{ pago.beneficiario.dni }}<br>
+                {% endif %}
+            </td>
+        </tr>
 
-            {% endfor %}
+        {% endfor %}
 
-        </tbody>
-    </table>
+    </tbody>
+</table>
 {% endif %}
+
+<!-- Paginación -->
+<nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
+    <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
+      {% if page > 1 %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page-1, **filters) }}" aria-label="Previous"
+          style="color: #0056b3;">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %}
+      {% for p in range(1, total_pages + 1) %}
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=p, **filters) }}"
+          style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+          p }}</a>
+      </li>
+      {% endfor %}
+      {% if page < total_pages %} <li class="page-item">
+        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page+1, **filters) }}" aria-label="Next"
+          style="color: #0056b3;">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+        </li>
+        {% endif %}
+    </ul>
+  </nav>
+
 
 <script>
     function toggleDetalles(id) {

@@ -1,0 +1,240 @@
+{% extends "layout.html" %}
+{% block title %}Editar información de los tutores{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .form-group label { font-weight: 500; }
+    form a, form a:hover { color: #0077AA !important; text-decoration: none !important; }
+    form a.active { color: #222 !important; }
+    .btn { transition: 0.2s !important; }
+    #btn-back { transition: 0.2s; color: #222 !important; }
+    #btn-back:hover { background-color: #ddd !important; }
+    .btn-outline-custom { color: #0077AA !important; border-color: #0077AA !important; }
+    .btn-outline-custom:hover { background-color: #0077AA !important; color: white !important; }
+    #activities-list li { transition: 0.2s; }
+    #activities-list li:hover { background-color: #f0f0f0; }
+    #assign-buttons-container { display: flex; flex-wrap: wrap; gap: 10px; }
+    #assign-buttons-container button { color: #333; font-weight: 500; transition: 0.2s; }
+    #assign-buttons-container button:hover { background-color: #f0f0f0; }
+    .selected { background-color: #0077AA !important; border-color: #0077AA !important; color: white !important; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Editar información de los tutores</h2>
+    <p>Formulario para editar la información de los tutores del jinete/amazona.</p>
+    <form action="{{ url_for('jya.update_tutor', id=rider.id) }}" method="POST">
+        {{ csrf_token() }}
+        <div class="form-group w-100">
+            <!-- Tutores -->
+
+    <section class=" d-flex flex-column gap-3">
+        <div class="form-group w-100">
+            <label for="has_tutor_1" class="mb-1">¿Tiene tutor?</label>
+            <select class="form-select" id="has_tutor_1" name="has_tutor_1">
+                {% if rider.tutor_1 %}
+                    <option value="True" selected>Sí</option>
+                    <option value="False">No</option>
+                {% else %}
+                    <option value="False" selected>No</option>
+                    <option value="True">Sí</option>
+                {% endif %}
+            </select>
+        </div>
+
+        <div id="tutor_1_group" {% if rider.tutor_1 %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+            <!-- Tutor 1 -->
+            <h5 class="border-bottom border-dark pb-2">1er tutor</h5>
+            <div class="w-100 d-flex flex-row gap-3">
+                <div class="form-group w-50">
+                    <label for="tutor1_relationship" class="mb-1">Relación</label>
+                    <select class="form-select" id="tutor1_relationship" name="tutor1_relationship">
+                        <option value="Padre" {% if rider.tutor_2.relationship == "Padre" %} selected {%endif%}>Padre</option>
+                        <option value="Madre" {% if rider.tutor_2.relationship == "Madre" %} selected {%endif%}>Madre</option>
+                        <option value="Tutor" {% if rider.tutor_2.relationship == "Tutor" %} selected {%endif%}>Tutor</option>
+                    </select>
+                </div>
+            
+                <div class="form-group w-50">
+                    <label for="tutor1_dni" class="mb-1">DNI</label>
+                    <input class="form-control" type="text" id="tutor1_dni" name="tutor1_dni" value="{{rider.tutor_1.dni}}" pattern="[0-9]+" maxlength="9">
+                </div>
+            </div>
+            
+            <div class="w-100 d-flex flex-row gap-3">
+                <div class="form-group w-50">
+                    <label for="tutor1_name" class="mb-1">Nombre</label>
+                    <input class="form-control" type="text" id="tutor1_name" name="tutor1_name" value="{{rider.tutor_1.name}}" maxlength="64">
+                </div>
+            
+                <div class="form-group w-50">
+                    <label for="tutor1_last_name" class="mb-1">Apellido</label>
+                    <input class="form-control" type="text" id="tutor1_last_name" name="tutor1_last_name" value="{{rider.tutor_1.last_name}}" maxlength="64">
+                </div>
+            </div>
+            
+            <div class="w-100 d-flex flex-row gap-3">
+                <div class="form-group w-50">
+                    <label for="tutor1_phone" class="mb-1">Teléfono</label>
+                    <input class="form-control" type="text" id="tutor1_phone" name="tutor1_phone" value="{{rider.tutor_1.phone}}" maxlength="32">
+                </div>
+            
+                <div class="form-group w-50">
+                    <label for="tutor1_email" class="mb-1">Email</label>
+                    <input class="form-control" type="email" id="tutor1_email" name="tutor1_email" value="{{rider.tutor_1.email}}" maxlength="64">
+                </div>
+            </div>
+            
+            <div class="form-group w-100">
+                <label for="tutor1_address" class="mb-1">Dirección</label>
+                <input class="form-control" type="text" id="tutor1_address" name="tutor1_address" value="{{rider.tutor_1.address}}" maxlength="128">
+            </div>
+            
+            <div class="w-100 d-flex flex-row gap-3">
+                <div class="form-group w-50">
+                    <label for="tutor1_education_level" class="mb-1">Nivel educativo</label>
+                    <select class="form-select" id="tutor1_education_level" name="tutor1_education_level">
+                        <option value="Primario"{%if rider.tutor_1.education_level == "Primario"%} selected {%endif%}>Primario</option>
+                        <option value="Secundario" {%if rider.tutor_1.education_level == "Secundario"%} selected {%endif%}>Secundario</option>
+                        <option value="Terciario" {%if rider.tutor_1.education_level == "Terciario"%} selected {%endif%}>Terciario</option>
+                        <option value="Universitario" {%if rider.tutor_1.education_level == "Universitario"%} selected {%endif%}>Universitario</option>
+                    </select>
+                </div>
+            
+                <div class="form-group w-50">
+                    <label for="tutor1_job" class="mb-1">Trabajo</label>
+                    <input class="form-control" type="text" id="tutor1_job" name="tutor1_job" value="{{rider.tutor_1.job}}" maxlength="64">
+                </div>
+            </div>
+        
+            <br>
+            <!-- Tutor 2 -->
+
+            <div class="form-group w-100" style="display: block !important;">
+                <label for="has_tutor_2" class="mb-1">¿Tiene otro tutor?</label>
+                <select class="form-select" id="has_tutor_2" name="has_tutor_2">
+                    {% if rider.tutor_2 %}
+                    <option value="True" selected>Sí</option>
+                    <option value="False">No</option>
+                {% else %}
+                    <option value="False" selected>No</option>
+                    <option value="True">Sí</option>
+                {% endif %}
+               </select>
+            </div>
+            <br>
+            
+            <div id="tutor_2_group"  {% if rider.tutor_2 %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                <h5 class="border-bottom border-dark pb-2">2do tutor</h5>
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="tutor2_relationship" class="mb-1">Relación</label>
+                        <select class="form-select" id="tutor2_relationship" name="tutor2_relationship" >
+                            <option value="Padre" {% if rider.tutor_2.relationship == "Padre" %} selected {%endif%}>Padre</option>
+                            <option value="Madre" {% if rider.tutor_2.relationship == "Madre" %} selected {%endif%}>Madre</option>
+                            <option value="Tutor" {% if rider.tutor_2.relationship == "Tutor" %} selected {%endif%}>Tutor</option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group w-50">
+                        <label for="tutor2_dni" class="mb-1">DNI</label>
+                        <input class="form-control" type="text" id="tutor2_dni" name="tutor2_dni" value="{{rider.tutor_2.dni}}" pattern="[0-9]+" maxlength="9">
+                    </div>
+                </div>
+                
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="tutor2_name" class="mb-1">Nombre</label>
+                        <input class="form-control" type="text" id="tutor2_name" name="tutor2_name" value="{{rider.tutor_2.name}}"  maxlength="64">
+                    </div>
+                
+                    <div class="form-group w-50">
+                        <label for="tutor2_last_name" class="mb-1">Apellido</label>
+                        <input class="form-control" type="text" id="tutor2_last_name" name="tutor2_last_name" value="{{rider.tutor_2.last_name}}"   maxlength="64">
+                    </div>
+                </div>
+                
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="tutor2_phone" class="mb-1">Teléfono</label>
+                        <input class="form-control" type="text" id="tutor2_phone" name="tutor2_phone" value="{{rider.tutor_2.phone}}"   maxlength="32">
+                    </div>
+                
+                    <div class="form-group w-50">
+                        <label for="tutor2_email" class="mb-1">Email</label>
+                        <input class="form-control" type="email" id="tutor2_email" name="tutor2_email" value="{{rider.tutor_2.email}}"   maxlength="64">
+                    </div>
+                </div>
+                
+                <div class="form-group w-100">
+                    <label for="tutor2_address" class="mb-1">Dirección</label>
+                    <input class="form-control" type="text" id="tutor2_address" name="tutor2_address" value="{{rider.tutor_2.address}}"   maxlength="128">
+                </div>
+                
+                <div class="w-100 d-flex flex-row gap-3">
+                    <div class="form-group w-50">
+                        <label for="tutor2_education_level" class="mb-1">Nivel educativo</label>
+                        <select class="form-select" id="tutor2_education_level" name="tutor2_education_level" >
+                            <option selected>{%if rider.tutor_2 %}{{rider.tutor_2.education_level}} {% endif %}</option>
+                            <option value="Primario"{%if rider.tutor_2.education_level == "Primario"%} selected {%endif%}>Primario</option>
+                        <option value="Secundario" {%if rider.tutor_2.education_level == "Secundario"%} selected {%endif%}>Secundario</option>
+                        <option value="Terciario" {%if rider.tutor_2.education_level == "Terciario"%} selected {%endif%}>Terciario</option>
+                        <option value="Universitario" {%if rider.tutor_2.education_level == "Universitario"%} selected {%endif%}>Universitario</option>
+                        </select>
+                    </div>
+                
+                    <div class="form-group w-50">
+                        <label for="tutor2_job" class="mb-1">Trabajo</label>
+                        <input class="form-control" type="text" id="tutor2_job" name="tutor2_job" value="{{rider.tutor_2.job}}"  maxlength="64">
+                    </div>    
+                </div>
+            </div>
+        </div> 
+
+        <div class="d-flex flex-row justify-content-end mt-3 gap-2">
+            <button type="submit" class="btn btn-primary">Editar jinete/amazona</button>
+            <a href="{{ url_for('jya.show' , id=rider.id) }}" class="btn btn-secondary text-white">Cancelar</a>
+        </div>
+    </form>
+
+</div>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+        var hasSchoolSelect = document.getElementById('has_tutor_1');
+        var schoolGroup = document.getElementById('tutor_1_group');
+
+        if (hasSchoolSelect.value === 'True') {
+            schoolGroup.style.display = 'block';
+        }
+
+        hasSchoolSelect.addEventListener('change', function() {
+            if (this.value === 'True') {
+                schoolGroup.style.display = 'block';
+            } else {
+                schoolGroup.style.display = 'none';
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var hasSchoolSelect = document.getElementById('has_tutor_2');
+        var schoolGroup = document.getElementById('tutor_2_group');
+
+        if (hasSchoolSelect.value === 'True') {
+            schoolGroup.style.display = 'block';
+        }
+
+        hasSchoolSelect.addEventListener('change', function() {
+            if (this.value === 'True') {
+                schoolGroup.style.display = 'block';
+            } else {
+                schoolGroup.style.display = 'none';
+            }
+        });
+    });
+
+</script>
+{% endblock %}
+
+ 

@@ -3,10 +3,6 @@ from datetime import datetime
 from src.core.database import db
 from src.core.people.person import Person
 
-# Estos imports no se usan, pero sqlalchemy lo necesita para crear 1ro las tablas referenciadas
-from src.core.disabilities.disability_diagnosis import DisabilityDiagnosis
-from src.core.people.tutor import Tutor
-
 
 class RiderMember(db.Model):
     __tablename__ = "rider_member"
@@ -14,7 +10,7 @@ class RiderMember(db.Model):
     rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), primary_key=True)
     member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Member(Person):
@@ -34,14 +30,34 @@ class Member(Person):
     )
     active = db.Column(db.Boolean, default=True)
 
+    # carrera universitaria
     profession_id = db.Column(db.Integer, db.ForeignKey("professions.id"), nullable=True)
     profession = db.relationship("Profession", backref="members", lazy=True)
+
+    # puesto laboral
     job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"), nullable=False)
     job = db.relationship("Job", backref="members", lazy=True)
+
+    # j/a asignados
     riders = db.relationship("Rider", secondary="rider_member", back_populates="members")
+
+    # usuario vinculado
+    user = db.relationship("User", secondary="user_member", back_populates="member", uselist=False, lazy=True)
+
+    # cobros
+    payments = db.relationship("PagoJineteAmazona", back_populates="receptor",  cascade='all, delete-orphan', lazy=True)
 
     def __repr__(self):
         return f"Member {self.id}"
+    
+
+class UserMember(db.Model):
+    __tablename__ = "user_member"
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Rider(Person):
@@ -72,20 +88,23 @@ class Rider(Person):
     city_of_birth_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
     city_of_birth = db.relationship("Locality", foreign_keys=[city_of_birth_id], lazy=True)
 
-    # members assigned
+    # profesionales que lo atienden
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
-    # school
-    school = db.relationship("School", backref="rider", lazy=True, overlaps="rider_school,school")
+    # escuela
+    school = db.relationship("School", backref="rider", uselist=False, lazy=True, overlaps="rider_school,school")
 
-    # tutors
+    # tutores
     tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
     tutor_1 = db.relationship("Tutor", backref="rider_tutor_1", lazy=True, foreign_keys=[tutor_1_id])
     tutor_2_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
     tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
 
-    # job
-    job_proposal = db.relationship("JobProposal", backref="rider", lazy=True)
+    # trabajo
+    job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", lazy=True)
+
+    # pagos
+    payments = db.relationship("PagoJineteAmazona", back_populates="jinete_amazona", cascade='all, delete-orphan', lazy=True)
 
     
     def __repr__(self):

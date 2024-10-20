@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+{% block title %}CEDICA - Actualizar pago J&A{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<h1 class="text-primary mb-4">Actualizar un pago de J&A</h1>
+<p>Formulario para actualizar un pago de J&A</p>
+
+<form method="POST" class="w-50 p-4 bg-light rounded shadow">
+    {{ form.csrf_token }}
+
+    <!-- J&A field -->
+    <div class="form-group mb-3">
+        {{ form.jinete_amazona.label(class="form-label") }}
+        {{ form.jinete_amazona(class="form-control") }}
+        {% for error in form.jinete_amazona.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Fecha pago field -->
+    <div class="form-group mb-3">
+        {{ form.fecha_pago.label(class="form-label") }}
+        {{ form.fecha_pago(class="form-control") }}
+        {% for error in form.fecha_pago.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Medio de pago field -->
+    <div class="form-group mb-3">
+        {{ form.medio_de_pago.label(class="form-label") }}
+        {{ form.medio_de_pago(class="form-control") }}
+        {% for error in form.medio_de_pago.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Monto de pago field -->
+    <div class="form-group mb-3">
+        {{ form.monto.label(class="form-label") }}
+        {{ form.monto(class="form-control") }}
+        {% for error in form.monto.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Receptor field -->
+    <div class="form-group mb-3">
+        {{ form.receptor.label(class="form-label") }}
+        {{ form.receptor(class="form-control") }}
+        {% for error in form.receptor.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Estado del pago field -->
+    <div class="form-group mb-3">
+        {{ form.estado_de_pago.label(class="form-label") }}
+        {{ form.estado_de_pago(class="form-control") }}
+        {% for error in form.estado_de_pago.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Observaciones field -->
+    <div class="form-group mb-3">
+        {{ form.observaciones.label(class="form-label") }}
+        {{ form.observaciones(class="form-control") }}
+        {% for error in form.observaciones.errors %}
+            <span class="text-danger">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <!-- Submit button -->
+    <div>
+        {{ form.submit(class="btn btn-primary btn-block") }}
+        <a href="{{ url_for('registro_pagos_jya.index') }}" class="btn btn-secondary btn-block">Cancelar</a>
+    </div>
+</form>
+
+{% endblock %}

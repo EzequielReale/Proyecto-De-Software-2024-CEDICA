@@ -6,4 +6,4 @@ CREATE TABLE rider_member (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-INSERT INTO rider_member (2, 1);
+--INSERT INTO rider_member (2, 1);

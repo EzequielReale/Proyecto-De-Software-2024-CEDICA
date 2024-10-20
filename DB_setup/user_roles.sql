@@ -6,7 +6,7 @@ CREATE TABLE user_roles (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-INSERT INTO user_roles (user_id, role_id) VALUES
-((SELECT id FROM users WHERE email='admin@admin.com'), (SELECT id FROM roles WHERE name='SystemAdmin')),
-((SELECT id FROM users WHERE email='giuliana@gmail.com'), (SELECT id FROM roles WHERE name='Administracion')),
-((SELECT id FROM users WHERE email='giuliana@gmail.com'), (SELECT id FROM roles WHERE name='SystemAdmin'));
+-- INSERT INTO user_roles (user_id, role_id) VALUES
+-- ((SELECT id FROM users WHERE email='admin@admin.com'), (SELECT id FROM roles WHERE name='SystemAdmin')),
+-- ((SELECT id FROM users WHERE email='giuliana@gmail.com'), (SELECT id FROM roles WHERE name='Administracion')),
+-- ((SELECT id FROM users WHERE email='giuliana@gmail.com'), (SELECT id FROM roles WHERE name='SystemAdmin'));

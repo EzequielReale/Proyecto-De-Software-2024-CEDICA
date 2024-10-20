@@ -37,11 +37,11 @@ def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, pag
 
 def get_drivers():
     """Obtiene todos los conductores"""
-    return Member.query.filter_by(job_id=4).all()
+    return Member.query.filter_by(job_id=3).all()
 
 def get_trainers():
     """Obtiene todos los entrenadores de caballos"""
-    return Member.query.filter_by(job_id=8).all()
+    return Member.query.filter_by(job_id=7).all()
 
 def get_horse_by_id(horse_id:int)->Horse:
     """Devuelve un caballo por ID"""

@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block head %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
@@ -76,6 +77,12 @@
                     <li class="nav-item">
                         <a class="nav-link {% if 'registro_pagos' in request.endpoint %}active{% endif %}"
                             href="{{ url_for('registro_pagos.index') }}">Registro de Pagos</a>
+                    </li>
+                    {% endif %}
+                    {% if check_permission(session,'reg_cobros_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'registro_pagos_jya' in request.endpoint %}active{% endif %}"
+                            href="{{ url_for('registro_pagos_jya.index') }}">Registro de Cobros</a>
                     </li>
                     {% endif %}
                     {% endif %}
