@@ -59,9 +59,11 @@
   </a>
 </form>
 
+{% if check_permission(session,'jya_new')%}
 <a href="{{ url_for('jya.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
   <i class="fas fa-user-plus"></i> Crear nuevo Jinete/Amazona
 </a>
+{% endif %}
 
 <table class="table table-striped"
   style="margin-top: 20px; background-color: #ffffff; border-radius: 5px; overflow: hidden; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
@@ -115,7 +117,7 @@
   <tbody>
     {% if riders %}
     {% for rider in riders %}
-    <tr onclick="window.location='{{ url_for('jya.show', id=rider.id) }}';" style="cursor:pointer;">
+    <tr {% if check_permission(session,'jya_show')%} onclick="window.location='{{ url_for('jya.show', id=rider.id) }}';" style="cursor:pointer;" {% endif %}>
       <td>{{ rider.name }}</td>
       <td>{{ rider.last_name }}</td>
       <td>{{ rider.dni }}</td>
