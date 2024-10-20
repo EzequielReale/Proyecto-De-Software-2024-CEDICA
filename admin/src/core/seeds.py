@@ -250,6 +250,9 @@ def run():
     activity5 = equestrian.activity_new(
         name="Equitación"
     )
+    
+    list_activities=[activity1, activity2, activity3, activity4, activity5]
+    
     member1 = people.member_new(
         name="Giuliana",
         last_name="Rossi",
@@ -279,19 +282,7 @@ def run():
         entry_date="2023-01-01",
         assigned_members=[member1],
         activities=[activity1, activity2, activity3],
-        assigned_location="Sede principal"
-    )
-    horse2 = equestrian.horse_new(
-        name="Summer",
-        birth_date="2012-06-10",
-        gender="Macho",
-        race="Norteño",
-        coat="Gris plateado",
-        donation=True,
-        entry_date="2024-03-12",
-        assigned_members=[member1],
-        activities=[activity3, activity2],
-        assigned_location="Sede Winterfell"
+        assigned_location="Sede 57"
     )
     disability_type1 = disabilities.disability_type_new(
         name="Mental"
@@ -348,7 +339,7 @@ def run():
             condition="Voluntario",
             active=True,
             profession_id=1,
-            job_id=1
+            job_id=random.randint(1, 10)
         )
 
         lista_miembros.append(member)
@@ -437,4 +428,22 @@ def run():
             receptor = lista_miembros[i],
             en_deuda = False
         )
+                
+    for i in range(30):
+        horse = equestrian.horse_new(
+            name=fake.first_name(),
+            birth_date=fake.date_between(start_date='-2y', end_date='today'),
+            gender=random.choice(["Macho", "Hembra"]),
+            race=random.choice(["Norteño", "Criollo", "Árabe", "Pura Sangre", "Mestizo", "Cuarto de Milla", "Appaloosa"]),
+            coat=random.choice(["Gris plateado", "Negro", "Marrón", "Blanco"]),
+            donation=random.choice([True, False]),
+            entry_date=fake.date_between(start_date='today', end_date='+2y'),
+            assigned_members=random.sample(
+            [member for member in lista_miembros if member.job.id in [3, 7]], 
+            random.randint(1, 3)
+            ),
+            activities=random.sample(list_activities, random.randint(1, 5)),
+            assigned_location=f"Sede {random.randint(0,15)}"
+        )
+        
     print("Seeds ejecutadas con exito")
