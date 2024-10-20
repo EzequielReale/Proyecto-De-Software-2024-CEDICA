@@ -30,12 +30,22 @@ class Member(Person):
     )
     active = db.Column(db.Boolean, default=True)
 
+    # carrera universitaria
     profession_id = db.Column(db.Integer, db.ForeignKey("professions.id"), nullable=True)
     profession = db.relationship("Profession", backref="members", lazy=True)
+
+    # puesto laboral
     job_id = db.Column(db.Integer, db.ForeignKey("jobs.id"), nullable=False)
     job = db.relationship("Job", backref="members", lazy=True)
+
+    # j/a asignados
     riders = db.relationship("Rider", secondary="rider_member", back_populates="members")
+
+    # usuario vinculado
     user = db.relationship("User", secondary="user_member", back_populates="member", uselist=False, lazy=True)
+
+    # cobros
+    payments = db.relationship("PagoJineteAmazona", back_populates="receptor", lazy=True)
 
     def __repr__(self):
         return f"Member {self.id}"
@@ -78,20 +88,23 @@ class Rider(Person):
     city_of_birth_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
     city_of_birth = db.relationship("Locality", foreign_keys=[city_of_birth_id], lazy=True)
 
-    # members assigned
+    # profesionales que lo atienden
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
-    # school
+    # escuela
     school = db.relationship("School", backref="rider", uselist=False, lazy=True, overlaps="rider_school,school")
 
-    # tutors
+    # tutores
     tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
     tutor_1 = db.relationship("Tutor", backref="rider_tutor_1", lazy=True, foreign_keys=[tutor_1_id])
     tutor_2_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
     tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
 
-    # job
+    # trabajo
     job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", lazy=True)
+
+    # pagos
+    payments = db.relationship("PagoJineteAmazona", back_populates="jinete_amazona", lazy=True)
 
     
     def __repr__(self):

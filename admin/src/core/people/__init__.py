@@ -7,7 +7,7 @@ from flask import current_app, send_file
 from flask import request
 from minio.error import S3Error
 
-from src.core import adressing, database_functions as db_fun, professions
+from src.core import adressing, database_functions as db_fun, professions, registro_pagos_jya
 from src.core.database import db
 from src.core.people.member_rider import Member, Rider, UserMember
 from src.core.people.person_document import PersonDocument as Document
@@ -229,6 +229,11 @@ def _create_tutors(form:RiderForm) -> Tutor:
         tutor_2 = tutor_new(**form.get_tutor_data(2))
     
     return tutor_1, tutor_2
+
+def has_debt(rider_id: int) -> bool:
+    """Devuelve True si el jinete tiene deudas, False en caso contrario"""
+    rider = get_rider_by_field("id", rider_id)
+    return db_fun.filter(registro_pagos_jya.PagoJineteAmazona, {"jinete_amazona_id": rider_id, "en_deuda": True}).count() > 0
 
 
 def rider_new(form:RiderForm) -> str:

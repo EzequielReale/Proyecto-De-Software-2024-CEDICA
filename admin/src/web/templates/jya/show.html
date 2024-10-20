@@ -50,7 +50,7 @@
             rider.family_allowance }}{% else %}No{% endif %}<br>
             <strong style="margin-left: 20px;">Está becado:</strong> {% if rider.grant_percentage %}Sí. Porcentaje: {{
             rider.grant_percentage }}%{% else %}No{% endif %}<br>
-
+            <strong style="margin-left: 20px;">Tiene deuda con nuestros profesionales:</strong> {% if has_debt %}Sí{% else %}No{% endif %}<br>
             <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Situación
                 previsional:</strong>
             <strong style="margin-left: 20px;">Obra social:</strong> {{ rider.health_insurance }}<br>

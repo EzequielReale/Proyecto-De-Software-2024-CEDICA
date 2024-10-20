@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+from faker import Faker
+import random
 
 from src.core import (
     adressing,
@@ -11,6 +13,10 @@ from src.core import (
 from src.core.user_role_permission.operations import permission_operations as Permission
 from src.core.user_role_permission.operations import role_operations as Role
 from src.core.user_role_permission.operations import user_operations as User
+from src.core.user_role_permission.operations import role_operations as Role
+from src.core.user_role_permission.operations import permission_operations as Permission
+from datetime import datetime
+from src.core import disabilities, people, professions, adressing, registro_pagos, equestrian, registro_pagos_jya
 
 
 def run():
@@ -59,17 +65,23 @@ def run():
     jya_show = Permission.permiso_new(name='jya_show')
 
     # Seed para Permisos modulo Registro Cobros
-    # ...
+    
+    reg_cobros_index = Permission.permiso_new(name='reg_cobros_index')
+    reg_cobros_new = Permission.permiso_new(name='reg_cobros_new')
+    reg_cobros_destroy = Permission.permiso_new(name='reg_cobros_destroy')
+    reg_cobros_update = Permission.permiso_new(name='reg_cobros_update')
+    reg_cobros_show = Permission.permiso_new(name='reg_cobros_show')
 
     # Seed de Roles
     
     rol1 = Role.role_new(
         name='Tecnica',
-        permissions=[encuestre_index, encuestre_show, jya_index, jya_show, jya_update, jya_new, jya_destroy]
+        permissions=[encuestre_index, encuestre_show,
+                     reg_cobros_index, reg_cobros_show]
     )
     rol2 = Role.role_new(
         name='Encuestre',
-        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy, jya_index, jya_show]
+        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy]
     )
     rol3 = Role.role_new(
         name='Voluntariado',
@@ -79,15 +91,12 @@ def run():
         permissions=[team_index, team_show, team_update, team_new, team_destroy,
                      reg_pagos_index, reg_pagos_show, reg_pagos_update, reg_pagos_new, reg_pagos_destroy,
                      encuestre_index, encuestre_show,
+                     reg_cobros_index, reg_cobros_show, reg_cobros_update, reg_cobros_new, reg_cobros_destroy,
                      jya_index, jya_show, jya_update, jya_new, jya_destroy]
     )
     rol5 = Role.role_new(
         name='SystemAdmin',
-        permissions=[user_index, user_new, user_destroy, user_update, user_show, user_block, user_update_password,
-                     team_index, team_new, team_destroy, team_update, team_show,
-                     reg_pagos_index, reg_pagos_new, reg_pagos_destroy, reg_pagos_update, reg_pagos_show,
-                     encuestre_index, encuestre_new, encuestre_destroy, encuestre_update, encuestre_show,
-                     jya_index, jya_new, jya_destroy, jya_update, jya_show]
+        permissions=[user_index, user_new, user_destroy, user_update, user_show, user_block, user_update_password,]
     )
 
 
@@ -112,6 +121,7 @@ def run():
         alias = "lau",
         password="123",
         isActive=True,
+        roles=[rol4]
     )
     tipo1= registro_pagos.tipo_new(
         tipo="Honorarios"
@@ -215,10 +225,10 @@ def run():
             job_id=1,
             user=user1
     )
-    for i in range(55):
+    for i in range(30):
         tipo_pago = tipo1 if i % 3 == 0 else tipo2 if i % 3 == 1 else tipo3
         fecha_pago = datetime.now() - timedelta(days=i)
-        pago = registro_pagos.pago_create(
+        pago = registro_pagos.administracion_create(
             monto=2000 + i,
             beneficiario=member1,
             tipo_pago=tipo_pago,
@@ -239,6 +249,25 @@ def run():
     )
     activity5 = equestrian.activity_new(
         name="Equitación"
+    )
+    member1 = people.member_new(
+        name="Giuliana",
+        last_name="Rossi",
+        dni="12345678",
+        phone="123456789",
+        emergency_phone=987654321,
+        street="Calle Falsa",
+        number=123,
+        locality=locality1,
+        email="giuliana@gmail.com",
+        start_date="2023-01-01",
+        end_date="2023-12-31",
+        health_insurance="Health Inc",
+        health_insurance_number=987654321,
+        condition="Voluntario",
+        active=True,
+        profession_id=1,
+        job_id=1
     )
     horse1 = equestrian.horse_new(
         name="Canelo",
@@ -293,12 +322,18 @@ def run():
         education_level="Secundario",
         job="Enfermera"
     )
+
+
     # Creo 30 miembros para poder probar la paginación del index
+    # Utilizo paquete Faker para generar nombres y apellidos aleatorios
+    fake = Faker()
+    lista_miembros = []
+    lista_jya = []
+
     for i in range(30):
-        job_id = i % 10 + 1
         member = people.member_new(
-            name=f"Giuliana_{i}",
-            last_name="Rossi",
+            name=fake.first_name(),
+            last_name=fake.last_name(),
             dni=f"{12345678 + i}",
             phone=f"123456789{i}",
             emergency_phone=f"987654321{i}",
@@ -313,11 +348,14 @@ def run():
             condition="Voluntario",
             active=True,
             profession_id=1,
-            job_id=job_id
+            job_id=1
         )
+
+        lista_miembros.append(member)
+        
         jya = people.rider_new_seed(
-            name=f"Fernando_{i}",
-            last_name="Alonso",
+            name=fake.first_name(),
+            last_name=fake.last_name(),
             dni=f"{22345678 + i}",
             phone=f"223456789{i}",
             emergency_phone=f"287654321{i}",
@@ -337,6 +375,9 @@ def run():
             tutor_2_id=parent2.id,
             members=[member, member1]
         )
+
+        lista_jya.append(jya)
+
         school = people.school_new_seed(
             name=f"Escuela_{i}",
             address=f"Calle Falsa 12{i}",
@@ -352,9 +393,48 @@ def run():
             headquarters="CASJ",
             days=["Lunes", "Miércoles", "Viernes"],
             rider_id=jya.id,
-            professor_id=member.id,
-            member_horse_rider_id=member.id,
+            professor_id=member1.id,
+            member_horse_rider_id=member1.id,
             horse_id=horse1.id,
-            assistant_id=member.id
+            assistant_id=member1.id
+        )
+    
+    # Seed de Registros de Cobro de prueba
+
+    medio_pago_efectivo = registro_pagos_jya.medio_de_pago_new(
+        tipo="Efectivo"
+    )
+
+    medio_pago_tarjeta_credito = registro_pagos_jya.medio_de_pago_new(
+        tipo="Tarjeta de Crédito"
+    )
+
+    medio_pago_tarjeta_debito = registro_pagos_jya.medio_de_pago_new(
+        tipo="Tarjeta de Débito"
+    )
+
+    # Seed de Registros de Cobro de prueba
+    # Utilizo un generador de fechas aleatorias para simular cobros en distintas fechas
+
+    fecha_inicio = datetime(2022, 1, 1, 0, 0, 0)
+    fecha_fin = datetime(2023, 12, 31, 23, 59, 59)
+
+    def generar_fecha_y_hora_aleatoria(inicio: datetime, fin: datetime) -> datetime:
+        # Calcular la diferencia en segundos entre las dos fechas
+        diferencia_en_segundos = int((fin - inicio).total_seconds())
+        # Generar un número aleatorio de segundos dentro de esa diferencia
+        segundos_aleatorios = random.randrange(diferencia_en_segundos)
+        # Sumar los segundos aleatorios a la fecha de inicio
+        return inicio + timedelta(seconds=segundos_aleatorios)
+
+    for i in range(30):
+        registro_cobro = registro_pagos_jya.pago_jya_new(
+            jinete_amazona=lista_jya[i],
+            medio_de_pago=medio_pago_efectivo,
+            fecha_pago = generar_fecha_y_hora_aleatoria(fecha_inicio, fecha_fin),
+            monto = 1000,
+            observaciones = f"Cobro de prueba {i}",
+            receptor = lista_miembros[i],
+            en_deuda = False
         )
     print("Seeds ejecutadas con exito")
