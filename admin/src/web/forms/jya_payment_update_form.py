@@ -11,4 +11,4 @@ class UpdateJyaAParmentForm(FlaskForm):
     receptor = SelectField('Receptor', choices=[], validators=[Optional()])
     estado_de_pago = SelectField('Estado de pago', choices=[('1', 'En deuda'), ('0', 'Pagado')], validators=[Optional()])
     observaciones = StringField('Observaciones', validators=[Optional()])
-    submit = SubmitField('Registrar cobro')
+    submit = SubmitField('Actualizar cobro')

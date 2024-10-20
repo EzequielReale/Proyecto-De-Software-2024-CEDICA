@@ -15,16 +15,16 @@ class PagoJineteAmazona(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     
-    jinete_amazona_id = db.Column(db.Integer, db.ForeignKey('riders.id'), nullable=False)
+    jinete_amazona_id = db.Column(db.Integer, db.ForeignKey('riders.id', ondelete='CASCADE'), nullable=False)
     jinete_amazona = db.relationship('Rider', back_populates='payments')
     
     # Clave foránea única que referencia a MedioPago
-    medio_de_pago_id = db.Column(db.Integer, db.ForeignKey('medios_de_pago.id'), nullable=False) 
+    medio_de_pago_id = db.Column(db.Integer, db.ForeignKey('medios_de_pago.id', ondelete='CASCADE'), nullable=False) 
     medio_de_pago = db.relationship('MediosDePago', backref='pagos', uselist=False)
 
     fecha_pago = db.Column(db.DateTime,nullable=False)
     monto = db.Column(db.Integer, nullable=False)
-    receptor_id = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=False) 
+    receptor_id = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='CASCADE'), nullable=False) 
     receptor = db.relationship('Member', back_populates='payments')
 
     en_deuda = db.Column(db.Boolean, default=False)

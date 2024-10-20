@@ -45,7 +45,7 @@ class Member(Person):
     user = db.relationship("User", secondary="user_member", back_populates="member", uselist=False, lazy=True)
 
     # cobros
-    payments = db.relationship("PagoJineteAmazona", back_populates="receptor", lazy=True)
+    payments = db.relationship("PagoJineteAmazona", back_populates="receptor",  cascade='all, delete-orphan', lazy=True)
 
     def __repr__(self):
         return f"Member {self.id}"
@@ -104,7 +104,7 @@ class Rider(Person):
     job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", lazy=True)
 
     # pagos
-    payments = db.relationship("PagoJineteAmazona", back_populates="jinete_amazona", lazy=True)
+    payments = db.relationship("PagoJineteAmazona", back_populates="jinete_amazona", cascade='all, delete-orphan', lazy=True)
 
     
     def __repr__(self):
