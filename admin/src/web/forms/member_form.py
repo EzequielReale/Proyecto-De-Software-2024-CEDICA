@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from wtforms import (
     BooleanField,
     DateField,
@@ -88,6 +90,12 @@ class MemberForm(Form):
             self.name.data = self.name.data.title()
         if self.last_name.data:
             self.last_name.data = self.last_name.data.title()
+
+    def validate_start_date(form, field):
+        """Valida que la fecha de inicio no sea futura"""
+        if field.data > datetime.now().date():
+            raise ValidationError("La fecha de inicio no puede ser futura")
+
 
     def validate_end_date(form, field):
         """Valida que la fecha de cese sea posterior a la fecha de inicio"""

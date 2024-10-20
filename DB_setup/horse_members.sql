@@ -3,8 +3,8 @@ CREATE TABLE public.horse_members (
     member_id integer NOT NULL
 );
 
-INSERT INTO public.horse_members VALUES (1, 1);
-INSERT INTO public.horse_members VALUES (2, 1);
+-- INSERT INTO public.horse_members VALUES (1, 1);
+-- INSERT INTO public.horse_members VALUES (2, 1);
 
 ALTER TABLE ONLY public.horse_members
     ADD CONSTRAINT horse_members_pkey PRIMARY KEY (horse_id, member_id);

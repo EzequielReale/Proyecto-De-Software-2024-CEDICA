@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+
+{% block title %}Listado - Pagos J&A{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block aside %}
+
+{% endblock %}  
+
+
+
+{% block content %}
+
+    <h1 style="color: #007bff; margin-bottom: 20px;">Listado de Pagos de Jinetes y Amazonas</h1>
+    <p style="margin-bottom: 20px;"></p>
+
+    <!-- Buscador -->
+        <form action="{{ url_for('registro_pagos_jya.index') }}" method="GET" class="form-inline mb-3"
+        style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; justify-content: space-between;">
+
+        <div class="form-group" style="flex: 1; min-width: 200px;">
+            <label for="fecha_inicio">Fecha de inicio:</label>
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" 
+                placeholder="Selecciona una fecha de inicio" value="{{ filters.fecha_inicio or '' }}" 
+                style="width: 100%;">
+        </div>
+
+        <div class="form-group" style="flex: 1; min-width: 200px;">
+            <label for="fecha_fin">Fecha fin:</label>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" 
+                placeholder="Selecciona una fecha de fin" value="{{ filters.fecha_fin or '' }}" 
+                style="width: 100%;">
+        </div>
+
+        <div class="form-group" style="flex: 1; min-width: 200px;">
+            <label for="nombre_receptor">Nombre del receptor:</label>
+            <input type="text" class="form-control" id="nombre_receptor" name="nombre_receptor" 
+                value="{{ filters.nombre_receptor or '' }}" placeholder="Nombre" 
+                style="width: 100%;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
+        </div>
+
+        <div class="form-group" style="flex: 1; min-width: 200px;">
+            <label for="apellido_receptor">Apellido del receptor:</label>
+            <input type="text" class="form-control" id="apellido_receptor" name="apellido_receptor" 
+                value="{{ filters.apellido_receptor or '' }}" placeholder="Apellido" 
+                style="width: 100%;" pattern="[A-Za-zñÑáéíóúÁÉÍÓÚüÜ\s]+">
+        </div>
+
+        <div class="form-group" style="flex: 1; min-width: 200px;">
+            <label for="medio_de_pago">Medio de Pago:</label>
+            <select class="form-control" id="medio_de_pago" name="medio_de_pago" style="width: 100%;">
+                <option value="">Seleccionar</option>
+                {% for medio in medios_de_pago %}
+                <option value="{{ medio.id }}">
+                    {{ medio.tipo }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" style="flex: 1; min-width: 200px; display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-primary" 
+                style="flex: 1; background-color: #007bff; border-color: #007bff;">
+                Buscar <i class="fas fa-search"></i>
+            </button>
+
+            <a href="{{ url_for('registro_pagos_jya.index') }}" class="btn btn-secondary" 
+                style="flex: 1; background-color: #6c757d; border-color: #6c757d;">
+                Limpiar filtros <i class="fas fa-eraser"></i>
+            </a>
+        </div>
+    </form>
+    <!-- Fin de buscador -->
+
+    <a href="{{ url_for('registro_pagos_jya.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
+        <i class="fas fa-user-plus"></i> Registrar nuevo pago J&A
+    </a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="background-color: #0056b3; color: #ffffff;">J&A</th>
+                <th style="background-color: #0056b3; color: #ffffff;">
+                    <a href="{{ url_for('registro_pagos_jya.index', sort_by='fecha_pago', sort_direction='asc' if sort_by != 'fecha_pago' or sort_direction == 'desc' else 'desc', **filters) }}"
+                    style="color: inherit; text-decoration: none;">
+                    Fecha de pago
+                    {% if sort_by == 'fecha_pago' %}
+                        {% if sort_direction == 'asc' %}
+                            &#9650;
+                        {% else %}
+                            &#9660;
+                        {% endif %}
+                    {% endif %}
+                </th>
+                <th style="background-color: #0056b3; color: #ffffff;">Medio de Pago</th>
+                <th style="background-color: #0056b3; color: #ffffff;">Monto</th>
+                <th style="background-color: #0056b3; color: #ffffff;">Receptor</th>
+                <th style="background-color: #0056b3; color: #ffffff;">Estado</th>
+                <th style="background-color: #0056b3; color: #ffffff;">Observaciones</th>
+                <th style="background-color: #0056b3; color: #ffffff;"> Acciones </th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for pago in pagos %}
+            <tr>
+                <td>{{ pago.jinete_amazona.last_name}} {{ pago.jinete_amazona.name }}</td>
+                <td>{{ pago.fecha_pago.strftime('%d-%m-%Y') }}</td>
+                <td>{{ pago.medio_de_pago.tipo }}</td>
+                <td>{{ pago.monto }}</td>
+                <td>{{ pago.receptor.last_name}} {{ pago.receptor.name }}</td>
+                {% if pago.en_deuda %}
+                    <td> En deuda </td>
+                {% else %}
+                    <td> Pagado </td>
+                {% endif %}
+                <td>{{ pago.observaciones }}</td>
+                
+                <td>
+                    <div class="action-icons" style="display: flex; gap: 10px;">
+                        <form action="{{ url_for('registro_pagos_jya.update', id=pago.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" title="Actualizar" role="button"
+                                style="border: none; background: none; color: #0099CC;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </form>
+                        
+                        <form action="{{ url_for('registro_pagos_jya.destroy', id=pago.id) }}" method="POST" style="display: inline;"
+                            onsubmit="return confirm('¿Quieres eliminar el pago y todos sus datos?');">
+                            <button type="submit" title="Eliminar" role="button"
+                                style="border: none; background: none; color: #0099CC;">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No hay pagos disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
+        <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
+          {% if page > 1 %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('registro_pagos_jya.index', page=page-1, **filters) }}" aria-label="Previous"
+              style="color: #0056b3;">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% endif %}
+          {% for p in range(1, total_pages + 1) %}
+          <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('registro_pagos_jya.index', page=p, **filters) }}"
+              style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+              p }}</a>
+          </li>
+          {% endfor %}
+          {% if page < total_pages %} <li class="page-item">
+            <a class="page-link" href="{{ url_for('registro_pagos_jya.index', page=page+1, **filters) }}" aria-label="Next"
+              style="color: #0056b3;">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+            {% endif %}
+        </ul>
+      </nav>
+
+{% endblock %}

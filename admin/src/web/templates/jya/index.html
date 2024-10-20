@@ -5,6 +5,20 @@
 {% block head %}
 {{ super() }}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+  @media screen and (max-width: 768px) {
+
+    /* Ocultar columnas en pantallas pequeñas */
+    tr>td:nth-child(3),
+    tr>td:nth-child(4),
+    tr>td:nth-child(5),
+    tr>th:nth-child(3),
+    tr>th:nth-child(4),
+    tr>th:nth-child(5) {
+      display: none;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -30,25 +44,23 @@
     <input type="text" class="form-control" id="dni" name="dni" value="{{ filters.dni or '' }}" placeholder="DNI"
       style="width: auto; display: inline-block;" pattern="\d+">
   </div>
-  <select multiple class="form-control select2" id="members" name="members" style="width: 100%;">
+  <select multiple class="form-select select2" id="members" name="members" style="width: 100%;">
     {% for member in members %}
     <option value="{{ member.id }}">
       {{ member.name }} {{ member.last_name }}
     </option>
     {% endfor %}
-  </select>  
-  <button type="submit" class="btn btn-primary"
-    style="background-color: #007bff; border-color: #007bff;">Buscar
-    <i class="fas fa-search"></i>
+  </select>
+  <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;"><i
+      class="fas fa-search"></i> Buscar
   </button>
   <a href="{{ url_for('jya.index') }}" class="btn btn-secondary"
-    style="background-color: #6c757d; border-color: #6c757d;">Limpiar filtros
-    <i class="fas fa-eraser"></i>
+    style="background-color: #6c757d; border-color: #6c757d;"><i class="fas fa-eraser"></i> Limpiar filtros
   </a>
 </form>
 
 <a href="{{ url_for('jya.create') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
-  Crear nuevo Jinete/Amazona <i class="fas fa-user-plus"></i>
+  <i class="fas fa-user-plus"></i> Crear nuevo Jinete/Amazona
 </a>
 
 <table class="table table-striped"
@@ -84,6 +96,7 @@
       <th style="background-color: #0056b3; color: #ffffff;">DNI</th>
       <th style="background-color: #0056b3; color: #ffffff;">Edad</th>
       <th style="background-color: #0056b3; color: #ffffff;">Teléfono</th>
+      <th style="background-color: #0056b3; color: #ffffff;">Tiene deuda</th>
       <th style="background-color: #0056b3; color: #ffffff;">
         <a href="{{ url_for('jya.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}"
           style="color: inherit; text-decoration: none;">
@@ -108,6 +121,7 @@
       <td>{{ rider.dni }}</td>
       <td>{{ (current_year - rider.birth_date.year) }}</td>
       <td>{{ rider.phone }}</td>
+      <td>{{ 'Sí' if has_debt(rider.id) else 'No' }}</td>
       <td>{{ rider.created_at.strftime('%d-%m-%Y') }}</td>
     </tr>
     {% endfor %}
@@ -137,27 +151,26 @@
         p }}</a>
     </li>
     {% endfor %}
-    {% if page < total_pages %}
-    <li class="page-item">
+    {% if page < total_pages %} <li class="page-item">
       <a class="page-link" href="{{ url_for('jya.index', page=page+1, **filters) }}" aria-label="Next"
         style="color: #0056b3;">
         <span aria-hidden="true">&raquo;</span>
       </a>
-    </li>
-    {% endif %}
+      </li>
+      {% endif %}
   </ul>
 </nav>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    jQuery.noConflict();
-    jQuery(document).ready(function($) {
-        $('.select2').select2({
-            placeholder: "Seleccione los profesionales",
-            allowClear: true
-        });
+  jQuery.noConflict();
+  jQuery(document).ready(function ($) {
+    $('.select2').select2({
+      placeholder: "Seleccione los profesionales",
+      allowClear: true
     });
+  });
 </script>
 
 

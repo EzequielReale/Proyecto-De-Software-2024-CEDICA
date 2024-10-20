@@ -12,10 +12,11 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     isActive = db.Column(db.Boolean, default=True)
 
-    roles = db.relationship('Role', secondary='user_roles', back_populates='users') # OK
+    roles = db.relationship('Role', secondary='user_roles', back_populates='users')
+    member = db.relationship('Member', secondary='user_member', back_populates='user', uselist=False, lazy=True)
 
     created_at = db.Column(db.DateTime,default= datetime.now)
-    updated_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f'{self.email}, {self.password}, {self.alias}, {self.isActive}, {self.roles}'
@@ -31,7 +32,7 @@ class Role(db.Model):
     permissions = db.relationship('Permission', secondary='role_permissions', back_populates='roles') # OK2
     
     created_at = db.Column(db.DateTime,default= datetime.now)
-    updated_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f'{self.name}'
@@ -45,7 +46,7 @@ class Permission(db.Model):
     roles= db.relationship('Role', secondary='role_permissions', back_populates='permissions') # OK2
     
     created_at = db.Column(db.DateTime,default= datetime.now)
-    updated_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f'{self.name}'
@@ -58,7 +59,7 @@ class UserRole(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id', ondelete='CASCADE'), primary_key=True)
     
     created_at = db.Column(db.DateTime,default= datetime.now)
-    updated_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
 
 
 class RolePermission(db.Model):
@@ -68,4 +69,4 @@ class RolePermission(db.Model):
     permission_id = db.Column(db.Integer, db.ForeignKey('permissions.id', ondelete='CASCADE'), primary_key=True)
     
     created_at = db.Column(db.DateTime,default= datetime.now)
-    updated_at = db.Column(db.DateTime, default = datetime.now)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)

@@ -1,24 +1,53 @@
+from datetime import datetime
+
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
-from src.core.user_role_permission.operations.user_operations import get_user_by_id,list_users
-from src.core import  registro_pagos
+from src.core import registro_pagos, people, database_functions as db
 from src.web.handlers.autenticacion import check_permission
 from src.web.handlers.error import unauthorized
 from src.web.handlers.autenticacion import login_required
 
 bp= Blueprint("registro_pagos",__name__,url_prefix="/registro_pagos")
 
+
 @login_required
 @bp.get("/")
 def index():
     """controlador listado, paso al template los pagos"""
-    if  not check_permission(session,"reg_pagos_index"):
-         return unauthorized()
-    pagos = registro_pagos.administracion_index(request)
-    return render_template("registro_pagos/index.html",pagos=pagos)
+    if not check_permission(session, "reg_pagos_index"):
+        return unauthorized()
+    
+    # paginacion
+    page = request.args.get("page", 1, type=int)
+    per_page = 25
+
+    # filtros
+    filtros = {
+        "fecha_inicio": request.args.get("fecha_inicio"),
+        "fecha_fin": request.args.get("fecha_fin"),
+        "tipo_pago": request.args.get("tipo_pago"),
+    }
+
+    # orden
+    order_by = request.args.get("order_by", "fecha_pago")
+    orden = request.args.get("order", "desc")  # por defecto, de más nuevo a más viejo
+
+    pagos, total_paginas = registro_pagos.administracion_index(
+        filtros, page, per_page, order_by, orden
+    )
+
+    return render_template(
+        "registro_pagos/index.html",
+        pagos=pagos,
+        page=page,
+        total_pages=total_paginas,
+        filters=filtros,
+        sort_by=order_by,
+        sort_direction=orden,
+    )
 
 
-#saco los flash para que sea mas generica 
+# saco los flash para que sea mas generica
 def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
     """Valido los parámetros según ciertos requerimientos"""
     
@@ -34,6 +63,8 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
     if not fecha_pago:
         return False, "Debe ingresar una fecha de pago", None, None
     
+    if fecha_pago > datetime.now().strftime('%Y-%m-%d'):
+        return False, "La fecha de pago no puede ser futura", None, None
     
     if not des or len(des) > 255:
         return False, "La descripción es obligatoria y debe tener un máximo de 255 caracteres", None, None
@@ -46,7 +77,7 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
 
 
     if beneficiario_id:
-        beneficiario = get_user_by_id(beneficiario_id)
+        beneficiario = people.get_member_by_field('id', beneficiario_id)
         if not beneficiario:
             return False, "El beneficiario seleccionado no es válido", None, None
     
@@ -75,8 +106,7 @@ def update(id):
         else:
             flash(mensaje, 'danger')
     #es la primera vez q entra o hubo algun error en el envio
-    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users= list_users()) #lo devuelvo al mismo lug con los mismos datos
-
+    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users=db.list_all(people.Member)) #lo devuelvo al mismo lug con los mismos datos
 
 
 @bp.route("/destroy/<int:id>", methods=['POST'])
@@ -91,7 +121,6 @@ def destroy(id):
         flash('Pago no encontrado.', 'danger')
 
      return redirect(url_for('registro_pagos.index'))
-
 
 
 @bp.route("/create", methods=['GET', 'POST'])
@@ -130,4 +159,4 @@ def create():
         else:
             flash(mensaje, 'danger')
        #es l primera vez q entra o hubo un problema con el envio
-     return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(),users= list_users()) 
+     return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(), users=db.list_all(people.Member)) 

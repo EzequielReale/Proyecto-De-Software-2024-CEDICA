@@ -196,7 +196,7 @@
 
     function loadLocalities(provinceId, selectedLocalityId) {
       if (provinceId) {
-        fetch('/localities/get/' + provinceId)
+        fetch('/resources/localities/' + provinceId)
           .then(response => response.json())
           .then(data => {
             localitySelect.innerHTML = '<option value="">Seleccione una localidad</option>';
