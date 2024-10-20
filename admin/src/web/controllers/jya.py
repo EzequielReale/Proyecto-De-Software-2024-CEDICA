@@ -467,7 +467,7 @@ def destroy(id: int) -> str:
 @login_required
 def add_document(id: int) -> str:
     """Recibe el id de un j/a y agrega un documento a su lista de documentos"""
-    if not check_permission(session, "jya_new"):
+    if not check_permission(session, "jya_update"):
         return unauthorized()
     
     form = DocumentForm()
@@ -489,7 +489,7 @@ def add_document(id: int) -> str:
 @login_required
 def add_link(id: int) -> str:
     """Recibe el id de un j/a y agrega un enlace a su lista de documentos"""
-    if not check_permission(session, "jya_new"):
+    if not check_permission(session, "jya_update"):
         return unauthorized()
     
     form = LinkForm()
