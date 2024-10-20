@@ -13,7 +13,7 @@ import os
 UPLOAD_FOLDER = '/ecuestre_docs'
 ALLOWED_DOC_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg'}
 
-def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, page: int = 1, search: str = '', activity_id: int = None):
+def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 12, page: int = 1, search: str = '', activity_id: int = None):
     """Devuelve todos los caballos de la BD con paginación, orden y búsqueda"""
     query = Horse.query
 

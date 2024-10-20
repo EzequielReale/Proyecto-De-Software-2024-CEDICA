@@ -27,7 +27,7 @@ def index():
          return unauthorized()
     order_by = request.args.get('order_by', 'name')
     order = request.args.get('order', 'asc')
-    limit = int(request.args.get('limit', 10))
+    limit = int(request.args.get('limit', 12))
     page = int(request.args.get('page', 1))
     search = request.args.get('search', '')
     activity_id = request.args.get('activity_id', type=int)
