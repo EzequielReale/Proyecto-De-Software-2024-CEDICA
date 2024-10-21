@@ -64,8 +64,8 @@
     <label for="created_at">Activo:</label>
     <select class="form-control" id="active" name="active" style="width: auto; display: inline-block;">
       <option value="">Seleccionar</option>
-      <option value="True" {% if filters.active == 'True' %}selected{% endif %}>Sí</option>
-      <option value="False" {% if filters.active == 'False' %}selected{% endif %}>No</option>
+      <option value="True" {% if filters.active=='True' %}selected{% endif %}>Sí</option>
+      <option value="False" {% if filters.active=='False' %}selected{% endif %}>No</option>
     </select>
   </div>
   <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;"><i
