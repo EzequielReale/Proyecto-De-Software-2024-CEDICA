@@ -117,7 +117,8 @@
   <tbody>
     {% if riders %}
     {% for rider in riders %}
-    <tr {% if check_permission(session,'jya_show')%} onclick="window.location='{{ url_for('jya.show', id=rider.id) }}';" style="cursor:pointer;" {% endif %}>
+    <tr {% if check_permission(session,'jya_show')%} onclick="window.location='{{ url_for('jya.show', id=rider.id) }}';"
+      style="cursor:pointer;" {% endif %}>
       <td>{{ rider.name }}</td>
       <td>{{ rider.last_name }}</td>
       <td>{{ rider.dni }}</td>
