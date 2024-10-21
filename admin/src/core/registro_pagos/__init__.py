@@ -4,9 +4,9 @@ from src.core.registro_pagos.Pagos import Pago, Tipo_pago
 
 
 
-def tipo_new(**kwargs):
+def tipo_new(tipo: str) -> Tipo_pago:
     """Crea un tipo de pago, lo guarda en la BD y lo devuelve"""
-    return dbf.new(Tipo_pago, **kwargs)
+    return dbf.new(Tipo_pago, tipo=tipo)
 
 def get_tipo_pago(id):
     """ obtiene un tipo de pago mediante el id y lo devuelve"""

@@ -14,9 +14,9 @@ def get_province_by_id(province_id: int) -> Province:
     return db.get_by_field(Province, "id", province_id)
 
 
-def province_new(**kwargs) -> Province:
+def province_new(name: str) -> Province:
     """Crea una provincia, la guarda en la BD y la devuelve"""
-    return db.new(Province, **kwargs)
+    return db.new(Province, name=name)
 
 
 """Módulo de localidades"""
@@ -36,6 +36,6 @@ def get_localities_by_province(province_id: int) -> list:
     return db.filter(Locality, {"province_id": province_id})
 
 
-def locality_new(**kwargs) -> Locality:
+def locality_new(name: str, province: Province) -> Locality:
     """Crea una localidad, la guarda en la BD y la devuelve"""
-    return db.new(Locality, **kwargs)
+    return db.new(Locality, name=name, province=province)
