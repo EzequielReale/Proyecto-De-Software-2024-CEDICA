@@ -25,6 +25,7 @@ bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 def index():
     if  not check_permission(session,"encuestre_index"):
          return unauthorized()
+     
     order_by = request.args.get('order_by', 'name')
     order = request.args.get('order', 'asc')
     limit = int(request.args.get('limit', 12))
@@ -42,6 +43,7 @@ def show(id: int):
     """Detalle de un caballo en específico"""
     if  not check_permission(session,"encuestre_show"):
          return unauthorized()
+     
     order_by = request.args.get('order_by', 'document_type_id')
     order = request.args.get('order', 'asc')
     search = request.args.get('search', '')
@@ -56,6 +58,7 @@ def show(id: int):
 def create():
     if  not check_permission(session,"encuestre_new"):
          return unauthorized()
+     
     # Si se envía el formulario
     if request.method == 'POST':
         # Obtener los datos del formulario
@@ -133,7 +136,12 @@ def update(id: int)->str:
     """Recibe el id de un caballo y muestra el formulario para editarlo, o lo actualiza en caso de que se envíe el formulario"""
     if  not check_permission(session,"encuestre_update"):
          return unauthorized()
+     
     horse = equestrian.get_horse_by_id(id)
+    
+    if not horse:
+        flash(f"El caballo con ID {id} no existe", "danger")
+        return redirect(url_for('ecuestre.index'))
 
     # Convertir el objeto horse a un diccionario
     horse_dict = {
@@ -218,6 +226,11 @@ def destroy(id: int):
     """Eliminar un caballo de la institución"""
     if  not check_permission(session,"encuestre_destroy"):
          return unauthorized()
+     
+    if not equestrian.get_horse_by_id(id):
+        flash(f"El caballo con ID {id} no existe", "danger")
+        return redirect(url_for('ecuestre.index'))
+     
     horse = equestrian.horse_delete(id)
     flash(f"Caballo {horse.name} eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.index'))
@@ -226,6 +239,9 @@ def destroy(id: int):
 @bp.route('/<int:id>/add_document', methods=['POST'])
 def upload(id: int):
     """Recibe el ID de un caballo y agrega un documento a su lista de documentos"""
+    if not check_permission(session,"encuestre_update"):
+        return unauthorized()
+    
     if 'file' not in request.files:
         equestrian.horse_attach_document(id, request.form['doc-type'], request.form['doc-url'], request.form['doc-name'])
     else:
@@ -238,6 +254,9 @@ def upload(id: int):
 @bp.post("/<int:id>/delete_document/<int:document_id>")
 def delete_document(id: int, document_id: int)->str:
     """Recibe el ID de un caballo y el ID de un documento y lo elimina de la BD"""
+    if not check_permission(session,"encuestre_update"):
+        return unauthorized()
+    
     equestrian.delete_document(document_id)
     flash(f"Documento eliminado exitosamente", "success")
     return redirect(url_for('ecuestre.show', id=id, initial_page=1))
