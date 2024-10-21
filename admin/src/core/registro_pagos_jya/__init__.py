@@ -7,10 +7,10 @@ from sqlalchemy.orm.query import Query
 
 ##### Operaciones sobre Medios de Pago ####
 
-def medio_de_pago_new(**kwargs) -> MediosDePago:
+def medio_de_pago_new(tipo: str) -> MediosDePago:
     """Recibe un String que define al Medio de Pago,
     lo crea, lo guarda en la BD y lo devuelve"""
-    return dbf.new(MediosDePago, **kwargs)
+    return dbf.new(MediosDePago, tipo=tipo)
 
 
 def pago_jya_new(**kwargs) -> PagoJineteAmazona:
