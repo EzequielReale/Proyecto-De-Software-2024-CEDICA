@@ -223,9 +223,9 @@ def get_activity_by_id(activity_id:int)->Activity:
     """Obtiene una actividad por ID"""
     return Activity.query.filter_by(id=activity_id).first()
 
-def activity_new(**kwargs)->Activity:
+def activity_new(name: str)->Activity:
     """Crea una actividad, la guarda en la BD y la devuelve"""
-    activity = Activity(**kwargs)
+    activity = Activity(name=name)
     db.session.add(activity)
     db.session.commit()
     return activity
