@@ -4,6 +4,36 @@
 
 {% block head %}
 {{ super() }}
+<style>
+    body {
+        background-image: linear-gradient(-145deg,
+                hsl(190deg 33% 63%) 0%,
+                hsl(191deg 31% 71%) 12%,
+                hsl(191deg 28% 79%) 25%,
+                hsl(191deg 23% 87%) 37%,
+                hsl(0deg 0% 95%) 50%,
+                hsl(30deg 62% 89%) 62%,
+                hsl(31deg 77% 84%) 74%,
+                hsl(32deg 82% 78%) 87%,
+                hsl(33deg 82% 71%) 100%);
+
+        background-repeat: no-repeat;
+        height: 100vh;
+    }
+
+    .card {
+        background-color: rgba(255, 255, 255, 0.25) !important;
+        backdrop-filter: blur(15px) saturate(150%);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+
+
+    @media screen and (max-width: 768px) {
+        #buttons-container .btn:nth-child(1) {
+            display: none;
+        }
+    }
+</style>
 {% endblock %}
 
 
@@ -37,7 +67,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="d-flex pt-1 gap-2">
+                        <div id="buttons-container" class="d-flex pt-1 gap-2">
                             <a role="button" href="{{ url_for('home') }}"
                                 class="btn btn-outline-secondary me-1 flex-grow-1">Volver</a>
                             <a role="button" href="{{ url_for('auth.logout') }}"
