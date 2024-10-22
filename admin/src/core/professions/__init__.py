@@ -18,9 +18,9 @@ def get_profession_by_id(profession_id: int) -> Profession:
     return db.get_by_field(Profession, "id", profession_id)
 
 
-def profession_new(**kwargs) -> Profession:
+def profession_new(name: str, description: str) -> Profession:
     """Crea una profesion, la guarda en la BD y la devuelve"""
-    return db.new(Profession, **kwargs)
+    return db.new(Profession, name=name, description=description)
 
 
 """Módulo de trabajos"""
@@ -34,9 +34,9 @@ def get_job_by_id(job_id: int) -> Job:
     return db.get_by_field(Job, "id", job_id)
 
 
-def job_new(**kwargs) -> Job:
+def job_new(name: str, description: str) -> Job:
     """Crea un trabajo, lo guarda en la BD y lo devuelve"""
-    return db.new(Job, **kwargs)
+    return db.new(Job, name=name, description=description)
 
 
 """Módulo de jya"""

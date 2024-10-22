@@ -114,7 +114,7 @@
         background-color: #0099CC;
         color: white;
         text-align: center;
-        
+
         /* Centrar el texto dentro del botón */
         border-radius: 8px;
         text-decoration: none;
@@ -262,7 +262,8 @@
         </div>
     </form>
 
-    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i></a>
+    <a href="{{ url_for('registro_pagos.create') }}" class="nuevo-pago-btn">Nuevo <i style="transform: scale(1.4);"
+            class="fa-light fa-plus me-2"></i></a>
 </div>
 
 
@@ -300,7 +301,7 @@
             <td class="action-icons">
                 <!-- Icono de edición -->
                 <a href="{{ url_for('registro_pagos.update', id=pago.id) }}" title="Editar">
-                    <i class="fas fa-edit"></i>
+                    <i class="fas fa-edit" style="transform: scale(0.9);"></i>
                 </a>
                 <!-- Formulario de eliminación -->
                 <form action="{{ url_for('registro_pagos.destroy', id=pago.id) }}" method="POST"
@@ -338,30 +339,30 @@
 <!-- Paginación -->
 <nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
     <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
-      {% if page > 1 %}
-      <li class="page-item">
-        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page-1, **filters) }}" aria-label="Previous"
-          style="color: #0056b3;">
-          <span aria-hidden="true">&laquo;</span>
-        </a>
-      </li>
-      {% endif %}
-      {% for p in range(1, total_pages + 1) %}
-      <li class="page-item {% if p == page %}active{% endif %}">
-        <a class="page-link" href="{{ url_for('registro_pagos.index', page=p, **filters) }}"
-          style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
-          p }}</a>
-      </li>
-      {% endfor %}
-      {% if page < total_pages %} <li class="page-item">
-        <a class="page-link" href="{{ url_for('registro_pagos.index', page=page+1, **filters) }}" aria-label="Next"
-          style="color: #0056b3;">
-          <span aria-hidden="true">&raquo;</span>
-        </a>
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('registro_pagos.index', page=page-1, **filters) }}"
+                aria-label="Previous" style="color: #0056b3;">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
         </li>
         {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('registro_pagos.index', page=p, **filters) }}"
+                style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+                p }}</a>
+        </li>
+        {% endfor %}
+        {% if page < total_pages %} <li class="page-item">
+            <a class="page-link" href="{{ url_for('registro_pagos.index', page=page+1, **filters) }}" aria-label="Next"
+                style="color: #0056b3;">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+            {% endif %}
     </ul>
-  </nav>
+</nav>
 
 
 <script>
@@ -375,13 +376,6 @@
     }
 </script>
 
-
-
-
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-
-
-
 
 {% endblock %}

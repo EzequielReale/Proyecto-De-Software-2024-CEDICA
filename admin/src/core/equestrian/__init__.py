@@ -13,7 +13,7 @@ import os
 UPLOAD_FOLDER = '/ecuestre_docs'
 ALLOWED_DOC_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg'}
 
-def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 10, page: int = 1, search: str = '', activity_id: int = None):
+def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 12, page: int = 1, search: str = '', activity_id: int = None):
     """Devuelve todos los caballos de la BD con paginación, orden y búsqueda"""
     query = Horse.query
 
@@ -223,9 +223,9 @@ def get_activity_by_id(activity_id:int)->Activity:
     """Obtiene una actividad por ID"""
     return Activity.query.filter_by(id=activity_id).first()
 
-def activity_new(**kwargs)->Activity:
+def activity_new(name: str)->Activity:
     """Crea una actividad, la guarda en la BD y la devuelve"""
-    activity = Activity(**kwargs)
+    activity = Activity(name=name)
     db.session.add(activity)
     db.session.commit()
     return activity

@@ -2,8 +2,12 @@
 
 {% block title %}Crear registro de pago{% endblock %}
 
-{% block content %}
+{% block head %}
+{{ super() }}
 
+{% endblock %}
+
+{% block content %}
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -89,68 +93,64 @@
             padding: 20px;
         }
 
-        button {
+        #register-button {
             width: 100%;
         }
     }
 </style>
 
+<div class="container">
+    <h2>Registro de Pago</h2>
+    <form action="{{ url_for('registro_pagos.create') }}" method="POST">
 
-<body>
-    <div class="container">
-        <h2>Registro de Pago</h2>
-        <form action="{{ url_for('registro_pagos.create') }}" method="POST">
+        <div class="form-group">
 
-            <div class="form-group">
+            <label for="beneficiario">Beneficiario (Opcional)</label>
+            <select name="beneficiario" id="beneficiario">
+                <option value="" selected>Ninguno</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">
+                    {{ user.email }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
 
-                <label for="beneficiario">Beneficiario (Opcional)</label>
-                <select name="beneficiario" id="beneficiario">
-                    <option value="" selected>Ninguno</option>
-                    {% for user in users %}
-                    <option value="{{ user.id }}">
-                        {{ user.email }}
-                    </option>
-                    {% endfor %}
-                </select>
-            </div>
+        <div class="form-group">
+            <label for="monto">Monto</label>
+            <input type="number" id="monto" name="monto" placeholder="Ingrese el monto" step="0.01" min="1" required>
+        </div>
 
-            <div class="form-group">
-                <label for="monto">Monto</label>
-                <input type="number" id="monto" name="monto" placeholder="Ingrese el monto" step="0.01" min="1"
-                    required>
-            </div>
+        <div class="form-group">
+            <label for="fecha_pago">Fecha de Pago</label>
+            <input type="date" id="fecha_pago" name="fecha_pago" required>
+        </div>
 
-            <div class="form-group">
-                <label for="fecha_pago">Fecha de Pago</label>
-                <input type="date" id="fecha_pago" name="fecha_pago" required>
-            </div>
+        <div class="form-group">
+            <label for="tipo_pago">Tipo de Pago</label>
+            <select name="tipo_pago" id="tipo_pago" required>
+                {% for tipo in tipos %}
+                <option value="{{ tipo.id }}">
+                    {{ tipo.tipo }}
+                </option>
+                {% endfor %}
+            </select>
 
-            <div class="form-group">
-                <label for="tipo_pago">Tipo de Pago</label>
-                <select name="tipo_pago" id="tipo_pago" required>
-                    {% for tipo in tipos %}
-                    <option value="{{ tipo.id }}">
-                        {{ tipo.tipo }}
-                    </option>
-                    {% endfor %}
-                </select>
-
-            </div>
+        </div>
 
 
-            <label for="descripcion">Descripción:</label>
-            <input type="text" name="descripcion" id="descripcion" required maxlength="255">
-            <div id="descripcion-count">0/255 </div>
+        <label for="descripcion">Descripción:</label>
+        <input type="text" name="descripcion" id="descripcion" required maxlength="255">
+        <div id="descripcion-count">0/255 </div>
 
 
 
-            <div class="form-actions">
-                <button type="submit">Registrar Pago</button>
-            </div>
-        </form>
-        <a href="{{ url_for('registro_pagos.index') }}">Cancelar</a>
-    </div>
-</body>
+        <div class="form-actions">
+            <button id="register-button" type="submit">Registrar Pago</button>
+        </div>
+    </form>
+    <a href="{{ url_for('registro_pagos.index') }}">Cancelar</a>
+</div>
 
 
 </html>
