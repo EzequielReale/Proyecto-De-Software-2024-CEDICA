@@ -116,7 +116,7 @@
             Filtros
         </a>
 
-        {% if check_permission(session,'encuestre_new')%}
+        {% if check_permission(session,'ecuestre_new')%}
         <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
             <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
             Nuevo
@@ -227,21 +227,21 @@
             <td>
                 <div class="action-icons">
 
-                    {% if check_permission(session,'encuestre_show')%}
+                    {% if check_permission(session,'ecuestre_show')%}
                     <!-- Icono de vista detallada -->
                     <a href="{{ url_for('ecuestre.show', id=horse.id) }}" title="Ver detalles">
                         <i class="fas fa-file-text"></i>
                     </a>
                     {% endif %}
 
-                    {% if check_permission(session,'encuestre_update')%}
+                    {% if check_permission(session,'ecuestre_update')%}
                     <!-- Icono de edición -->
                     <a href="{{ url_for('ecuestre.update', id=horse.id) }}" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
                     {% endif %}
 
-                    {% if check_permission(session,'encuestre_destroy')%}
+                    {% if check_permission(session,'ecuestre_destroy')%}
                     <!-- Formulario de eliminación -->
                     <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
                         onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
