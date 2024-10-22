@@ -18,11 +18,12 @@ def __apply_filters(model, query:Query, field:any, value:any) -> Query:
             query = query.filter(getattr(related_model, 'id').in_(value))
         else:
             query = query.filter(getattr(related_model, 'id') == value)
+    # Comprobar si es un tipo de columna entero o enum
+    elif isinstance(column.type, (Integer, Enum)):
+        query = query.filter(column == value)
     # Comprobar si es un tipo de columna string
     elif isinstance(column.type, (String, Text)):
         query = query.filter(column.ilike(f"%{value}%"))
-    else:
-        query = query.filter(column == value)
     
     return query
 
