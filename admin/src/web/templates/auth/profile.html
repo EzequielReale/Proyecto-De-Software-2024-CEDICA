@@ -27,9 +27,29 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
     }
 
+    #card-roles {
+        flex-grow: 1;
+    }
+
+    #card-roles,
+    .card img {
+        background-color: rgba(25, 25, 25, 0.05) !important;
+        backdrop-filter: blur(15px) saturate(125%);
+        border: 1px solid rgb(200, 200, 200);
+    }
 
     @media screen and (max-width: 768px) {
         #buttons-container .btn:nth-child(1) {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        #card-body-info {
+            gap: 0 !important;
+        }
+
+        .card img {
             display: none;
         }
     }
@@ -46,20 +66,20 @@
     <div class="col col-md-9 col-lg-7 col-xl-6">
         <div class="card" style="border-radius: 15px;">
             <div class="card-body p-4">
-                <div class="d-flex">
+                <div id="card-body-info" class="d-flex gap-3">
                     <div class="flex-shrink-0">
                         <img src="{{ url_for('static', filename='resources/profile-icon.png') }}"
-                            alt="Generic placeholder image" class="img-fluid border"
+                            alt="Generic placeholder image" class="img-fluid"
                             style="width: 180px; border-radius: 10px; padding: 15px;">
                     </div>
-                    <div class="flex-grow-1 ms-3">
+                    <div class="flex-grow-1 w-100 d-flex flex-column">
                         {% if user_alias %}
                         <h5 class="mb-1 text-capitalize">{{ user_alias }}</h5>
                         {% endif %}
                         {% if user %}
                         <p class="mb-2 pb-1">{{ user }}</p>
                         {% endif %}
-                        <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                        <div id="card-roles" class="d-flex justify-content-start rounded-3 p-2">
                             <div class="ms-1">
                                 <p class="small mb-1 fw-medium">Roles asignados</p>
                                 {% for role in roles %}
@@ -67,13 +87,13 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div id="buttons-container" class="d-flex pt-1 gap-2">
-                            <a role="button" href="{{ url_for('home') }}"
-                                class="btn btn-outline-secondary me-1 flex-grow-1">Volver</a>
-                            <a role="button" href="{{ url_for('auth.logout') }}"
-                                class="btn btn-outline-primary flex-grow-1">Cerrar sesión</a>
-                        </div>
                     </div>
+                </div>
+                <div id="buttons-container" class="d-flex flex-row pt-1 mt-3 gap-2">
+                    <a role="button" href="{{ url_for('home') }}"
+                        class="btn btn-outline-secondary me-1 flex-grow-1">Volver</a>
+                    <a role="button" href="{{ url_for('auth.logout') }}"
+                        class="btn btn-outline-primary flex-grow-1">Cerrar sesión</a>
                 </div>
             </div>
         </div>
