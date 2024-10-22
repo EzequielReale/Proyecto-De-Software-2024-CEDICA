@@ -12,7 +12,7 @@ class RegistrationForm(FlaskForm):
                                                                     EqualTo('password' , message="Las contraseñas no coinciden.")])
     role = SelectMultipleField('Rol', choices=[
         ('Tecnica', 'Técnica'),
-        ('Ecuestre', 'Ecuestre'),
+        ('Encuestre', 'Ecuestre'),
         ('Voluntariado', 'Voluntariado'),
         ('Administracion', 'Administración')
     ], validators=[DataRequired()])

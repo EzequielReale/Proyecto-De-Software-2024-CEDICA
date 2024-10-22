@@ -145,7 +145,7 @@
                             aria-current="page" href="{{ url_for('jya.index') }}">J&A</a>
                     </li>
                     {% endif %}
-                    {% if check_permission(session,'ecuestre_index')%}
+                    {% if check_permission(session,'encuestre_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint.startswith('ecuestre.') %}active{% endif %}"
                             href="{{ url_for('ecuestre.index') }}">Ecuestre</a>
@@ -166,13 +166,13 @@
                     {% if check_permission(session,'reg_pagos_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint.startswith('registro_pagos.') %}active{% endif %}"
-                            href="{{ url_for('registro_pagos.index') }}">Registro de pagos</a>
+                            href="{{ url_for('registro_pagos.index') }}">Registro de Pagos</a>
                     </li>
                     {% endif %}
                     {% if check_permission(session,'reg_cobros_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint.startswith('registro_pagos_jya.') %}active{% endif %}"
-                            href="{{ url_for('registro_pagos_jya.index') }}">Registro de cobros</a>
+                            href="{{ url_for('registro_pagos_jya.index') }}">Registro de Cobros</a>
                     </li>
                     {% endif %}
                     {% endif %}
