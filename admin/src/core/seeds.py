@@ -48,13 +48,13 @@ def run():
     reg_pagos_update = Permission.permiso_new(name='reg_pagos_update')
     reg_pagos_show = Permission.permiso_new(name='reg_pagos_show')
 
-    # Seed para Permisos modulo Encuestre
+    # Seed para Permisos modulo Ecuestre
 
-    encuestre_index = Permission.permiso_new(name='encuestre_index')
-    encuestre_new = Permission.permiso_new(name='encuestre_new')
-    encuestre_destroy = Permission.permiso_new(name='encuestre_destroy')
-    encuestre_update = Permission.permiso_new(name='encuestre_update')
-    encuestre_show = Permission.permiso_new(name='encuestre_show')
+    ecuestre_index = Permission.permiso_new(name='ecuestre_index')
+    ecuestre_new = Permission.permiso_new(name='ecuestre_new')
+    ecuestre_destroy = Permission.permiso_new(name='ecuestre_destroy')
+    ecuestre_update = Permission.permiso_new(name='ecuestre_update')
+    ecuestre_show = Permission.permiso_new(name='ecuestre_show')
 
 
     # Seed para Permisos modulo Jinetes y Amazonas
@@ -76,12 +76,12 @@ def run():
     
     rol1 = Role.role_new(
         name='Tecnica',
-        permissions=[encuestre_index, encuestre_show,
+        permissions=[ecuestre_index, ecuestre_show,
                      reg_cobros_index, reg_cobros_show]
     )
     rol2 = Role.role_new(
-        name='Encuestre',
-        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy]
+        name='Ecuestre',
+        permissions=[ecuestre_index, ecuestre_show, ecuestre_update, ecuestre_new, ecuestre_destroy]
     )
     rol3 = Role.role_new(
         name='Voluntariado',
@@ -90,7 +90,7 @@ def run():
         name='Administracion',
         permissions=[team_index, team_show, team_update, team_new, team_destroy,
                      reg_pagos_index, reg_pagos_show, reg_pagos_update, reg_pagos_new, reg_pagos_destroy,
-                     encuestre_index, encuestre_show,
+                     ecuestre_index, ecuestre_show,
                      reg_cobros_index, reg_cobros_show, reg_cobros_update, reg_cobros_new, reg_cobros_destroy,
                      jya_index, jya_show, jya_update, jya_new, jya_destroy]
     )

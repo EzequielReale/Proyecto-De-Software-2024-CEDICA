@@ -91,7 +91,7 @@
         <p>Información registrada acerca del caballo</p>
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center gap-2">
-        {% if check_permission(session,'encuestre_destroy')%}
+        {% if check_permission(session,'ecuestre_destroy')%}
         <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
             onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
             <button type="submit" title="Eliminar" class="btn btn-danger">
@@ -99,8 +99,8 @@
                 Eliminar
             </button>
         </form>
-       {% endif %}
-       {% if check_permission(session,'encuestre_update')%}
+        {% endif %}
+        {% if check_permission(session,'ecuestre_update')%}
         <a class="btn btn-warning" href="{{ url_for('ecuestre.update', id=horse.id) }}">
             <i class="fas fa-edit me-1"></i>
             Editar
@@ -299,8 +299,8 @@
             </table>
 
             <div class="d-flex flex-row gap-2 justify-content-end mt-3 w-100">
-                
-                {% if check_permission(session,'encuestre_update')%}
+
+                {% if check_permission(session,'ecuestre_update')%}
                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
                     data-bs-target="#modal-attach-url">
                     <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
@@ -308,7 +308,7 @@
                 </button>
                 {% endif %}
 
-                {% if check_permission(session,'encuestre_update')%}
+                {% if check_permission(session,'ecuestre_update')%}
                 <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
                     data-bs-target="#modal-upload-file">
                     <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>

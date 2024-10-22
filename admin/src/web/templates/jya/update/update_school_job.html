@@ -3,20 +3,72 @@
 {% block head %}
 {{ super() }}
 <style>
-    .form-group label { font-weight: 500; }
-    form a, form a:hover { color: #0077AA !important; text-decoration: none !important; }
-    form a.active { color: #222 !important; }
-    .btn { transition: 0.2s !important; }
-    #btn-back { transition: 0.2s; color: #222 !important; }
-    #btn-back:hover { background-color: #ddd !important; }
-    .btn-outline-custom { color: #0077AA !important; border-color: #0077AA !important; }
-    .btn-outline-custom:hover { background-color: #0077AA !important; color: white !important; }
-    #activities-list li { transition: 0.2s; }
-    #activities-list li:hover { background-color: #f0f0f0; }
-    #assign-buttons-container { display: flex; flex-wrap: wrap; gap: 10px; }
-    #assign-buttons-container button { color: #333; font-weight: 500; transition: 0.2s; }
-    #assign-buttons-container button:hover { background-color: #f0f0f0; }
-    .selected { background-color: #0077AA !important; border-color: #0077AA !important; color: white !important; }
+    .form-group label {
+        font-weight: 500;
+    }
+
+    form a,
+    form a:hover {
+        color: #0077AA !important;
+        text-decoration: none !important;
+    }
+
+    form a.active {
+        color: #222 !important;
+    }
+
+    .btn {
+        transition: 0.2s !important;
+    }
+
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    .btn-outline-custom {
+        color: #0077AA !important;
+        border-color: #0077AA !important;
+    }
+
+    .btn-outline-custom:hover {
+        background-color: #0077AA !important;
+        color: white !important;
+    }
+
+    #activities-list li {
+        transition: 0.2s;
+    }
+
+    #activities-list li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #assign-buttons-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    #assign-buttons-container button {
+        color: #333;
+        font-weight: 500;
+        transition: 0.2s;
+    }
+
+    #assign-buttons-container button:hover {
+        background-color: #f0f0f0;
+    }
+
+    .selected {
+        background-color: #0077AA !important;
+        border-color: #0077AA !important;
+        color: white !important;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -29,48 +81,59 @@
             <label for="has_school" class="mb-1">¿Asiste a la escuela?</label>
             <select class="form-select" id="has_school" name="has_school" required>
                 {% if rider.school %}
-                    <option value="True" selected>Sí</option>
-                    <option value="False">No</option>
+                <option value="True" selected>Sí</option>
+                <option value="False">No</option>
                 {% else %}
-                    <option value="False" selected>No</option>
-                    <option value="True">Sí</option>
+                <option value="False" selected>No</option>
+                <option value="True">Sí</option>
                 {% endif %}
             </select>
         </div>
-        <div id="school_group" {% if rider.school %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+        <div id="school_group" {% if rider.school %}style="display: block;" {% else %}style="display: none;" {% endif
+            %}>
             <div class="w-100 d-flex flex-row gap-3">
                 <div class="form-group w-50">
                     <label for="school_name" class="mb-1">Nombre de la escuela</label>
-                    <input class="form-control" type="text" id="school_name" name="school_name" value="{{ rider.school.name }}" maxlength="64">
+                    <input class="form-control" type="text" id="school_name" name="school_name"
+                        value="{{ rider.school.name }}" maxlength="64">
                 </div>
                 <div class="form-group w-50">
                     <label for="school_address" class="mb-1">Dirección de la escuela</label>
-                    <input class="form-control" type="text" id="school_address" name="school_address" value="{{ rider.school.address }}" maxlength="128">
+                    <input class="form-control" type="text" id="school_address" name="school_address"
+                        value="{{ rider.school.address }}" maxlength="128">
                 </div>
             </div>
             <div class="w-100 d-flex flex-row gap-3">
                 <div class="form-group w-50">
                     <label for="school_phone" class="mb-1">Teléfono de la escuela</label>
-                    <input class="form-control" type="text" id="school_phone" name="school_phone" value="{{ rider.school.phone }}" maxlength="16">
+                    <input class="form-control" type="text" id="school_phone" name="school_phone"
+                        value="{{ rider.school.phone }}" maxlength="16">
                 </div>
                 <div class="form-group w-50">
                     <label for="school_level" class="mb-1">Nivel educativo</label>
                     <select class="form-select" id="school_level" name="school_level">
-                        <option value="Inicial" {% if rider.school.level == "Inicial" %} selected {%endif%}>Inicial</option>
-                        <option value="Primario" {% if rider.school.level == "Primario" %} selected {%endif%}>Primario</option>
-                        <option value="Secundario" {% if rider.school.level == "Secundario" %} selected {%endif%}>Secundario</option>
-                        <option value="Terciario" {% if rider.school.level == "Terciario" %} selected {%endif%}>Terciario</option>
-                        <option value="Universitario" {% if rider.school.level == "Universitario" %} selected {%endif%}>Universitario</option>
+                        <option value="Inicial" {% if rider.school.level=="Inicial" %} selected {%endif%}>Inicial
+                        </option>
+                        <option value="Primario" {% if rider.school.level=="Primario" %} selected {%endif%}>Primario
+                        </option>
+                        <option value="Secundario" {% if rider.school.level=="Secundario" %} selected {%endif%}>
+                            Secundario</option>
+                        <option value="Terciario" {% if rider.school.level=="Terciario" %} selected {%endif%}>Terciario
+                        </option>
+                        <option value="Universitario" {% if rider.school.level=="Universitario" %} selected {%endif%}>
+                            Universitario</option>
                     </select>
                 </div>
                 <div class="form-group w-50">
                     <label for="school_year" class="mb-1">Año</label>
-                    <input class="form-control" type="number" id="school_year" name="school_year" value="{{ rider.school.year }}" min="1" max="12">
+                    <input class="form-control" type="number" id="school_year" name="school_year"
+                        value="{{ rider.school.year }}" min="1" max="12">
                 </div>
             </div>
             <div class="form-group">
                 <label for="school_observations" class="mb-1">Observaciones</label>
-                <textarea class="form-control" id="school_observations" name="school_observations">{{ rider.school.observations }}</textarea>
+                <textarea class="form-control" id="school_observations"
+                    name="school_observations">{{ rider.school.observations }}</textarea>
             </div>
         </div>
 
@@ -84,34 +147,45 @@
             <label for="has_job_proposal" class="mb-1">¿Tiene una oferta de trabajo con nosotros?</label>
             <select class="form-select" id="has_job_proposal" name="has_job_proposal" required>
                 {%if rider.job_proposal.institutional_work_proposal %}
-                    <option value="True" selected>Sí</option>
-                    <option value="False">No</option>
+                <option value="True" selected>Sí</option>
+                <option value="False">No</option>
                 {% else %}
-                    <option value="False" selected>No</option>
-                    <option value="True">Sí</option>
+                <option value="False" selected>No</option>
+                <option value="True">Sí</option>
                 {% endif %}
             </select>
         </div>
 
-        <div id="job_group"   {% if rider.job_proposal %} style="display: block;"{% else %}style="display: none;"{% endif %}>
-            <div class="w-100 d-flex flex-row gap-3"  >
-                
-                <div class="form-group w-50" >
+        <div id="job_group" {% if rider.job_proposal %} style="display: block;" {% else %}style="display: none;" {%
+            endif %}>
+            <div class="w-100 d-flex flex-row gap-3">
+
+                <div class="form-group w-50">
                     <label for="institutional_work_proposal" class="mb-1">Propuesta de trabajo institucional</label>
                     <select class="form-select" id="institutional_work_proposal" name="institutional_work_proposal">
-                        <option value="Hipoterapia" {% if rider.job_proposal.institutional_work_proposal == "Hipoterapia" %} selected {%endif%}>Hipoterapia</option>
-                        <option value="Monta Terapéutica" {% if rider.job_proposal.institutional_work_proposal == "Monta Terapéutica" %} selected {%endif%}>Monta Terapéutica</option>
-                        <option value="Deporte Ecuestre Adaptado" {% if rider.job_proposal.institutional_work_proposal == "Deporte Encuestre Adaptado" %} selected {%endif%}>Deporte Ecuestre Adaptado</option>
-                        <option value="Actividades Recreativas" {% if rider.job_proposal.institutional_work_proposal == "Actividades Recreativas" %} selected {%endif%}>Actividades Recreativas</option>
-                        <option value="Equitación" {% if rider.job_proposal.institutional_work_proposal == "Equitación" %} selected {%endif%}>Equitación</option>
+                        <option value="Hipoterapia" {% if rider.job_proposal.institutional_work_proposal=="Hipoterapia"
+                            %} selected {%endif%}>Hipoterapia</option>
+                        <option value="Monta Terapéutica" {% if
+                            rider.job_proposal.institutional_work_proposal=="Monta Terapéutica" %} selected {%endif%}>
+                            Monta Terapéutica</option>
+                        <option value="Deporte Ecuestre Adaptado" {% if
+                            rider.job_proposal.institutional_work_proposal=="Deporte Ecuestre Adaptado" %} selected
+                            {%endif%}>Deporte Ecuestre Adaptado</option>
+                        <option value="Actividades Recreativas" {% if
+                            rider.job_proposal.institutional_work_proposal=="Actividades Recreativas" %} selected
+                            {%endif%}>Actividades Recreativas</option>
+                        <option value="Equitación" {% if rider.job_proposal.institutional_work_proposal=="Equitación" %}
+                            selected {%endif%}>Equitación</option>
                     </select>
                 </div>
 
                 <div class="form-group w-50">
                     <label for="condition" class="mb-1">Condición</label>
                     <select class="form-select" id="condition" name="condition">
-                        <option value="Regular" {% if rider.job_proposal.condition == "Regular" %} selected {%endif%}>Regular</option>
-                        <option value="De baja" {% if rider.job_proposal.condition == "De baja" %} selected {%endif%}>De baja</option>
+                        <option value="Regular" {% if rider.job_proposal.condition=="Regular" %} selected {%endif%}>
+                            Regular</option>
+                        <option value="De baja" {% if rider.job_proposal.condition=="De baja" %} selected {%endif%}>De
+                            baja</option>
                     </select>
                 </div>
             </div>
@@ -120,9 +194,12 @@
                 <div class="form-group w-50">
                     <label for="headquarters" class="mb-1">Sede</label>
                     <select class="form-select" id="headquarters" name="headquarters">
-                        <option value="CASJ" {% if rider.job_proposal.headquarters == "CASJ" %} selected {%endif%}>CASJ</option>
-                        <option value="HLP" {% if rider.job_proposal.headquarters == "HLP" %} selected {%endif%}>HLP</option>
-                        <option value="OTRO" {% if rider.job_proposal.headquarters == "OTRO" %} selected {%endif%}>OTRO</option>
+                        <option value="CASJ" {% if rider.job_proposal.headquarters=="CASJ" %} selected {%endif%}>CASJ
+                        </option>
+                        <option value="HLP" {% if rider.job_proposal.headquarters=="HLP" %} selected {%endif%}>HLP
+                        </option>
+                        <option value="OTRO" {% if rider.job_proposal.headquarters=="OTRO" %} selected {%endif%}>OTRO
+                        </option>
 
                     </select>
                 </div>
@@ -131,12 +208,18 @@
                     <label for="days" class="mb-1">Días</label>
                     <select class="form-select" id="days" name="days" multiple>
                         <option value="1" {% if 'Lunes' in rider.job_proposal.days %}selected{% endif %}>Lunes</option>
-                        <option value="2" {% if 'Martes' in rider.job_proposal.days %}selected{% endif %}>Martes</option>
-                        <option value="3" {% if 'Miércoles' in rider.job_proposal.days %}selected{% endif %}>Miércoles</option>
-                        <option value="4" {% if 'Jueves' in rider.job_proposal.days %}selected{% endif %}>Jueves</option>
-                        <option value="5" {% if 'Viernes' in rider.job_proposal.days %}selected{% endif %}>Viernes</option>
-                        <option value="6" {% if 'Sábado' in rider.job_proposal.days %}selected{% endif %}>Sábado</option>
-                        <option value="7" {% if 'Domingo' in rider.job_proposal.days %}selected{% endif %}>Domingo</option>
+                        <option value="2" {% if 'Martes' in rider.job_proposal.days %}selected{% endif %}>Martes
+                        </option>
+                        <option value="3" {% if 'Miércoles' in rider.job_proposal.days %}selected{% endif %}>Miércoles
+                        </option>
+                        <option value="4" {% if 'Jueves' in rider.job_proposal.days %}selected{% endif %}>Jueves
+                        </option>
+                        <option value="5" {% if 'Viernes' in rider.job_proposal.days %}selected{% endif %}>Viernes
+                        </option>
+                        <option value="6" {% if 'Sábado' in rider.job_proposal.days %}selected{% endif %}>Sábado
+                        </option>
+                        <option value="7" {% if 'Domingo' in rider.job_proposal.days %}selected{% endif %}>Domingo
+                        </option>
                     </select>
                 </div>
             </div>
@@ -146,8 +229,9 @@
                     <label for="professor_id" class="mb-1">Profesor o terapeuta</label>
                     <select class="form-select" id="professor_id" name="professor_id">
                         {%if rider.job_proposal.institutional_work_proposal %}
-                        <option value="{{ rider.job_proposal.professor.id }}" selected>{{ rider.job_proposal.professor.name }} {{ rider.job_proposal.professor.last_name}}</option>
-                        {% else %} 
+                        <option value="{{ rider.job_proposal.professor.id }}" selected>{{
+                            rider.job_proposal.professor.name }} {{ rider.job_proposal.professor.last_name}}</option>
+                        {% else %}
                         <option disabled selected>Seleccione una opcion..</option>
                         {%endif%}
 
@@ -161,9 +245,10 @@
                     <label for="assistant_id" class="mb-1">Auxiliar de pista</label>
                     <select class="form-select" id="assistant_id" name="assistant_id">
                         {%if rider.job_proposal.institutional_work_proposal %}
-                        <option value="{{ rider.job_proposal.assistant.id }}" selected>{{ rider.job_proposal.assistant.name }} {{ rider.job_proposal.assistant.last_name
-                        }}</option>
-                        {% else %} 
+                        <option value="{{ rider.job_proposal.assistant.id }}" selected>{{
+                            rider.job_proposal.assistant.name }} {{ rider.job_proposal.assistant.last_name
+                            }}</option>
+                        {% else %}
                         <option disabled selected>Seleccione una opcion..</option>
                         {%endif%}
                         {% for member in assistants %}
@@ -177,11 +262,12 @@
                 <div class="form-group w-50">
                     <label for="member_horse_rider_id" class="mb-1">Conductor del caballo</label>
                     <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id">
-                        
+
                         {%if rider.job_proposal.institutional_work_proposal %}
-                        <option value="{{ rider.job_proposal.member_horse_rider.id }}" selected>{{ rider.job_proposal.member_horse_rider.name }} {{
+                        <option value="{{ rider.job_proposal.member_horse_rider.id }}" selected>{{
+                            rider.job_proposal.member_horse_rider.name }} {{
                             rider.job_proposal.member_horse_rider.last_name }}</option>
-                        {% else %} 
+                        {% else %}
                         <option disabled selected>Seleccione una opcion..</option>
                         {%endif%}
                         {% for member in horse_riders %}
@@ -194,8 +280,9 @@
                     <label for="horse_id" class="mb-1">Caballo</label>
                     <select class="form-select" id="horse_id" name="horse_id">
                         {%if rider.job_proposal.institutional_work_proposal %}
-                        <option value="{{ rider.job_proposal.horse.id }}" selected>{{ rider.job_proposal.horse.name }} </option>
-                        {% else %} 
+                        <option value="{{ rider.job_proposal.horse.id }}" selected>{{ rider.job_proposal.horse.name }}
+                        </option>
+                        {% else %}
                         <option disabled selected>Seleccione una opcion..</option>
                         {%endif%}
                         {% for horse in horses %}
@@ -205,7 +292,7 @@
                 </div>
             </div>
         </div>
-    
+
 
         <div class="d-flex flex-row justify-content-end mt-3 gap-2">
             <button type="submit" class="btn btn-primary">Editar jinete/amazona</button>
@@ -215,7 +302,7 @@
 
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var hasSchoolSelect = document.getElementById('has_school');
         var schoolGroup = document.getElementById('school_group');
 
@@ -223,7 +310,7 @@
             schoolGroup.style.display = 'block';
         }
 
-        hasSchoolSelect.addEventListener('change', function() {
+        hasSchoolSelect.addEventListener('change', function () {
             if (this.value === 'True') {
                 schoolGroup.style.display = 'block';
             } else {
@@ -232,7 +319,7 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var hasSchoolSelect = document.getElementById('has_job_proposal');
         var schoolGroup = document.getElementById('job_group');
 
@@ -240,7 +327,7 @@
             schoolGroup.style.display = 'block';
         }
 
-        hasSchoolSelect.addEventListener('change', function() {
+        hasSchoolSelect.addEventListener('change', function () {
             if (this.value === 'True') {
                 schoolGroup.style.display = 'block';
             } else {
