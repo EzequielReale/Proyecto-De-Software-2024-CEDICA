@@ -33,6 +33,7 @@
             padding: 3rem 4rem;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            min-height: 200px;
         }
 
         @keyframes fadeIn {
@@ -42,6 +43,16 @@
 
             to {
                 opacity: 1;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            #container {
+                padding: 2rem 3rem;
+            }
+
+            #container img {
+                display: none;
             }
         }
     </style>
@@ -54,7 +65,7 @@
                 <div id="error-title"><strong>Error {{error.code}}:</strong> {{error.message}}</div>
                 <div class="error-details">{{error.description}}</div>
             </div>
-            <a href="{{ url_for('home')}}" class="more-link">Volver a la página principal</a>
+            <a href="{{ url_for('home')}}">Volver a la página principal</a>
         </div>
         <img height="150" src="{{ url_for('static', filename='404.gif') }}" alt="">
     </div>
