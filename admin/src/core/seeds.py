@@ -253,25 +253,6 @@ def run():
     
     list_activities=[activity1, activity2, activity3, activity4, activity5]
     
-    member1 = people.member_new(
-        name="Giuliana",
-        last_name="Rossi",
-        dni="12345678",
-        phone="123456789",
-        emergency_phone=987654321,
-        street="Calle Falsa",
-        number=123,
-        locality=locality1,
-        email="giuliana@gmail.com",
-        start_date="2023-01-01",
-        end_date="2023-12-31",
-        health_insurance="Health Inc",
-        health_insurance_number=987654321,
-        condition="Voluntario",
-        active=True,
-        profession_id=1,
-        job_id=1
-    )
     horse1 = equestrian.horse_new(
         name="Canelo",
         birth_date="2001-05-04",
@@ -384,10 +365,10 @@ def run():
             headquarters="CASJ",
             days=["Lunes", "Miércoles", "Viernes"],
             rider_id=jya.id,
-            professor_id=member1.id,
-            member_horse_rider_id=member1.id,
+            professor_id=member.id,
+            member_horse_rider_id=member.id,
             horse_id=horse1.id,
-            assistant_id=member1.id
+            assistant_id=member.id
         )
     
     # Seed de Registros de Cobro de prueba

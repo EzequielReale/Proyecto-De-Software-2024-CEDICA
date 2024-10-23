@@ -17,7 +17,7 @@ class PersonDocument(db.Model):
     )
     its_a_link = db.Column(db.Boolean, default=False)
 
-    person_id = db.Column(db.Integer, db.ForeignKey("persons.id"), nullable=False)
+    person_id = db.Column(db.Integer, db.ForeignKey("persons.id", ondelete='CASCADE'), nullable=False)
     person = db.relationship("Person", back_populates="documents")
 
     created_at = db.Column(db.DateTime, default=datetime.now)

@@ -21,4 +21,4 @@ class School(db.Model):
     )
     year = db.Column(db.Integer, nullable=False)
     observations = db.Column(db.Text, nullable=False)
-    rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), nullable=False)
+    rider_id = db.Column(db.Integer, db.ForeignKey("riders.id", ondelete='CASCADE'), nullable=False)

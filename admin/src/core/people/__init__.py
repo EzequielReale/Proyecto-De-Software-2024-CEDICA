@@ -332,14 +332,14 @@ def rider_delete(rider_id: int) -> Rider:
     for document in documents:
         delete_document(document["id"])
 
-    if rider.tutor_1:
-        db_fun.delete(Tutor, rider.tutor_1.id)
-    if rider.tutor_2:
-        db_fun.delete(Tutor, rider.tutor_2.id)
-    if rider.school:
-        professions.school_delete(rider.school.id)
-    if rider.job_proposal:
-        professions.job_proposal_delete(rider.job_proposal.id)
+    # if rider.tutor_1:
+    #     db_fun.delete(Tutor, rider.tutor_1.id)
+    # if rider.tutor_2:
+    #     db_fun.delete(Tutor, rider.tutor_2.id)
+    # if rider.school:
+    #     professions.school_delete(rider.school.id)
+    # if rider.job_proposal:
+    #     professions.job_proposal_delete(rider.job_proposal.id)
 
     return db_fun.delete(Rider, rider_id)
 

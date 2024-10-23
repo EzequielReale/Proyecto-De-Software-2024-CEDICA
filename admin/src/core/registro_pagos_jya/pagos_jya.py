@@ -18,7 +18,6 @@ class PagoJineteAmazona(db.Model):
     jinete_amazona_id = db.Column(db.Integer, db.ForeignKey('riders.id', ondelete='CASCADE'), nullable=False)
     jinete_amazona = db.relationship('Rider', back_populates='payments')
     
-    # Clave foránea única que referencia a MedioPago
     medio_de_pago_id = db.Column(db.Integer, db.ForeignKey('medios_de_pago.id', ondelete='CASCADE'), nullable=False) 
     medio_de_pago = db.relationship('MediosDePago', backref='pagos', uselist=False)
 
