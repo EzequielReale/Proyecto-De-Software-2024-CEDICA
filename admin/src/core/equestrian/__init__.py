@@ -140,11 +140,6 @@ def horse_document_type_new(name:str)->HorseDocumentType:
 
 def horse_add_document(horse_id:int, document_type:int, file:bytes)->HorseDocument:
     """Añade un documento a un caballo por ID y lo guarda en MinIO"""
-    
-    # Verificar si el archivo es válido
-    if not _allowed_file(file.filename):
-        raise TypeError("El archivo no es válido")
-
     # Crear ULID
     ulid = ULID()
     
@@ -160,7 +155,7 @@ def horse_attach_document(horse_id:int, document_type:int, url:str, name: str = 
     return _attach_document(horse_id, document_type, url, name)
 
 
-def _allowed_file(filename):
+def allowed_file(filename):
     """Verifica si la extensión del archivo es válida"""
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_DOC_EXTENSIONS

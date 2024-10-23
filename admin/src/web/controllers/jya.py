@@ -77,7 +77,12 @@ def show(id: int) -> str:
     }
     sort_by = request.args.get("sort_by", "document_name")
     sort_direction = request.args.get("sort_direction", "asc")
+
     rider = people.get_rider_by_field("id", id)
+    if rider is None:
+        flash("No se encontró el jinete/amazona", "danger")
+        return redirect(url_for("jya.index"))
+    
     documents = people.list_filtered_documents(id, filters, sort_by, sort_direction)
     return render_template(
         "jya/show.html",
@@ -269,7 +274,10 @@ def update_general(id: int) -> str:
     """Recibe el id de un jinete/amazona y muestra el formulario para editar los datos personales"""
     if not check_permission(session, "jya_update"):
         return unauthorized()
-    rider = people.get_rider_by_field("id", id)  
+    rider = people.get_rider_by_field("id", id) 
+    if rider is None:
+        flash("El jinete/amazona no existe", "danger")
+        return redirect(url_for("jya.index")) 
 
     form_data = request.form.to_dict(flat=True)
 
@@ -329,6 +337,10 @@ def update_school_job(id: int) -> str:
     if not check_permission(session, "jya_update"):
         return unauthorized()
     rider = people.get_rider_by_field("id", id)
+    if rider is None:
+        flash("El jinete/amazona no existe", "danger")
+        return redirect(url_for("jya.index"))
+
     form_data = request.form.to_dict(flat=True)
     required = {
         "disabilities": False,
@@ -380,7 +392,10 @@ def update_tutor(id: int) -> str:
     if not check_permission(session, "jya_update"):
         return unauthorized()
     
-    rider = people.get_rider_by_field("id", id) 
+    rider = people.get_rider_by_field("id", id)
+    if rider is None:
+        flash("El jinete/amazona no existe", "danger")
+        return redirect(url_for("jya.index"))
 
     form_data = request.form.to_dict(flat=True)
     form = TutorRiderForm(rider_id=rider.id, data=form_data)
@@ -409,6 +424,10 @@ def update_professional(id: int) -> str:
     if not check_permission(session, "jya_update"):
         return unauthorized()
     rider = people.get_rider_by_field("id", id)
+    if rider is None:
+        flash("El jinete/amazona no existe", "danger")
+        return redirect(url_for("jya.index"))
+
     form_data = request.form.to_dict(flat=True)
 
     required = {
@@ -457,6 +476,9 @@ def destroy(id: int) -> str:
     """Recibe el id de un j/a y lo elimina fisicamente de la BD"""
     if not check_permission(session, "jya_destroy"):
         return unauthorized()
+    if people.get_rider_by_field("id", id) is None:
+        flash("El jinete/amazona no existe", "danger")
+        return redirect(url_for("jya.index"))
     
     rider = people.rider_delete(id)
     flash(f"{rider.name} {rider.last_name} ha sido eliminado", "success")
@@ -525,6 +547,10 @@ def edit_document(id: int, document_id: int) -> str:
         return unauthorized()
     
     document = people.get_document_by_id(document_id)
+    if document is None:
+        flash("El documento no existe", "danger")
+        return redirect(url_for("jya.show", id=id))
+
     form = DocumentForm(document_id=document.id, obj=document)
     if form.validate_on_submit():
         file, type = form.get_data()
@@ -548,6 +574,10 @@ def edit_link(id: int, document_id: int) -> str:
         return unauthorized()
     
     document = people.get_document_by_id(document_id)
+    if document is None:
+        flash("El enlace no existe", "danger")
+        return redirect(url_for("jya.show", id=id))
+    
     form = LinkForm(document_id=document.id, obj=document)
     if form.validate_on_submit():
         name, url, type = form.get_data()
@@ -569,6 +599,9 @@ def destroy_document(id: int, document_id: int) -> str:
     """Recibe el id de un j/a y el id de un documento y lo elimina de la BD"""
     if not check_permission(session, "jya_destroy"):
         return unauthorized()
+    if people.get_document_by_id(document_id) is None:
+        flash("El documento no existe", "danger")
+        return redirect(url_for("jya.show", id=id))
     
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")

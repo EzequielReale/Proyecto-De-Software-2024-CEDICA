@@ -242,9 +242,18 @@ def upload(id: int):
     if not check_permission(session,"encuestre_update"):
         return unauthorized()
     
+    if not equestrian.get_horse_by_id(id):
+        flash(f"El caballo con ID {id} no existe", "danger")
+        return redirect(url_for('ecuestre.index'))
+    
     if 'file' not in request.files:
         equestrian.horse_attach_document(id, request.form['doc-type'], request.form['doc-url'], request.form['doc-name'])
     else:
+        # Si se envía un archivo, valido que esté dentro de las extensiones permitidas
+        if not equestrian.allowed_file(request.files['file'].filename):
+            flash(f"El archivo {request.files['file'].filename} no es un formato permitido", "danger")
+            return redirect(url_for('ecuestre.show', id=id, initial_page=1))
+        
         equestrian.horse_add_document(id, request.form['doc-type'], request.files['file'])
     
     flash(f"Documento agregado exitosamente", "success")
@@ -256,6 +265,14 @@ def delete_document(id: int, document_id: int)->str:
     """Recibe el ID de un caballo y el ID de un documento y lo elimina de la BD"""
     if not check_permission(session,"encuestre_update"):
         return unauthorized()
+    
+    if not equestrian.get_horse_by_id(id):
+        flash(f"El caballo con ID {id} no existe", "danger")
+        return redirect(url_for('ecuestre.index'))
+    
+    if not equestrian.get_document_by_id(document_id):
+        flash(f"El documento con ID {document_id} no existe", "danger")
+        return redirect(url_for('ecuestre.show', id=id, initial_page=1))
     
     equestrian.delete_document(document_id)
     flash(f"Documento eliminado exitosamente", "success")
