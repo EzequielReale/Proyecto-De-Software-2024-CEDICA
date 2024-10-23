@@ -289,7 +289,7 @@ def run():
     )
     disability1 = disabilities.disability_diagnosis_new(
         name="Autismo",
-        type_id=disability_type1.id
+        type=disability_type1
     )
     parent1 = people.tutor_new(
         relationship="Padre",

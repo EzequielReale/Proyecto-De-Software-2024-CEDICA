@@ -23,11 +23,11 @@ def get_diagnosis_by_type(type_id: int) -> list:
     return db.filter(DisabilityDiagnosis, {"type_id": type_id})
 
 
-def disability_type_new(**kwargs) -> DisabilityType:
+def disability_type_new(name:str) -> DisabilityType:
     """Crea un tipo de discapacidad, lo guarda en la BD y lo devuelve"""
-    return db.new(DisabilityType, **kwargs)
+    return db.new(DisabilityType, name=name)
 
 
-def disability_diagnosis_new(**kwargs) -> DisabilityDiagnosis:
+def disability_diagnosis_new(name:str, type:DisabilityType) -> DisabilityDiagnosis:
     """Crea un diagnóstico de discapacidad, lo guarda en la BD y lo devuelve"""
-    return db.new(DisabilityDiagnosis, **kwargs)
+    return db.new(DisabilityDiagnosis, name=name, type=type)
