@@ -157,25 +157,6 @@ def member_delete(member_id: int) -> Member:
     for document in documents:
         delete_document(document["id"])
 
-    # Quitar el miembro de los j/a asociados
-    riders = db_fun.filter(Rider, {'members': member_id})
-    for rider in riders:
-        rider.members = [m for m in rider.members if m.id != member_id]
-        db.session.commit()
-
-    # Quitar el miembro de las propuestas de trabajo de J/a asociadas
-    job_proposals = set()
-    job_proposals.update(db_fun.filter(professions.JobProposal, {"professor_id": member_id}))
-    job_proposals.update(db_fun.filter(professions.JobProposal, {"member_horse_rider_id": member_id}))
-    job_proposals.update(db_fun.filter(professions.JobProposal, {"assistant_id": member_id}))
-    for job_proposal in job_proposals:
-        professions.job_proposal_delete(job_proposal.id)
-
-    # Borrar la relación con el usuario asociado (si tiene)
-    user_member = db_fun.get_by_field(UserMember, "member_id", member_id)
-    if user_member:
-        db_fun.delete_by_field(UserMember, "member_id", member_id)
-
     return db_fun.delete(Member, member_id)
 
 
@@ -331,15 +312,6 @@ def rider_delete(rider_id: int) -> Rider:
     documents = list_documents(rider.id)
     for document in documents:
         delete_document(document["id"])
-
-    # if rider.tutor_1:
-    #     db_fun.delete(Tutor, rider.tutor_1.id)
-    # if rider.tutor_2:
-    #     db_fun.delete(Tutor, rider.tutor_2.id)
-    # if rider.school:
-    #     professions.school_delete(rider.school.id)
-    # if rider.job_proposal:
-    #     professions.job_proposal_delete(rider.job_proposal.id)
 
     return db_fun.delete(Rider, rider_id)
 
