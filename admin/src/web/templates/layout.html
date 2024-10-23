@@ -120,7 +120,19 @@
         }
 
         .nav-item:nth-child(7) {
-            animation-delay: 0.6s;
+            animation-delay: 0.7s;
+        }
+
+        .nav-item:nth-child(8) {
+            animation-delay: 0.8s;
+        }
+
+        .nav-item:nth-child(9) {
+            animation-delay: 0.9s;
+        }
+
+        .nav-item:nth-child(10) {
+            animation-delay: 1s;
         }
 
         .nav-link.active {
@@ -139,8 +151,26 @@
             background-color: #454545;
         }
 
+        .mobile-button {
+            display: none;
+        }
+
         @media screen and (max-width: 991px) {
             .nav-link.active::after {
+                display: none;
+            }
+
+            .navbar-nav {
+                gap: 0 !important;
+                margin-top: 10px !important;
+                margin-left: 0 !important;
+            }
+
+            .mobile-button {
+                display: inherit;
+            }
+
+            #navbarSupportedContent>div {
                 display: none;
             }
         }
@@ -203,6 +233,22 @@
                     </li>
                     {% endif %}
                     {% endif %}
+
+                    <!-- Botones de perfil y cerrar sesión para mobile -->
+                    {% if is_authenticated(session) %}
+                    <li class="nav-item mobile-button">
+                        <hr class="w-100 my-2">
+                    </li>
+                    <li class="nav-item mobile-button"><a class="nav-link"
+                            href="{{ url_for('auth.profile') }}">Perfil</a></li>
+                    <li class="nav-item mobile-button"><a class="nav-link" href="{{ url_for('auth.logout') }}">Cerrar
+                            sesión</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item mobile-button"><a class="nav-link" href="{{ url_for('auth.login') }}">Iniciar
+                            sesión</a>
+                    </li>
+                    {% endif %}
                 </ul>
 
                 <!-- Dropdown con las opciones de la cuenta del usuario -->
@@ -234,6 +280,7 @@
                                 99 c296 564 903 914 1536 886 61 -3 161 -14 224 -24z" />
                             </g>
                         </svg>
+                        <span>Tu cuenta</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-lg-end">
                         <!-- Si el usuario está logueado, se muestra la opción de perfil y cerrar sesión. -->
