@@ -64,6 +64,10 @@ def show(id: int) -> str:
         return unauthorized()
     
     member = people.get_member_by_field('id', id)
+    if member is None:
+        flash("El miembro no existe", "danger")
+        return redirect(url_for("team.index"))
+    
     documents = people.list_documents(id)
     return render_template("team/show.html", member=member, documents=documents)
 
@@ -150,6 +154,10 @@ def update(id: int) -> str:
         return unauthorized()
     
     member = people.get_member_by_field('id', id)
+    if member is None:
+        flash("El miembro no existe", "danger")
+        return redirect(url_for("team.index"))
+    
     profession_list, jobs, provinces, localities = _get_data_from_db()
 
     # Si se envia el formulario
@@ -184,6 +192,10 @@ def destroy(id: int) -> str:
     if not check_permission(session,"team_destroy"):
         return unauthorized()
     
+    if people.get_member_by_field('id', id) is None:
+        flash("El miembro no existe", "danger")
+        return redirect(url_for("team.index"))
+    
     member = people.member_delete(id)
     flash(f"El miembro {member.name} {member.last_name} ha sido eliminado", "success")
     return redirect(url_for("team.index"))
@@ -217,6 +229,9 @@ def destroy_document(id: int, document_id: int) -> str:
     """Recibe el id de un miembro del equipo y el id de un documento y lo elimina de la BD"""
     if not check_permission(session,"team_destroy"):
         return unauthorized()
+    if people.get_document_by_id(document_id) is None:
+        flash("El documento no existe", "danger")
+        return redirect(url_for("team.show", id=id))
     
     document = people.delete_document(document_id)
     flash(f"Documento {document.document_name} eliminado exitosamente", "success")
