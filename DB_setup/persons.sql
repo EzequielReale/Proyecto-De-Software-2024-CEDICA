@@ -11,7 +11,7 @@ CREATE TABLE persons (
     apartment VARCHAR(8),
     health_insurance VARCHAR(32) NOT NULL,
     health_insurance_number VARCHAR(32) NOT NULL,
-    locality_id INTEGER NOT NULL REFERENCES localities(id),
+    locality_id INTEGER NOT NULL REFERENCES localities(id) ON DELETE CASCADE,
     type VARCHAR(16),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()

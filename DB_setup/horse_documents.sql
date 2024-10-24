@@ -6,6 +6,6 @@ CREATE TABLE horse_documents (
     upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     url VARCHAR(256),
     file_path VARCHAR(256),
-    FOREIGN KEY (horse_id) REFERENCES horses(id),
-    FOREIGN KEY (document_type_id) REFERENCES horse_document_types(id)
+    FOREIGN KEY (horse_id) REFERENCES horses(id) ON DELETE CASCADE,
+    FOREIGN KEY (document_type_id) REFERENCES horse_document_types(id) ON DELETE CASCADE
 );

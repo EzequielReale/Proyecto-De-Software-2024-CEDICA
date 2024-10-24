@@ -5,8 +5,8 @@ CREATE TABLE members (
     end_date DATE,
     condition condition_types NOT NULL,
     active BOOLEAN DEFAULT TRUE,
-    profession_id INTEGER REFERENCES professions(id),
-    job_id INTEGER NOT NULL REFERENCES jobs(id)
+    profession_id INTEGER NOT NULL REFERENCES professions(id) ON DELETE CASCADE,
+    job_id INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE
 );
 
 -- INSERT INTO members (id, email, start_date, end_date, condition, active, profession_id, job_id)

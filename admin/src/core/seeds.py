@@ -77,11 +77,13 @@ def run():
     rol1 = Role.role_new(
         name='Tecnica',
         permissions=[encuestre_index, encuestre_show,
+                     jya_index, jya_show, jya_update, jya_new, jya_destroy,
                      reg_cobros_index, reg_cobros_show]
     )
     rol2 = Role.role_new(
         name='Encuestre',
-        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy]
+        permissions=[encuestre_index, encuestre_show, encuestre_update, encuestre_new, encuestre_destroy,
+                     jya_index, jya_show]
     )
     rol3 = Role.role_new(
         name='Voluntariado',
