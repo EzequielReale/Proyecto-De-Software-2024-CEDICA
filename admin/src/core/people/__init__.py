@@ -312,6 +312,11 @@ def rider_delete(rider_id: int) -> Rider:
     documents = list_documents(rider.id)
     for document in documents:
         delete_document(document["id"])
+    
+    if rider.tutor_1 is not None:
+        db_fun.delete(Tutor, rider.tutor_1.id)
+        if rider.tutor_2 is not None:
+            db_fun.delete(Tutor, rider.tutor_2.id)
 
     return db_fun.delete(Rider, rider_id)
 
