@@ -16,20 +16,20 @@ class Pago(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     
     # Clave foránea con User
-    beneficiario_id = db.Column(db.Integer, db.ForeignKey('members.id'), nullable=True)
+    beneficiario_id = db.Column(db.Integer, db.ForeignKey('members.id', ondelete='SET NULL'), nullable=True)
     beneficiario = db.relationship('Member', backref='pagos')
     
     monto = db.Column(db.Integer, nullable=False)  
     fecha_pago = db.Column(db.DateTime,nullable=False)  
     
     # Clave foránea con Tipo_pago
-    tipo_pago_id = db.Column(db.Integer, db.ForeignKey('tipos.id'), nullable=False)  # Tipo de pago, no permite nulos
-    tipo_pago = db.relationship('Tipo_pago', backref='pagos')  # Relación con el tipo de pago
+    tipo_pago_id = db.Column(db.Integer, db.ForeignKey('tipos.id', ondelete='CASCADE'), nullable=False)
+    tipo_pago = db.relationship('Tipo_pago', backref='pagos')
     
-    descripcion = db.Column(db.String(255), nullable=False)  # Descripción del pago
+    descripcion = db.Column(db.String(255), nullable=False)
    
     created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)  # Actualización automática
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def __repr__(self):
         return f'<Pago {self.id}, Beneficiario: {self.beneficiario_id}, Monto: {self.monto}>'

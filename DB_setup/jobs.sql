@@ -1,20 +1,8 @@
 CREATE TABLE public.jobs (
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     name character varying(64) NOT NULL,
     description character varying(128) NOT NULL
 );
-
-CREATE SEQUENCE public.jobs_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE public.jobs_id_seq OWNED BY public.jobs.id;
-ALTER TABLE ONLY public.jobs ALTER COLUMN id SET DEFAULT nextval('public.jobs_id_seq'::regclass);
-
 
 INSERT INTO public.jobs VALUES (1, 'Administrativo/a', 'Gestiona tareas administrativas en oficinas, asegurando la eficiencia operativa diaria.');
 INSERT INTO public.jobs VALUES (2, 'Terapeuta', 'Facilita procesos de sanación y desarrollo personal mediante técnicas terapéuticas.');
@@ -28,8 +16,3 @@ INSERT INTO public.jobs VALUES (9, 'Profesor de Equitación', 'Enseña técnicas
 INSERT INTO public.jobs VALUES (10, 'Docente de Capacitación', 'Forma a adultos en conocimientos y habilidades para mejorar su desempeño laboral.');
 INSERT INTO public.jobs VALUES (11, 'Auxiliar de mantenimiento', 'Realiza mantenimiento preventivo y correctivo en instalaciones para asegurar su óptimo funcionamiento.');
 INSERT INTO public.jobs VALUES (12, 'Otro', 'Otros trabajos variados no mencionados que abarcan diversas funciones y responsabilidades.');
-
-SELECT pg_catalog.setval('public.jobs_id_seq', 13, true);
-
-ALTER TABLE ONLY public.jobs
-    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);

@@ -9,7 +9,7 @@ class DisabilityDiagnosis(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     type_id = db.Column(
-        db.Integer, db.ForeignKey("disability_types.id"), nullable=False
+        db.Integer, db.ForeignKey("disability_types.id", ondelete='CASCADE'), nullable=False
     )
     type = db.relationship("DisabilityType", back_populates="diagnoses")
 

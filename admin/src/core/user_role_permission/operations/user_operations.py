@@ -49,7 +49,6 @@ def user_unlink_member(email):
 def delete_user(user_email)->User:
     """ Elimina un usuario de la BD """
     user = get_user_by_email(user_email)
-    user_unlink_member(user_email)
     dbf.delete(User, user.id)
     return user
 

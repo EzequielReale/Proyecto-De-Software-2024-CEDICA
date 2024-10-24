@@ -40,14 +40,14 @@ class JobProposal(db.Model):
         ),
         nullable=False,
     )
-    rider_id = db.Column(db.Integer, db.ForeignKey("riders.id"), nullable=False)
-    professor_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
+    rider_id = db.Column(db.Integer, db.ForeignKey("riders.id", ondelete='CASCADE'), nullable=False)
+    professor_id = db.Column(db.Integer, db.ForeignKey("members.id", ondelete='CASCADE'), nullable=False)
     professor = db.relationship("Member", foreign_keys=[professor_id], lazy=True)
-    member_horse_rider_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
+    member_horse_rider_id = db.Column(db.Integer, db.ForeignKey("members.id", ondelete='CASCADE'), nullable=False)
     member_horse_rider = db.relationship("Member", foreign_keys=[member_horse_rider_id], lazy=True)
     horse_id = db.Column(db.Integer, db.ForeignKey("horses.id", ondelete="CASCADE"), nullable=False)
     horse = db.relationship("Horse", backref=db.backref("job_proposal", uselist=False, cascade="all, delete-orphan"), lazy=True)
-    assistant_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=False)
+    assistant_id = db.Column(db.Integer, db.ForeignKey("members.id", ondelete='CASCADE'), nullable=False)
     assistant = db.relationship("Member", foreign_keys=[assistant_id], lazy=True)
 
     def __repr__(self):

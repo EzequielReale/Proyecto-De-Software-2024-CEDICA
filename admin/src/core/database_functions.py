@@ -1,6 +1,6 @@
 from sqlalchemy.orm import RelationshipProperty
 from sqlalchemy.orm.query import Query
-from sqlalchemy.types import Enum, Integer, String, Text
+from sqlalchemy.types import Boolean, Enum, Integer, String, Text
 
 from src.core.database import db
 
@@ -19,7 +19,7 @@ def __apply_filters(model, query:Query, field:any, value:any) -> Query:
         else:
             query = query.filter(getattr(related_model, 'id') == value)
     # Comprobar si es un tipo de columna entero o enum
-    elif isinstance(column.type, (Integer, Enum)):
+    elif isinstance(column.type, (Integer, Enum, Boolean)):
         query = query.filter(column == value)
     # Comprobar si es un tipo de columna string
     elif isinstance(column.type, (String, Text)):

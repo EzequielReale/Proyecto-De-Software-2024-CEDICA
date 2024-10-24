@@ -28,8 +28,8 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True, unique=True)
 
-    users = db.relationship('User', secondary='user_roles', back_populates='roles') # OK
-    permissions = db.relationship('Permission', secondary='role_permissions', back_populates='roles') # OK2
+    users = db.relationship('User', secondary='user_roles', back_populates='roles')
+    permissions = db.relationship('Permission', secondary='role_permissions', back_populates='roles')
     
     created_at = db.Column(db.DateTime,default= datetime.now)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
@@ -43,7 +43,7 @@ class Permission(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True, unique=True)
-    roles= db.relationship('Role', secondary='role_permissions', back_populates='permissions') # OK2
+    roles= db.relationship('Role', secondary='role_permissions', back_populates='permissions')
     
     created_at = db.Column(db.DateTime,default= datetime.now)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
