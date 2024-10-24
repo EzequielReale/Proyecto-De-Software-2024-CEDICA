@@ -14,7 +14,9 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 ((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='jya_show')),
 ((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='jya_update')),
 ((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='jya_new')),
-((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='jya_destroy'));
+((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='jya_destroy')),
+((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='reg_cobros_index')),
+((SELECT id FROM roles WHERE name='Tecnica'), (SELECT id FROM permissions WHERE name='reg_cobros_show'));
 
 -- Permisos para el rol 'Encuestre'
 INSERT INTO role_permissions (role_id, permission_id) VALUES

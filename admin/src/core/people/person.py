@@ -24,11 +24,11 @@ class Person(db.Model):
     apartment = db.Column(db.String(8), nullable=True)
     health_insurance = db.Column(db.String(32), nullable=False)
     health_insurance_number = db.Column(db.String(32), nullable=False)
-    locality_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
+    locality_id = db.Column(db.Integer, db.ForeignKey("localities.id", ondelete='CASCADE'), nullable=False)
     locality = db.relationship(
         "Locality", backref="persons", lazy=True, foreign_keys=[locality_id]
     )
-    documents = db.relationship("PersonDocument", back_populates="person")
+    documents = db.relationship("PersonDocument", back_populates="person", lazy=True)
     type = db.Column(
         db.String(16)
     )  # Campo utilizado para la discriminación de la herencia

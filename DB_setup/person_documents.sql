@@ -16,5 +16,5 @@ CREATE TABLE person_documents (
     person_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (person_id) REFERENCES persons(id)
+    FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE CASCADE
 );

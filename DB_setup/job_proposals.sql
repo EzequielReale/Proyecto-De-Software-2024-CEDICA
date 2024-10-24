@@ -15,24 +15,24 @@ CREATE TABLE IF NOT EXISTS public.job_proposals
     CONSTRAINT job_proposals_pkey PRIMARY KEY (id),
     CONSTRAINT job_proposals_assistant_id_fkey FOREIGN KEY (assistant_id)
         REFERENCES public.members (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT job_proposals_horse_id_fkey FOREIGN KEY (horse_id)
         REFERENCES public.horses (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE,
     CONSTRAINT job_proposals_member_horse_rider_id_fkey FOREIGN KEY (member_horse_rider_id)
         REFERENCES public.members (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT job_proposals_professor_id_fkey FOREIGN KEY (professor_id)
         REFERENCES public.members (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
     CONSTRAINT job_proposals_rider_id_fkey FOREIGN KEY (rider_id)
         REFERENCES public.riders (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 ALTER TABLE IF EXISTS public.job_proposals

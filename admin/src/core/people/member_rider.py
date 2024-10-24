@@ -54,8 +54,8 @@ class Member(Person):
 class UserMember(db.Model):
     __tablename__ = "user_member"
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    member_id = db.Column(db.Integer, db.ForeignKey("members.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete='CASCADE'))
+    member_id = db.Column(db.Integer, db.ForeignKey("members.id", ondelete='CASCADE'), primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
@@ -68,7 +68,7 @@ class Rider(Person):
     __mapper_args__ = {"polymorphic_identity": "rider"}  # Identificador de la subclase
 
     # personal data
-    id = db.Column(db.Integer, db.ForeignKey("persons.id"), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("persons.id", ondelete='CASCADE'), primary_key=True)
     birth_date = db.Column(db.Date, nullable=False)
     grant_percentage = db.Column(db.Float, default=0.0, nullable=True)
     family_allowance = db.Column(
@@ -83,25 +83,25 @@ class Rider(Person):
     pension_benefit = db.Column(db.Enum("Nacional", "Provincial", name="pension_benefits"), nullable=True)
     has_guardianship = db.Column(db.Boolean, default=False)
 
-    disability_id = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id"), nullable=True)
+    disability_id = db.Column(db.Integer, db.ForeignKey("disability_diagnoses.id", ondelete='SET NULL'), nullable=True)
     disability = db.relationship("DisabilityDiagnosis", backref="riders", lazy=True)
-    city_of_birth_id = db.Column(db.Integer, db.ForeignKey("localities.id"), nullable=False)
+    city_of_birth_id = db.Column(db.Integer, db.ForeignKey("localities.id", ondelete='CASCADE'), nullable=False)
     city_of_birth = db.relationship("Locality", foreign_keys=[city_of_birth_id], lazy=True)
 
     # profesionales que lo atienden
     members = db.relationship("Member", secondary="rider_member", back_populates="riders")
 
     # escuela
-    school = db.relationship("School", backref="rider", uselist=False, lazy=True, overlaps="rider_school,school")
+    school = db.relationship("School", backref="rider", uselist=False, cascade="all, delete-orphan", lazy=True, overlaps="rider_school,school")
 
     # tutores
-    tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
+    tutor_1_id = db.Column(db.Integer, db.ForeignKey("tutors.id", ondelete='SET NULL'), nullable=True)
     tutor_1 = db.relationship("Tutor", backref="rider_tutor_1", lazy=True, foreign_keys=[tutor_1_id])
-    tutor_2_id = db.Column(db.Integer, db.ForeignKey("tutors.id"), nullable=True)
+    tutor_2_id = db.Column(db.Integer, db.ForeignKey("tutors.id", ondelete='SET NULL'), nullable=True)
     tutor_2 = db.relationship("Tutor", backref="rider_tutor_2", lazy=True, foreign_keys=[tutor_2_id])
 
     # trabajo
-    job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", lazy=True)
+    job_proposal = db.relationship("JobProposal", uselist=False, backref="rider", cascade="all, delete-orphan", lazy=True)
 
     # pagos
     payments = db.relationship("PagoJineteAmazona", back_populates="jinete_amazona", cascade='all, delete-orphan', lazy=True)

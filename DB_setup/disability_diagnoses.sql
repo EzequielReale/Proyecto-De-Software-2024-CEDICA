@@ -2,7 +2,7 @@ CREATE TABLE disability_diagnoses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL,
     type_id INTEGER NOT NULL,
-    FOREIGN KEY (type_id) REFERENCES disability_types(id)
+    FOREIGN KEY (type_id) REFERENCES disability_types(id) ON DELETE CASCADE
 );
 
 INSERT INTO disability_diagnoses (name, type_id) 

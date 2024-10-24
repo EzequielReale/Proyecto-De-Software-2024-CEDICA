@@ -1,21 +1,8 @@
 CREATE TABLE public.professions (
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     name character varying(64) NOT NULL,
     description character varying(128) NOT NULL
 );
-
-CREATE SEQUENCE public.professions_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE public.professions_id_seq OWNED BY public.professions.id;
-
-ALTER TABLE ONLY public.professions ALTER COLUMN id SET DEFAULT nextval('public.professions_id_seq'::regclass);
-
 
 INSERT INTO public.professions VALUES (1, 'Docente', 'Enseñanza');
 INSERT INTO public.professions VALUES (2, 'Psicólogo/a', 'Especialista en salud mental que evalúa y trata trastornos emocionales para el bienestar del paciente.');
@@ -29,9 +16,3 @@ INSERT INTO public.professions VALUES (9, 'Profesor', 'Enseña materias específ
 INSERT INTO public.professions VALUES (10, 'Fonoaudiólogo/a', 'Diagnostica y trata trastornos de comunicación y lenguaje, mejorando la deglución y la voz.');
 INSERT INTO public.professions VALUES (11, 'Veterinario/a', 'Cuidado y tratamiento de enfermedades en animales, promoviendo su bienestar y prevención.');
 INSERT INTO public.professions VALUES (12, 'Otro', 'Otras profesiones diversas no mencionadas en diferentes áreas y especialidades.');
-
-
-SELECT pg_catalog.setval('public.professions_id_seq', 12, true);
-
-ALTER TABLE ONLY public.professions
-    ADD CONSTRAINT professions_pkey PRIMARY KEY (id);

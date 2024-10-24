@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS localities
     name character varying(64) NOT NULL,
     province_id integer NOT NULL,
     FOREIGN KEY (province_id) REFERENCES provinces (id)
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 INSERT INTO localities (id, province_id, name) VALUES
