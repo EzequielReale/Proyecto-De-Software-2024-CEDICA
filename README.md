@@ -73,6 +73,22 @@ Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mis
     flask run --debug
     ```
 
+## Credenciales importantes
+1. **Administrador**:
+    - **Roles**: `SystemAdmin`
+    - **Email**: `admin@admin.com`
+    - **Contraseña**: `admin`
+
+2. **Giu**:
+    - **Roles**: `Administracion`
+    - **Email**: `giuliana@gmail.com`
+    - **Contraseña**: `123`
+
+3. **Eze**:
+    - **Roles**: `Tecnica` `Ecuestre` `Voluntariado` `Administracion` `SystemAdmin`
+    - **Email**: `eze@gmail.com`
+    - **Contraseña**: `123`
+
 ## Known issues
 - **Frontend**: Al ser Nicolás nuestro único desarrollador frontend, es posible que algunas partes de este, no hechas por él, puedan estar mejor diseñadas o mantener mejor el estado. Hemos intentado hacer lo mejor posible con los conocimientos que tenemos.
 - **Integraciones Pendientes**: Algunas integraciones se harán después de la entrega para evitar errores inesperados en producción. Por ejemplo:

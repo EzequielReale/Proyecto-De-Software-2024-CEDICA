@@ -73,7 +73,7 @@ Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mis
     flask run --debug
     ```
 
-### Credenciales importantes
+## Credenciales importantes
 1. **Administrador**:
     - **Roles**: `SystemAdmin`
     - **Email**: `admin@admin.com`
