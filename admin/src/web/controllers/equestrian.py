@@ -23,8 +23,8 @@ bp=Blueprint("ecuestre",__name__,url_prefix="/ecuestre")
 @bp.get("/")
 @login_required
 def index():
-    if  not check_permission(session,"encuestre_index"):
-         return unauthorized()
+    if not check_permission(session,"encuestre_index"):
+        return unauthorized()
      
     order_by = request.args.get('order_by', 'name')
     order = request.args.get('order', 'asc')

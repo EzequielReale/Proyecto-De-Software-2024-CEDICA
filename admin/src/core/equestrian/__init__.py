@@ -197,6 +197,10 @@ def _add_document(horse_id: int, document_type_id: int, file: bytes, path: str)-
     db.session.commit()
     return document
 
+def get_document_by_id(document_id: int)->HorseDocument:
+    """Obtiene un documento por ID"""
+    return HorseDocument.query.filter_by(id=document_id).first()
+
 def delete_document(document_id: int):
     """Elimina un documento por ID"""
     document = HorseDocument.query.filter_by(id=document_id).first()
