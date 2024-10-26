@@ -59,77 +59,77 @@ def create():
     if  not check_permission(session,"encuestre_new"):
          return unauthorized()
      
-    # Si se envía el formulario
-    if request.method == 'POST':
-        # Obtener los datos del formulario
-        form_data = {
-            'name': request.form['name'],
-            'birth_date': request.form['birth_date'],
-            'entry_date': request.form['entry_date'],
-            'gender': request.form['gender'],
-            'origin': request.form['origin'],
-            'race': request.form['race'],
-            'coat': request.form['coat'],
-            'assigned_location': request.form['assigned_location'],
-            'selected_activities': request.form.get('selected_activities'),
-            'assigned_members': request.form.get('assigned_members')
-        }
-        
-        # Obtener las actividades seleccionadas
-        selected_activities = request.form.get('selected_activities')
-        if selected_activities:
-            selected_activities = json.loads(selected_activities)
-        else:
-            selected_activities = []
-        
-        # Obtener los miembros asignados
-        assigned_members = request.form.get('assigned_members')
-        if assigned_members:
-            assigned_members = json.loads(assigned_members)
-        else:
-            assigned_members = []
-            
-        # Validar los datos del formulario
-        errors = validate_horse_form(form_data)
-
-        # Si hay errores, mostrar mensajes de error y renderizar el formulario nuevamente
-        if errors:
-            for error in errors:
-                flash(error, 'danger')
-            return render_template('ecuestre/create.html', form_data=form_data, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
-        
-        # Crear el caballo
-        horse = equestrian.horse_new(
-            name=form_data['name'],
-            birth_date=form_data['birth_date'],
-            entry_date=form_data['entry_date'],
-            gender="Macho" if form_data['gender'] == '0' else "Hembra",
-            donation=form_data['origin'] == '1',
-            race=form_data['race'],
-            coat=form_data['coat'],
-            assigned_location=form_data['assigned_location']
-        ) 
-        
-        # Verificar y agregar actividades
-        if selected_activities:
-            for activity_id in selected_activities:
-                activity = Activity.query.filter_by(id=activity_id).first()
-                if activity:
-                    horse.activities.append(activity)
-                
-        # Verificar y agregar miembros
-        if assigned_members:
-            for member_id in assigned_members:
-                member = Member.query.filter_by(id=member_id).first()
-                if member:
-                    horse.assigned_members.append(member)
-        
-        db.session.commit()
-        
-        flash(f"Caballo creado exitosamente", "success")
-        return redirect(url_for('ecuestre.show', id=horse.id))
+    # Si no se envía el formulario
+    if request.method == 'GET':
+        return render_template('ecuestre/create.html', activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
     
-    return render_template('ecuestre/create.html', activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
+    # Obtener los datos del formulario
+    form_data = {
+        'name': request.form['name'],
+        'birth_date': request.form['birth_date'],
+        'entry_date': request.form['entry_date'],
+        'gender': request.form['gender'],
+        'origin': request.form['origin'],
+        'race': request.form['race'],
+        'coat': request.form['coat'],
+        'assigned_location': request.form['assigned_location'],
+        'selected_activities': request.form.get('selected_activities'),
+        'assigned_members': request.form.get('assigned_members')
+    }
+    
+    # Obtener las actividades seleccionadas
+    selected_activities = request.form.get('selected_activities')
+    if selected_activities:
+        selected_activities = json.loads(selected_activities)
+    else:
+        selected_activities = []
+    
+    # Obtener los miembros asignados
+    assigned_members = request.form.get('assigned_members')
+    if assigned_members:
+        assigned_members = json.loads(assigned_members)
+    else:
+        assigned_members = []
+        
+    # Validar los datos del formulario
+    errors = validate_horse_form(form_data)
+
+    # Si hay errores, mostrar mensajes de error y renderizar el formulario nuevamente
+    if errors:
+        for error in errors:
+            flash(error, 'danger')
+        return render_template('ecuestre/create.html', form_data=form_data, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
+    
+    # Crear el caballo
+    horse = equestrian.horse_new(
+        name=form_data['name'],
+        birth_date=form_data['birth_date'],
+        entry_date=form_data['entry_date'],
+        gender="Macho" if form_data['gender'] == '0' else "Hembra",
+        donation=form_data['origin'] == '1',
+        race=form_data['race'],
+        coat=form_data['coat'],
+        assigned_location=form_data['assigned_location']
+    ) 
+    
+    # Verificar y agregar actividades
+    if selected_activities:
+        for activity_id in selected_activities:
+            activity = Activity.query.filter_by(id=activity_id).first()
+            if activity:
+                horse.activities.append(activity)
+            
+    # Verificar y agregar miembros
+    if assigned_members:
+        for member_id in assigned_members:
+            member = Member.query.filter_by(id=member_id).first()
+            if member:
+                horse.assigned_members.append(member)
+    
+    db.session.commit()
+    
+    flash(f"Caballo creado exitosamente", "success")
+    return redirect(url_for('ecuestre.show', id=horse.id))
 
 @bp.route("/<int:id>/update", methods=['GET', 'POST'])
 def update(id: int)->str:

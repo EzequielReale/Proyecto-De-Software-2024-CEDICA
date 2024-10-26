@@ -99,8 +99,8 @@
                 Eliminar
             </button>
         </form>
-       {% endif %}
-       {% if check_permission(session,'encuestre_update')%}
+        {% endif %}
+        {% if check_permission(session,'encuestre_update')%}
         <a class="btn btn-warning" href="{{ url_for('ecuestre.update', id=horse.id) }}">
             <i class="fas fa-edit me-1"></i>
             Editar
@@ -146,11 +146,11 @@
                 </h5>
                 <ul>
                     {% if horse.activities %}
-                    {% for activity in horse.activities %}
-                    <li>{{ activity.name }}</li>
-                    {% endfor %}
+                        {% for activity in horse.activities %}
+                            <li>{{ activity.name }}</li>
+                        {% endfor %}
                     {% else %}
-                    <li>Este caballo no tiene actividades asignadas</li>
+                        <li>Este caballo no tiene actividades asignadas</li>
                     {% endif %}
                 </ul>
             </div>
@@ -160,11 +160,11 @@
                 </h5>
                 <ul>
                     {% if horse.assigned_members %}
-                    {% for member in horse.assigned_members %}
-                    <li>{{ member.name }} - {{ member.job }}</li>
-                    {% endfor %}
+                        {% for member in horse.assigned_members %}
+                            <li>{{ member.name }} - {{ member.job }}</li>
+                        {% endfor %}
                     {% else %}
-                    <li>No hay miembros asignados</li>
+                        <li>No hay miembros asignados</li>
                     {% endif %}
                 </ul>
             </div>
@@ -185,9 +185,9 @@
                         <select id="document_type_id" name="document_type_id" class="form-select">
                             <option value="">Todos los documentos</option>
                             {% for doc_type in document_types %}
-                            <option value="{{ doc_type.id }}" {% if doc_type.id==document_type_id %}selected{% endif %}>
-                                {{ doc_type.name }}
-                            </option>
+                                <option value="{{ doc_type.id }}" {% if doc_type.id==document_type_id %}selected{% endif %}>
+                                    {{ doc_type.name }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -209,13 +209,13 @@
                                 href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc') }}">
                                 Nombre
                                 {% if order_by == 'name' %}
-                                {% if order == 'asc' %}
-                                <i class="fas fa-sort-asc"></i>
+                                    {% if order == 'asc' %}
+                                        <i class="fas fa-sort-asc"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort-desc"></i>
+                                    {% endif %}
                                 {% else %}
-                                <i class="fas fa-sort-desc"></i>
-                                {% endif %}
-                                {% else %}
-                                <i class="fas fa-sort"></i>
+                                    <i class="fas fa-sort"></i>
                                 {% endif %}
                             </a>
                         </th>
@@ -224,13 +224,13 @@
                                 href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='document_type_id', order='asc' if order_by != 'document_type_id' or order == 'desc' else 'desc') }}">
                                 Tipo de documento
                                 {% if order_by == 'document_type_id' %}
-                                {% if order == 'asc' %}
-                                <i class="fas fa-sort-asc"></i>
+                                    {% if order == 'asc' %}
+                                        <i class="fas fa-sort-asc"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort-desc"></i>
+                                    {% endif %}
                                 {% else %}
-                                <i class="fas fa-sort-desc"></i>
-                                {% endif %}
-                                {% else %}
-                                <i class="fas fa-sort"></i>
+                                    <i class="fas fa-sort"></i>
                                 {% endif %}
                             </a>
                         </th>
@@ -239,13 +239,13 @@
                                 href="{{ url_for('ecuestre.show', initial_page=1, id=horse.id, search=search, document_type_id=document_type_id, order_by='upload_date', order='asc' if order_by != 'upload_date' or order == 'desc' else 'desc') }}">
                                 Fecha de subida
                                 {% if order_by == 'upload_date' %}
-                                {% if order == 'asc' %}
-                                <i class="fas fa-sort-asc"></i>
+                                    {% if order == 'asc' %}
+                                        <i class="fas fa-sort-asc"></i>
+                                    {% else %}
+                                        <i class="fas fa-sort-desc"></i>
+                                    {% endif %}
                                 {% else %}
-                                <i class="fas fa-sort-desc"></i>
-                                {% endif %}
-                                {% else %}
-                                <i class="fas fa-sort"></i>
+                                    <i class="fas fa-sort"></i>
                                 {% endif %}
                             </a>
                         </th>
@@ -254,66 +254,65 @@
                 </thead>
                 <tbody id="documents-table-body">
                     {% if documents %}
-                    {% for document in documents %}
-                    <tr>
-                        <td>{{ document.name }}</td>
-                        <td>{{ document.type }}</td>
-                        <td>{{ document.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                        <td>
-                            <div class="action-icons">
-                                <!-- Icono de vista -->
-                                <a href=" {{ document.url }}" title="Ver" target="_blank">
-                                    <i style="transform: scale(0.9);"
-                                        class="fa {% if document.isFile %}fa-eye{% else %}fa-link{% endif %}"></i>
-                                </a>
+                        {% for document in documents %}
+                            <tr>
+                                <td>{{ document.name }}</td>
+                                <td>{{ document.type }}</td>
+                                <td>{{ document.upload_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>
+                                    <div class="action-icons">
+                                        <!-- Icono de vista -->
+                                        <a href=" {{ document.url }}" title="Ver" target="_blank">
+                                            <i style="transform: scale(0.9);"
+                                                class="fa {% if document.isFile %}fa-eye{% else %}fa-link{% endif %}"></i>
+                                        </a>
 
-                                {% if document.isFile %}
-                                <!-- Botón de descarga -->
-                                <a id="download-btn-{{ document.id }}" href="{{ document.url }}" title="Descargar"
-                                    download="{{ document.name }}">
-                                    <i style="transform: scale(0.9);" class="fa fa-download"></i>
-                                </a>
-                                {% endif %}
+                                        {% if document.isFile %}
+                                        <!-- Botón de descarga -->
+                                        <a id="download-btn-{{ document.id }}" href="{{ document.url }}" title="Descargar"
+                                            download="{{ document.name }}">
+                                            <i style="transform: scale(0.9);" class="fa fa-download"></i>
+                                        </a>
+                                        {% endif %}
 
-                                <!-- Formulario de eliminación -->
-                                <form
-                                    action="{{ url_for('ecuestre.delete_document', id=horse.id, document_id=document.id) }}"
-                                    method="POST" style="display: inline;"
-                                    onsubmit="return confirm('¿Quieres eliminar la documentación seleccionada?');">
-                                    <button type="submit" title="Eliminar" role="button"
-                                        style="border: none; background: none; color: #0099CC;">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                                        <!-- Formulario de eliminación -->
+                                        <form
+                                            action="{{ url_for('ecuestre.delete_document', id=horse.id, document_id=document.id) }}"
+                                            method="POST" style="display: inline;"
+                                            onsubmit="return confirm('¿Quieres eliminar la documentación seleccionada?');">
+                                            <button type="submit" title="Eliminar" role="button"
+                                                style="border: none; background: none; color: #0099CC;">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     {% else %}
-                    <tr>
-                        <td colspan="4">No hay documentación para mostrar</td>
-                    </tr>
+                        <tr>
+                            <td colspan="4">No hay documentación para mostrar</td>
+                        </tr>
                     {% endif %}
 
                 </tbody>
             </table>
 
             <div class="d-flex flex-row gap-2 justify-content-end mt-3 w-100">
-                
                 {% if check_permission(session,'encuestre_update')%}
-                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
-                    data-bs-target="#modal-attach-url">
-                    <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
-                    Enlace
-                </button>
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
+                        data-bs-target="#modal-attach-url">
+                        <i style="transform: scale(0.8);" class="me-1 fa fa-link"></i>
+                        Enlace
+                    </button>
                 {% endif %}
 
                 {% if check_permission(session,'encuestre_update')%}
-                <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
-                    data-bs-target="#modal-upload-file">
-                    <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
-                    Subir archivo
-                </button>
+                    <button type="button" class="btn btn-outline-custom" data-bs-toggle="modal"
+                        data-bs-target="#modal-upload-file">
+                        <i style="transform: scale(0.8);" class="me-1 fa fa-upload"></i>
+                        Subir archivo
+                    </button>
                 {% endif %}
             </div>
 
@@ -332,9 +331,9 @@
                                     <select class="form-select" name="doc-type" id="doc-type" required>
                                         <option selected>Seleccione una opción...</option>
                                         {% if document_types %}
-                                        {% for document_type in document_types %}
-                                        <option value="{{ document_type.id }}">{{ document_type.name }}</option>
-                                        {% endfor %}
+                                            {% for document_type in document_types %}
+                                                <option value="{{ document_type.id }}">{{ document_type.name }}</option>
+                                            {% endfor %}
                                         {% endif %}
                                     </select>
                                 </div>
@@ -376,9 +375,9 @@
                                     <select class="form-select" name="doc-type" id="doc-type" required>
                                         <option selected>Seleccione una opción...</option>
                                         {% if document_types %}
-                                        {% for document_type in document_types %}
-                                        <option value="{{ document_type.id }}">{{ document_type.name }}</option>
-                                        {% endfor %}
+                                            {% for document_type in document_types %}
+                                                <option value="{{ document_type.id }}">{{ document_type.name }}</option>
+                                            {% endfor %}
                                         {% endif %}
                                     </select>
                                 </div>
@@ -450,7 +449,4 @@
         });
     }
 </script>
-{% endblock %}
-
-{% block footer %}
 {% endblock %}

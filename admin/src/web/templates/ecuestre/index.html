@@ -117,10 +117,10 @@
         </a>
 
         {% if check_permission(session,'encuestre_new')%}
-        <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
-            <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
-            Nuevo
-        </a>
+            <a href="{{ url_for('ecuestre.create') }}" class="btn btn-primary d-flex align-items-center pb-2">
+                <i style="transform: scale(1.4);" class="fa-light fa-plus me-2"></i>
+                Nuevo
+            </a>
         {% endif %}
 
     </div>
@@ -138,10 +138,10 @@
                 <select id="activity_id" name="activity_id" class="form-select">
                     <option value="">Todas las actividades</option>
                     {% for activity in activities %}
-                    <option value="{{ activity.id }}" {% if activity.id==activity_id %}selected{% endif %}>{{
-                        activity.name
-                        }}
-                    </option>
+                        <option value="{{ activity.id }}" {% if activity.id==activity_id %}selected{% endif %}>{{
+                            activity.name
+                            }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
@@ -163,13 +163,13 @@
                     href="{{ url_for('ecuestre.index', order_by='name', order='asc' if order_by != 'name' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Nombre
                     {% if order_by == 'name' %}
-                    {% if order == 'asc' %}
-                    <i class="fas fa-sort-asc"></i>
+                        {% if order == 'asc' %}
+                            <i class="fas fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fas fa-sort-desc"></i>
+                        {% endif %}
                     {% else %}
-                    <i class="fas fa-sort-desc"></i>
-                    {% endif %}
-                    {% else %}
-                    <i class="fas fa-sort"></i>
+                        <i class="fas fa-sort"></i>
                     {% endif %}
                 </a>
             </th>
@@ -178,13 +178,13 @@
                     href="{{ url_for('ecuestre.index', order_by='birth_date', order='asc' if order_by != 'birth_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Nacimiento
                     {% if order_by == 'birth_date' %}
-                    {% if order == 'asc' %}
-                    <i class="fas fa-sort-asc"></i>
+                        {% if order == 'asc' %}
+                            <i class="fas fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fas fa-sort-desc"></i>
+                        {% endif %}
                     {% else %}
-                    <i class="fas fa-sort-desc"></i>
-                    {% endif %}
-                    {% else %}
-                    <i class="fas fa-sort"></i>
+                        <i class="fas fa-sort"></i>
                     {% endif %}
                 </a>
             </th>
@@ -193,13 +193,13 @@
                     href="{{ url_for('ecuestre.index', order_by='entry_date', order='asc' if order_by != 'entry_date' or order == 'desc' else 'desc', limit=limit, page=page, search=search, activity_id=activity_id) }}">
                     Fecha de ingreso
                     {% if order_by == 'entry_date' %}
-                    {% if order == 'asc' %}
-                    <i class="fas fa-sort-asc"></i>
+                        {% if order == 'asc' %}
+                            <i class="fas fa-sort-asc"></i>
+                        {% else %}
+                            <i class="fas fa-sort-desc"></i>
+                        {% endif %}
                     {% else %}
-                    <i class="fas fa-sort-desc"></i>
-                    {% endif %}
-                    {% else %}
-                    <i class="fas fa-sort"></i>
+                        <i class="fas fa-sort"></i>
                     {% endif %}
                 </a>
             </th>
@@ -213,75 +213,75 @@
     </thead>
     <tbody>
         {% if horses %}
-        {% for horse in horses %}
-        <!-- Render de las filas de caballos -->
-        <tr>
-            <td>{{ horse.name }}</td>
-            <td>{{ horse.birth_date }}</td>
-            <td>{{ horse.entry_date }}</td>
-            <td>{{ horse.gender }}</td>
-            <td>{{ horse.race }}</td>
-            <td>{{ horse.coat }}</td>
-            <td>{{ "Donación" if horse.donation else "Compra" }}</td>
-            <td>{{ horse.assigned_location }}</td>
-            <td>
-                <div class="action-icons">
+            {% for horse in horses %}
+            <!-- Render de las filas de caballos -->
+            <tr>
+                <td>{{ horse.name }}</td>
+                <td>{{ horse.birth_date }}</td>
+                <td>{{ horse.entry_date }}</td>
+                <td>{{ horse.gender }}</td>
+                <td>{{ horse.race }}</td>
+                <td>{{ horse.coat }}</td>
+                <td>{{ "Donación" if horse.donation else "Compra" }}</td>
+                <td>{{ horse.assigned_location }}</td>
+                <td>
+                    <div class="action-icons">
+                        {% if check_permission(session,'encuestre_show')%}
+                            <!-- Icono de vista detallada -->
+                            <a href="{{ url_for('ecuestre.show', id=horse.id) }}" title="Ver detalles">
+                                <i class="fas fa-file-text"></i>
+                            </a>
+                        {% endif %}
 
-                    {% if check_permission(session,'encuestre_show')%}
-                    <!-- Icono de vista detallada -->
-                    <a href="{{ url_for('ecuestre.show', id=horse.id) }}" title="Ver detalles">
-                        <i class="fas fa-file-text"></i>
-                    </a>
-                    {% endif %}
+                        {% if check_permission(session,'encuestre_update')%}
+                            <!-- Icono de edición -->
+                            <a href="{{ url_for('ecuestre.update', id=horse.id) }}" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        {% endif %}
 
-                    {% if check_permission(session,'encuestre_update')%}
-                    <!-- Icono de edición -->
-                    <a href="{{ url_for('ecuestre.update', id=horse.id) }}" title="Editar">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    {% endif %}
+                        {% if check_permission(session,'encuestre_destroy')%}
+                            <!-- Formulario de eliminación -->
+                            <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
+                                onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
+                                <button type="submit" title="Eliminar" role="button"
+                                    style="border: none; background: none; color: #0099CC;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        {% endif %}
 
-                    {% if check_permission(session,'encuestre_destroy')%}
-                    <!-- Formulario de eliminación -->
-                    <form action="{{ url_for('ecuestre.destroy', id=horse.id) }}" method="POST" style="display: inline;"
-                        onsubmit="return confirm('¿Quieres eliminar a {{horse.name}} y todos sus datos?');">
-                        <button type="submit" title="Eliminar" role="button"
-                            style="border: none; background: none; color: #0099CC;">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
-                    {% endif %}
-
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
         {% else %}
-        <tr>
-            <!-- Render en caso que no haya resultados -->
-            <td colspan="16">No hay caballos para mostrar</td>
-        </tr>
+            <tr>
+                <!-- Render en caso que no haya resultados -->
+                <td colspan="16">No hay caballos para mostrar</td>
+            </tr>
         {% endif %}
     </tbody>
 </table>
 <div class="mt-4 d-flex flex-row w-100 justify-content-center align-items-center">
     <div id="pagination" class="justify-content-center align-items-center d-flex flex-row gap-2 p-2">
         {% if page > 1 %}
-        <a style="color: #0099CC;"
-            href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page-1, search=search, activity_id=activity_id) }}"><i
-                class="fa fa-angle-double-left" aria-hidden="true"></i>
-        </a>
+            <a style="color: #0099CC;"
+                href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page-1, search=search, activity_id=activity_id) }}"><i
+                    class="fa fa-angle-double-left" aria-hidden="true"></i>
+            </a>
         {% else %}
-        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
         {% endif %}
         <span>Página {{ page }}</span>
-        {% if page < total_pages %} <a style="color: #0099CC;"
+        {% if page < total_pages %} 
+            <a style="color: #0099CC;"
             href="{{ url_for('ecuestre.index', order_by=order_by, order=order, limit=limit, page=page+1, search=search, activity_id=activity_id) }}">
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             </a>
-            {% else %}
+        {% else %}
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            {% endif %}
+        {% endif %}
     </div>
 </div>
 <script>

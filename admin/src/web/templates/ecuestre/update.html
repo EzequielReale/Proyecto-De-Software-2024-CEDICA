@@ -160,12 +160,12 @@
                     <ul id="activities-list"
                         class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
                         {% if activities %}
-                        {% for activity in activities %}
-                        <li id="activity-{{activity.id}}" class="list-group-item border rounded"
-                            onclick="toggleSelected('activity', {{activity.id}})"
-                            style="flex-grow: 1; user-select: none; padding: 8px 20px !important;" role="button">{{
-                            activity.name }}</li>
-                        {% endfor %}
+                            {% for activity in activities %}
+                                <li id="activity-{{activity.id}}" class="list-group-item border rounded"
+                                    onclick="toggleSelected('activity', {{activity.id}})"
+                                    style="flex-grow: 1; user-select: none; padding: 8px 20px !important;" role="button">{{
+                                    activity.name }}</li>
+                            {% endfor %}
                         {% endif %}
                     </ul>
                 </div>
@@ -221,13 +221,13 @@
                             <ul id="activities-list"
                                 class="p-0 d-flex gap-3 flex-wrap w-100 align-items-center justify-content-center text-center">
                                 {% if activities %}
-                                {% for activity in activities %}
-                                <li id="activity-{{activity.id}}" class="list-group-item border rounded"
-                                    onclick="toggleSelected('activity', {{activity.id}})"
-                                    style="flex-grow: 1; user-select: none; padding: 8px 20px !important;"
-                                    role="button">{{
-                                    activity.name }}</li>
-                                {% endfor %}
+                                    {% for activity in activities %}
+                                        <li id="activity-{{activity.id}}" class="list-group-item border rounded"
+                                            onclick="toggleSelected('activity', {{activity.id}})"
+                                            style="flex-grow: 1; user-select: none; padding: 8px 20px !important;"
+                                            role="button">{{
+                                            activity.name }}</li>
+                                    {% endfor %}
                                 {% endif %}
                             </ul>
                         </div>
@@ -253,9 +253,9 @@
                             <select class="form-select" id="driver-select">
                                 <option value="" selected>Seleccione un conductor...</option>
                                 {% if drivers %}
-                                {% for driver in drivers %}
-                                <option value="{{ driver.id }}">{{ driver.name }}</option>
-                                {% endfor %}
+                                    {% for driver in drivers %}
+                                        <option value="{{ driver.id }}">{{ driver.name }}</option>
+                                    {% endfor %}
                                 {% endif %}
                             </select>
                             <p class="form-text mt-2 mb-0">Seleccione un conductor para asignar al caballo.</p>
@@ -283,9 +283,9 @@
                                 <option value="" selected>Seleccione un entrenador...</option>
                                 <option value="1">Entrenador ejemplo 1</option>
                                 {% if trainers %}
-                                {% for trainer in trainers %}
-                                <option value="{{ trainer.id }}">{{ trainer.name }}</option>
-                                {% endfor %}
+                                    {% for trainer in trainers %}
+                                        <option value="{{ trainer.id }}">{{ trainer.name }}</option>
+                                    {% endfor %}
                                 {% endif %}
                             </select>
                             <p class="form-text mt-2 mb-0">Seleccione un entrenador para asignar al caballo.</p>
@@ -325,53 +325,52 @@
         document.getElementById('birth_date').setAttribute('max', today);
 
         // Datos del caballo
-        const horse = {{ horse | tojson
-    }};
+        const horse = {{ horse | tojson }};
 
-    // Asignar valores a los campos del formulario
-    document.getElementById('name').value = horse.name;
-    document.getElementById('birth_date').value = horse.birth_date;
-    document.getElementById('entry_date').value = horse.entry_date;
-    document.getElementById('gender').value = horse.gender === 'Macho' ? 0 : 1;
-    document.getElementById('origin').value = horse.donation ? 1 : 0;
-    document.getElementById('race').value = horse.race;
-    document.getElementById('coat').value = horse.coat;
-    document.getElementById('assigned_location').value = horse.assigned_location;
+        // Asignar valores a los campos del formulario
+        document.getElementById('name').value = horse.name;
+        document.getElementById('birth_date').value = horse.birth_date;
+        document.getElementById('entry_date').value = horse.entry_date;
+        document.getElementById('gender').value = horse.gender === 'Macho' ? 0 : 1;
+        document.getElementById('origin').value = horse.donation ? 1 : 0;
+        document.getElementById('race').value = horse.race;
+        document.getElementById('coat').value = horse.coat;
+        document.getElementById('assigned_location').value = horse.assigned_location;
 
-    // Asignar actividades seleccionadas
-    horse.activities.forEach(activity => {
-        const element = document.getElementById('activity-' + activity.id);
-        if (element) {
-            element.classList.add('selected');
-            selectedActivities.push(activity.id);
+        // Asignar actividades seleccionadas
+        horse.activities.forEach(activity => {
+            const element = document.getElementById('activity-' + activity.id);
+            if (element) {
+                element.classList.add('selected');
+                selectedActivities.push(activity.id);
+            }
+        });
+
+        // Asignar miembros asignados
+        horse.members.forEach(member => {
+            assignedMembers.push(member.id);
+            const tableBody = document.getElementById('members-table-body');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                    <td>${member.name}</td>
+                    <td>${member.job}</td>
+                    <td>
+                        <span class="text-danger" role="button" onclick="removeMember(this, ${member.id})">
+                            <i style="transform: scale(0.9);" class="fa fa-trash me-1"></i>
+                            Eliminar
+                        </span>
+                    </td>
+                `;
+            tableBody.appendChild(newRow);
+        });
+
+        // Elimina la fila "No hay miembros asignados" si existen miembros asignados
+        if (horse.members.length > 0) {
+            const noMembersRow = document.getElementById('no-members-row');
+            if (noMembersRow) {
+                noMembersRow.remove();
+            }
         }
-    });
-
-    // Asignar miembros asignados
-    horse.members.forEach(member => {
-        assignedMembers.push(member.id);
-        const tableBody = document.getElementById('members-table-body');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `
-                <td>${member.name}</td>
-                <td>${member.job}</td>
-                <td>
-                    <span class="text-danger" role="button" onclick="removeMember(this, ${member.id})">
-                        <i style="transform: scale(0.9);" class="fa fa-trash me-1"></i>
-                        Eliminar
-                    </span>
-                </td>
-            `;
-        tableBody.appendChild(newRow);
-    });
-
-    // Elimina la fila "No hay miembros asignados" si existen miembros asignados
-    if (horse.members.length > 0) {
-        const noMembersRow = document.getElementById('no-members-row');
-        if (noMembersRow) {
-            noMembersRow.remove();
-        }
-    }
     });
 
     // Lista de actividades seleccionadas
