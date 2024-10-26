@@ -1,14 +1,14 @@
 from flask import current_app
+import os
+from os import fstat
+from ulid import ULID
+from werkzeug.utils import secure_filename
 from src.core.database import db
 from src.core.equestrian.horse import Horse
 from src.core.equestrian.activity import Activity
-from src.core.people.member_rider import Member
 from src.core.equestrian.horse_document import HorseDocument
 from src.core.equestrian.horse_document_types import HorseDocumentType
-from werkzeug.utils import secure_filename
-from ulid import ULID
-from os import fstat
-import os
+from src.core.people.member_rider import Member
 
 UPLOAD_FOLDER = '/ecuestre_docs'
 ALLOWED_DOC_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg'}
@@ -37,11 +37,11 @@ def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 12, pag
 
 def get_drivers():
     """Obtiene todos los conductores"""
-    return Member.query.filter_by(job_id=3).all()
+    return Member.query.join(Member.job).filter_by(name=("Conductor" or "conductor")).all()
 
 def get_trainers():
     """Obtiene todos los entrenadores de caballos"""
-    return Member.query.filter_by(job_id=7).all()
+    return Member.query.join(Member.job).filter_by(name=("Entrenador de Caballos" or "Entrenador de caballos" or "entrenador de caballos")).all()
 
 def get_horse_by_id(horse_id:int)->Horse:
     """Devuelve un caballo por ID"""
