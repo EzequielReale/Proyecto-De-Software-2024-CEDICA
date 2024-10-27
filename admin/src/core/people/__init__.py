@@ -10,6 +10,7 @@ from minio.error import S3Error
 from src.core import adressing, database_functions as db_fun, professions, registro_pagos_jya
 from src.core.database import db
 from src.core.people.member_rider import Member, Rider, UserMember
+from src.core.professions import Job  # Adjust the import path as necessary
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
@@ -138,6 +139,11 @@ def list_members(filters: dict, page=1, per_page=25, sort_by=None, sort_directio
 def get_member_by_field(field: str, value, exclude_id=None) -> Member:
     """Devuelve un miembro por un campo específico y su valor"""
     return db_fun.get_by_field(Member, field, value, exclude_id)
+
+
+def list_members_by_job(job_name:str) -> Member:
+    """Devuelve todos los miembros del trabajo especificado"""
+    return Member.query.join(Member.job).filter(Job.name.ilike(job_name)).all()
 
 
 def member_new(**kwargs) -> Member:
