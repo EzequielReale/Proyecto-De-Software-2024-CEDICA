@@ -205,7 +205,7 @@
                         <select class="form-select" id="province_id" name="province_id" required>
                             <option disabled selected>Seleccione una provincia...</option>
                             {% for province in provinces %}
-                            <option value="{{ province.id }}">{{ province.name }}</option>
+                                <option value="{{ province.id }}">{{ province.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -619,7 +619,7 @@
                             <select class="form-select" id="professor_id" name="professor_id">
                                 <option disabled selected>Seleccione un profesor o terapeuta...</option>
                                 {% for member in professors %}
-                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                    <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -629,7 +629,7 @@
                             <select class="form-select" id="assistant_id" name="assistant_id">
                                 <option disabled selected>Seleccione un auxiliar de pista...</option>
                                 {% for member in assistants %}
-                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                    <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -641,7 +641,7 @@
                             <select class="form-select" id="member_horse_rider_id" name="member_horse_rider_id">
                                 <option disabled selected>Seleccione un conductor...</option>
                                 {% for member in horse_riders %}
-                                <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
+                                    <option value="{{ member.id }}">{{ member.name }} {{ member.last_name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -651,7 +651,7 @@
                             <select class="form-select" id="horse_id" name="horse_id">
                                 <option disabled selected>Seleccione un caballo...</option>
                                 {% for horse in horses %}
-                                <option value="{{ horse.id }}">{{ horse.name }}</option>
+                                    <option value="{{ horse.id }}">{{ horse.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
