@@ -749,8 +749,8 @@ def _seed_jya(members, localities, horses):
             headquarters=random.choice(["CASJ", "HLP"]),
             days=[random.choice(["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"])],
             rider=jya,
-            professor=random.choice([member for member in members if member.job.id in [9]],),
-            member_horse_rider=random.choice([member for member in members if member.job.id in [3]],),
+            professor=random.choice([member for member in members if member.job.id in [9]]),
+            member_horse_rider=random.choice([member for member in members if member.job.id in [3]]),
             horse=random.choice([horse for horse in horses]),
             assistant=random.choice([member for member in members if member.job.id in [4]]),
         )
