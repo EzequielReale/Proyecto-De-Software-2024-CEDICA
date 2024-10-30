@@ -85,7 +85,8 @@
 
 
         <label for="beneficiario">Beneficiario:</label>
-        <select name="beneficiario" id="beneficiario" required>
+        <select name="beneficiario" id="beneficiario">
+            <option value="" {% if not pago.beneficiario_id %}selected{% endif %}>Ninguno</option>
             {% for user in users %}
             <option value="{{ user.id }}" {% if user.id==pago.beneficiario_id %}selected{% endif %}>
                 {{ user.email }}

@@ -1,6 +1,6 @@
 from src.core import database_functions as dbf
 from src.core.database import db
-from src.core.registro_pagos.Pagos import Pago, Tipo_pago
+from src.core.registro_pagos.pagos import Pago, Tipo_pago
 
 
 
@@ -12,7 +12,6 @@ def get_tipo_pago(id):
     """ obtiene un tipo de pago mediante el id y lo devuelve"""
     return dbf.get_by_field(Tipo_pago, "id", id)
 
-####------------
 
 def administracion_index(filtros: dict, page: int, per_page: int, order_by: str, orden: str) -> tuple:
     """Devuelvo todos los registros de pagos con los filtros necesarios si lo requiere"""
@@ -63,16 +62,20 @@ def administracion_getPago(id):
     return Pago.query.get_or_404(id)
 
 def administracion_update(id,monto,tipo_pago,fecha_pago,des,beneficiario):
-     """obtengo un registro de pago mediante el id , actualizo sus campos y lo guardo en la BD"""
-     pago= administracion_getPago(id) 
-     pago.monto = monto
-     pago.tipo_pago = tipo_pago
-     pago.tipo_pago_id = tipo_pago.id
-     pago.fecha_pago = fecha_pago
-     pago.descripcion = des
-     pago.beneficiario = beneficiario
-     pago.beneficiario_id = beneficiario.id
-     db.session.commit() #guardo cambios
+    """obtengo un registro de pago mediante el id , actualizo sus campos y lo guardo en la BD"""
+    pago= administracion_getPago(id) 
+    pago.monto = monto
+    pago.tipo_pago = tipo_pago
+    pago.tipo_pago_id = tipo_pago.id
+    pago.fecha_pago = fecha_pago
+    pago.descripcion = des
+    if beneficiario:
+        pago.beneficiario = beneficiario
+        pago.beneficiario_id = beneficiario.id
+    else:
+        pago.beneficiario= None
+        pago.beneficiario_id =None
+    db.session.commit() 
      
 
 def administracion_create(**kwargs):
