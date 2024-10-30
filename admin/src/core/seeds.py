@@ -615,6 +615,7 @@ def _seed_equestrian(members):
     horse_document_type5 = equestrian.horse_document_type_new(name="Registro veterinario")
 
     horses = []
+    
     for i in range(30):
         horse = equestrian.horse_new(
             name=fake.first_name(),
@@ -751,7 +752,7 @@ def _seed_jya(members, localities, horses):
             professor=random.choice([member for member in members if member.job.id in [9]],),
             member_horse_rider=random.choice([member for member in members if member.job.id in [3]],),
             horse=random.choice([horse for horse in horses]),
-            assistant=random.choice([member for member in members if member.job.id in [4]],),
+            assistant=random.choice([member for member in members if member.job.id in [4]]),
         )
 
         jya_list.append(jya)

@@ -85,9 +85,10 @@ def create():
             flash(error, 'danger')
         return render_template('ecuestre/create.html', form_data=form_data, activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
     
-    horse = equestrian.horse_new(form_data)
+    horse = equestrian.horse_new_from_form(form_data)
     flash(f"Caballo creado exitosamente", "success")
     return redirect(url_for('ecuestre.show', id=horse.id))
+
 
 @bp.route("/<int:id>/update", methods=['GET', 'POST'])
 def update(id: int)->str:

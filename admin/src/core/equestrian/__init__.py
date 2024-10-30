@@ -83,8 +83,14 @@ def get_horse_documents(horse_id: int, document_type_id: int = None, search: str
         })
     return docs
 
+def horse_new(**kwargs)->Horse:
+    """Crea un caballo, lo guarda en la BD y lo devuelve"""
+    horse = Horse(**kwargs)
+    db.session.add(horse)
+    db.session.commit()
+    return horse
 
-def horse_new(form_data)->Horse:
+def horse_new_from_form(form_data)->Horse:
     """Crea un caballo, lo guarda en la BD y lo devuelve"""    
     # Obtener las actividades seleccionadas
     selected_activities = form_data['selected_activities']
