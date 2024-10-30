@@ -3,10 +3,9 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 
 from src.core import registro_pagos, people, database_functions as db
-from src.web.handlers.autenticacion import check_permission
-from src.web.handlers.error import unauthorized
-from src.web.handlers.autenticacion import login_required
 from src.web.forms.registro_pagos_form import validar
+from src.web.handlers.autenticacion import check_permission, login_required
+from src.web.handlers.error import unauthorized
 
 
 
@@ -57,22 +56,26 @@ def update(id):
     if  not check_permission(session,"reg_pagos_update"):
         return unauthorized()
     tipos = registro_pagos.administracion_tipoPagos()
+    if request.method == 'GET':
+        return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users=db.list_all(people.Member)) #lo devuelvo al mismo lug con los mismos datos
 
-    if request.method == 'POST':
-        monto = request.form['monto']
-        tipo_pago_id = request.form['tipo_pago'] 
-        fecha_pago = request.form['fecha_pago']
-        des=  request.form['descripcion']
-        beneficiario_id = request.form['beneficiario']
+    #se envio el formulario   
+    monto = request.form['monto']
+    tipo_pago_id = request.form['tipo_pago'] 
+    fecha_pago = request.form['fecha_pago']
+    des=  request.form['descripcion']
+    beneficiario_id = request.form['beneficiario']
         
-        pude,mensaje,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
-        if pude:
-            registro_pagos.administracion_update(id,monto,tipo_pago,fecha_pago,des,beneficiario)
-            flash('Pago actualizado exitosamente.', 'success')
-            return redirect(url_for('registro_pagos.index')) 
-        else:
-            flash(mensaje, 'danger')
-    return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users=db.list_all(people.Member)) #lo devuelvo al mismo lug con los mismos datos
+    pude,mensaje,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
+    if pude:
+        registro_pagos.administracion_update(id,monto,tipo_pago,fecha_pago,des,beneficiario)
+        flash('Pago actualizado exitosamente.', 'success')
+        return redirect(url_for('registro_pagos.index')) 
+    else:
+        flash(mensaje, 'danger')
+        return render_template('registro_pagos/edicion.html', pago=registro_pagos.administracion_getPago(id), tipos=tipos,users=db.list_all(people.Member)) #lo devuelvo al mismo lug con los mismos datos
+
+
 
 
 @bp.route("/destroy/<int:id>", methods=['POST'])
@@ -94,22 +97,24 @@ def create():
     """controlador para crear un nuevo registro de pago"""
     if  not check_permission(session,"reg_pagos_new"):
         return unauthorized()
-    if request.method == 'POST':
-        monto = request.form['monto']
-        tipo_pago_id = request.form['tipo_pago'] 
-        fecha_pago = request.form['fecha_pago']
-        des=  request.form['descripcion']
-        beneficiario_id = request.form['beneficiario']
-            
-        pude,mensaje,beneficiario,tipo_pago =registro_pagos_form.validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
-        if pude:
-            if(beneficiario):
-                pago_data = {'beneficiario': beneficiario,'monto': monto,'tipo_pago': tipo_pago,'fecha_pago': fecha_pago,'descripcion': des}
-            else:
-                pago_data = {'monto': monto,'tipo_pago': tipo_pago,'fecha_pago': fecha_pago,'descripcion': des}
-                registro_pagos.administracion_create(**pago_data)
-                flash('Se agrego el pago correctamente.', 'success')
-                return redirect(url_for('registro_pagos.index')) 
+    if request.method == 'GET':
+        return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(), users=db.list_all(people.Member)) 
+
+
+    monto = request.form['monto']
+    tipo_pago_id = request.form['tipo_pago'] 
+    fecha_pago = request.form['fecha_pago']
+    des=  request.form['descripcion']
+    beneficiario_id = request.form['beneficiario']        
+    pude,mensaje,beneficiario,tipo_pago =validar(monto,tipo_pago_id,fecha_pago,des,beneficiario_id)
+    if pude:
+        if(beneficiario):
+            pago_data = {'beneficiario': beneficiario,'monto': monto,'tipo_pago': tipo_pago,'fecha_pago': fecha_pago,'descripcion': des}
         else:
-            flash(mensaje, 'danger')
-    return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(), users=db.list_all(people.Member)) 
+            pago_data = {'monto': monto,'tipo_pago': tipo_pago,'fecha_pago': fecha_pago,'descripcion': des}
+            registro_pagos.administracion_create(**pago_data)
+            flash('Se agrego el pago correctamente.', 'success')
+            return redirect(url_for('registro_pagos.index')) 
+    else:
+        flash(mensaje, 'danger')
+        return render_template('registro_pagos/creacion.html', tipos= registro_pagos.administracion_tipoPagos(), users=db.list_all(people.Member)) 

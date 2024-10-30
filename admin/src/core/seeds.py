@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import json
 from faker import Faker
 import random
 
@@ -617,54 +616,31 @@ def _seed_equestrian(members):
 
     horses = []
     for i in range(30):
-        # horse = equestrian.horse_new(
-        #     name=fake.first_name(),
-        #     birth_date=fake.date_between(start_date="-2y", end_date="today"),
-        #     gender=random.choice(["Macho", "Hembra"]),
-        #     race=random.choice(
-        #         [
-        #             "Norteño",
-        #             "Criollo",
-        #             "Árabe",
-        #             "Pura Sangre",
-        #             "Mestizo",
-        #             "Cuarto de Milla",
-        #             "Appaloosa",
-        #         ]
-        #     ),
-        #     coat=random.choice(["Gris plateado", "Negro", "Marrón", "Blanco"]),
-        #     donation=random.choice([True, False]),
-        #     entry_date=fake.date_between(start_date="today", end_date="+2y"),
-        #     assigned_members=random.sample(
-        #         [member for member in members if member.job.id in [3, 7]],
-        #         random.randint(1, 3),
-        #     ),
-        #     activities=random.sample(list_activities, random.randint(1, 5)),
-        #     assigned_location=f"Sede {random.randint(0,15)}",
-        # )
-        form_data = {
-            'name': fake.first_name(),
-            'birth_date': fake.date_between(start_date="-2y", end_date="today"),
-            'gender': random.choice(["Macho", "Hembra"]),
-            'race': random.choice([
-                "Norteño",
-                "Criollo",
-                "Árabe",
-                "Pura Sangre",
-                "Mestizo",
-                "Cuarto de Milla",
-                "Appaloosa",
-            ]),
-            'coat': random.choice(["Gris plateado", "Negro", "Marrón", "Blanco"]),
-            'origin': random.choice([True, False]),  # Esto representa si es donado
-            'entry_date': fake.date_between(start_date="today", end_date="+2y"),
-            'assigned_members': json.dumps(random.sample([member.id for member in members if member.job.id in [3, 7]], random.randint(1, 3))),
-            'selected_activities': json.dumps(random.sample([activity.id for activity in list_activities], random.randint(1, 5))),
-            'assigned_location': f"Sede {random.randint(0,15)}"
-        }
-
-# Llama a la función con el diccionario form_data
-        horse = equestrian.horse_new(form_data)
+        horse = equestrian.horse_new(
+            name=fake.first_name(),
+            birth_date=fake.date_between(start_date="-2y", end_date="today"),
+            gender=random.choice(["Macho", "Hembra"]),
+            race=random.choice(
+                [
+                    "Norteño",
+                    "Criollo",
+                    "Árabe",
+                    "Pura Sangre",
+                    "Mestizo",
+                    "Cuarto de Milla",
+                    "Appaloosa",
+                ]
+            ),
+            coat=random.choice(["Gris plateado", "Negro", "Marrón", "Blanco"]),
+            donation=random.choice([True, False]),
+            entry_date=fake.date_between(start_date="today", end_date="+2y"),
+            assigned_members=random.sample(
+                [member for member in members if member.job.id in [3, 7]],
+                random.randint(1, 3),
+            ),
+            activities=random.sample(list_activities, random.randint(1, 5)),
+            assigned_location=f"Sede {random.randint(0,15)}",
+        )
         horses.append(horse)
     
     return horses

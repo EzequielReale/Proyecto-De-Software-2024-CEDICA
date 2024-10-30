@@ -13,8 +13,12 @@ def validar(monto, tipo_pago_id, fecha_pago, des, beneficiario_id):
     if not fecha_pago:
         return False, "Debe ingresar una fecha de pago", None, None
     
-    if fecha_pago > datetime.now().strftime('%Y-%m-%d'):
-        return False, "La fecha de pago no puede ser futura", None, None
+    try:
+        fecha_pago_obj = datetime.strptime(fecha_pago, '%Y-%m-%d')
+        if fecha_pago_obj > datetime.now():
+            return False, "La fecha de pago no puede ser futura", None, None
+    except ValueError:
+        return False, "La fecha de pago no es válida", None, None
     
     if not des or len(des) > 255:
         return False, "La descripción es obligatoria y debe tener un máximo de 255 caracteres", None, None
