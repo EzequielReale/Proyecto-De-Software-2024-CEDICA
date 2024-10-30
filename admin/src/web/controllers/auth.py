@@ -26,18 +26,18 @@ def logout():
 
 @bp.post("/authenticate")
 def authenticate():
-   """me fijo si el usuario esta registrado, si lo esta le doy acceso de lo contrario le mustro msj de error"""
-   parametros = request.form
-   user = find_user(parametros["email"],parametros["password"])
-   if not user:
-       flash("Usuario o contraseña incorrecta", "error")
-       return redirect(url_for("auth.login"))
-   if user.isActive == False:
-       flash("Usuario bloqueado", "error")
-       return redirect(url_for("auth.login"))
-   session["user"] = user.email
-   flash("La sesión se inició correctamente!", "success")
-   return render_template("home.html")
+    """verifico si el usuario esta registrado, si lo esta le doy acceso de lo contrario mustro msj de error"""
+    parametros = request.form
+    user = find_user(parametros["email"],parametros["password"])
+    if not user:
+        flash("Usuario o contraseña incorrecta", "error")
+        return redirect(url_for("auth.login"))
+    if user.isActive == False:
+        flash("Usuario bloqueado", "error")
+        return redirect(url_for("auth.login"))
+    session["user"] = user.email
+    flash("La sesión se inició correctamente!", "success")
+    return render_template("home.html")
 
 
 @bp.get("/profile")
