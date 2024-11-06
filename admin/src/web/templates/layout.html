@@ -232,6 +232,12 @@
                             href="{{ url_for('registro_pagos_jya.index') }}">Registro de cobros</a>
                     </li>
                     {% endif %}
+                    {% if check_permission(session,'content_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint.startswith('articles.') %}active{% endif %}"
+                            href="{{ url_for('articles.index') }}">Contenido público</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
 
                     <!-- Botones de perfil y cerrar sesión para mobile -->

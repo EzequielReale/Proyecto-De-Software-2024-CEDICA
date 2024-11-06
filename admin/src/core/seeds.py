@@ -9,22 +9,15 @@ from src.core import (
     people,
     professions,
     registro_pagos,
+    registro_pagos_jya,
+    content_admin
 )
 from src.core.user_role_permission.operations import permission_operations as Permission
 from src.core.user_role_permission.operations import role_operations as Role
 from src.core.user_role_permission.operations import user_operations as User
-from src.core.user_role_permission.operations import role_operations as Role
-from src.core.user_role_permission.operations import permission_operations as Permission
+from src.core.content_admin.article_status_enum import ArticleStatus
 from datetime import datetime
-from src.core import (
-    disabilities,
-    people,
-    professions,
-    adressing,
-    registro_pagos,
-    equestrian,
-    registro_pagos_jya,
-)
+
 
 
 fake = Faker()
@@ -87,6 +80,13 @@ def _seed_users():
     reg_cobros_update = Permission.permiso_new(name="reg_cobros_update")
     reg_cobros_show = Permission.permiso_new(name="reg_cobros_show")
 
+    # Seed para Permisos modulo Registro Cobros
+    content_index = Permission.permiso_new(name="content_index")
+    content_new = Permission.permiso_new(name="content_new")
+    content_destroy = Permission.permiso_new(name="content_destroy")
+    content_update = Permission.permiso_new(name="content_update")
+    content_show = Permission.permiso_new(name="content_show")
+
     # Seed de Roles
     tecnica = Role.role_new(
         name="Tecnica",
@@ -142,6 +142,10 @@ def _seed_users():
             jya_update,
             jya_new,
             jya_destroy,
+            content_index,
+            content_new,
+            content_update,
+            content_show,
         ],
     )
     system_admin = Role.role_new(
@@ -154,6 +158,15 @@ def _seed_users():
             user_show,
             user_block,
             user_update_password,
+        ],
+    )
+    editor = Role.role_new(
+        name="Editor",
+        permissions=[
+            content_index,
+            content_new,
+            content_update,
+            content_show,
         ],
     )
 
@@ -186,7 +199,14 @@ def _seed_users():
         isActive=True,
         roles=[tecnica, ecuestre, voluntario, administracion, system_admin],
     )
-    user_list = [user_system_admin, user_administracion, user_tecnica_ecuestre, user_todo]
+    user_editor = User.user_new(
+        email="weby@gmail.com",
+        alias="weby",
+        password="123",
+        isActive=True,
+        roles=[editor],
+    )
+    user_list = [user_system_admin, user_administracion, user_tecnica_ecuestre, user_todo, user_editor]
 
     # randoms
     for i in range(30):
@@ -800,6 +820,19 @@ def _seed_pagos(jya_list, members):
     
     return pagos
 
+def _seed_articles(users):
+    articles = []
+    for i in range(29):
+        article = content_admin.create_article(
+            title=fake.sentence(),
+            summary=fake.text(max_nb_chars=255),
+            content=fake.text() + " " + fake.text() + " " + fake.text() + " " + fake.text() + " " + fake.text(),
+            author_id=random.choice(users).id,
+            status=random.choice(list(ArticleStatus))
+        )
+        articles.append(article)
+
+    return articles
 
 def run():
     user_list = _seed_users()
@@ -820,5 +853,7 @@ def run():
     print("Cobros creados con exito")
     pagos = _seed_pagos(jya_list, members)
     print("Pagos creados con exito")
+    articles = _seed_articles(user_list)
+    print("Articulos creados con exito")
     print()
     print("Seeds ejecutadas con exito")
