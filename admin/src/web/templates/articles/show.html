@@ -41,6 +41,11 @@
         background-color: #4CAF50 !important;
     }
 
+    footer {
+        background-color: #f8f9fa !important;
+        border-top: 1px solid #ddd !important;
+    }
+
     @media screen and (max-width: 768px) {
         header {
             flex-direction: column;
@@ -67,7 +72,7 @@
     <div class="d-flex flex-column gap-2">
         <div>
             <h3>{{article.title.rstrip('.')}}</h3>
-            <p>{{article.summary}}</p>
+            <p class="fst-italic">{{article.summary}}</p>
         </div>
         <div class="d-flex flex-row justify-content-start align-items-center column-gap-4 row-gap-2 flex-wrap"
             style="color: #555">
@@ -141,77 +146,80 @@
         </div>
     </div>
 </header>
-<div class="py-3 fst-italic">
-    <p>{{article.content}}</p>
-</div>
-<footer class="position-fixed w-100 start-0 bottom-0 d-flex flex-row justify-content-between align-items-center"
-    style="padding: 20px 400px;">
-    <a href="{{ url_for('articles.index') }}" class="btn btn-outline-light"><i style="transform: scale(0.75);"
-            class="fa fa-chevron-left me-2"></i>Volver a
-        artículos</a>
-    <div class="d-flex flex-row gap-2">
-        <a href="{{ url_for('articles.index', id=article.id) }}" class="btn btn-danger"><i
-                class="fa fa-trash me-2"></i>Eliminar</a>
-        <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-warning"><i
-                class="fa fa-edit me-2"></i>Editar</a>
-        {% if article.status == article_status.BORRADOR %}
-        <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-success"><i
-                class="fa fa-paper-plane me-2"></i>Publicar</a>
-        {% elif article.status == article_status.PUBLICADO %}
-        <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-secondary"><i
-                class="fa fa-archive me-2"></i>Archivar</a>
-        {% endif %}
+<div class="py-3">
+    <div class="markdown-content">
+        {{ article.content | safe }}
     </div>
-</footer>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Obtener los botones de descarga
-        const downloadButtons = document.querySelectorAll('[id^="download-btn-"]');
-        // Asignar evento de descarga a los botones
-        downloadButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
-                // Evitar que se abra el enlace
-                event.preventDefault();
-                const url = this.getAttribute('href');
-                const filename = this.getAttribute('download');
+    <footer class="position-fixed w-100 start-0 bottom-0">
+        <div class="d-flex flex-row justify-content-between align-items-center px-3"
+            style="margin: 0 auto; max-width: 1200px;">
+            <a href="{{ url_for('articles.index') }}" class="btn btn-outline-dark"><i style="transform: scale(0.75);"
+                    class="fa fa-chevron-left me-2"></i>Volver a
+                artículos</a>
+            <div class="d-flex flex-row gap-2">
+                <a href="{{ url_for('articles.index', id=article.id) }}" class="btn btn-danger"><i
+                        class="fa fa-trash me-2"></i>Eliminar</a>
+                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-warning"><i
+                        class="fa fa-edit me-2"></i>Editar</a>
+                {% if article.status == article_status.BORRADOR %}
+                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-success"><i
+                        class="fa fa-paper-plane me-2"></i>Publicar</a>
+                {% elif article.status == article_status.PUBLICADO %}
+                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-secondary"><i
+                        class="fa fa-archive me-2"></i>Archivar</a>
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtener los botones de descarga
+            const downloadButtons = document.querySelectorAll('[id^="download-btn-"]');
+            // Asignar evento de descarga a los botones
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    // Evitar que se abra el enlace
+                    event.preventDefault();
+                    const url = this.getAttribute('href');
+                    const filename = this.getAttribute('download');
 
-                // Descargar el archivo
-                fetch(url)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    })
-                    .catch(console.error);
+                    // Descargar el archivo
+                    fetch(url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = filename;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        })
+                        .catch(console.error);
+                });
             });
         });
-    });
 
-    // Función para cambiar de página en el formulario
-    function changePage(page) {
-        // Obtener las secciones del formulario
-        const sections = document.querySelectorAll('#tabs-container > section');
+        // Función para cambiar de página en el formulario
+        function changePage(page) {
+            // Obtener las secciones del formulario
+            const sections = document.querySelectorAll('#tabs-container > section');
 
-        // Ocultar todas las secciones
-        sections.forEach(section => section.classList.add('visually-hidden'));
+            // Ocultar todas las secciones
+            sections.forEach(section => section.classList.add('visually-hidden'));
 
-        // Mostrar la sección correspondiente a la página seleccionada
-        sections[page].classList.remove('visually-hidden');
+            // Mostrar la sección correspondiente a la página seleccionada
+            sections[page].classList.remove('visually-hidden');
 
-        // Cambiar la clase 'active' en los botones de la barra de navegación
-        document.querySelectorAll('#form-tabs .nav-link').forEach((button, index) => {
-            if (index === page) {
-                button.classList.add('active');
-                button.attributes['aria-current'] = 'page';
-            } else {
-                button.classList.remove('active');
-                button.attributes['aria-current'] = '';
-            }
-        });
-    }
-</script>
-{% endblock %}
+            // Cambiar la clase 'active' en los botones de la barra de navegación
+            document.querySelectorAll('#form-tabs .nav-link').forEach((button, index) => {
+                if (index === page) {
+                    button.classList.add('active');
+                    button.attributes['aria-current'] = 'page';
+                } else {
+                    button.classList.remove('active');
+                    button.attributes['aria-current'] = '';
+                }
+            });
+        }
+    </script>
+    {% endblock %}

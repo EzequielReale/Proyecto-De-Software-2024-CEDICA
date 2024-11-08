@@ -47,7 +47,7 @@ def create():
      
     # Si no se envía el formulario
     if request.method == 'GET':
-        return render_template('ecuestre/create.html', activities=equestrian.list_activities(), drivers=equestrian.get_drivers(), trainers=equestrian.get_trainers())
+        return render_template('articles/create.html')
     
     # Si se envía el formulario, se procede con la creación del caballo
     form_data = {
