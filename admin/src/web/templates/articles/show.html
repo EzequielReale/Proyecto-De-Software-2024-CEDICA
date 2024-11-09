@@ -41,6 +41,13 @@
         background-color: #4CAF50 !important;
     }
 
+    .markdown-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        word-wrap: break-word;
+        /* Asegura que el texto largo se ajuste al contenedor */
+    }
+
     footer {
         background-color: #f8f9fa !important;
         border-top: 1px solid #ddd !important;
@@ -153,73 +160,45 @@
     <footer class="position-fixed w-100 start-0 bottom-0">
         <div class="d-flex flex-row justify-content-between align-items-center px-3"
             style="margin: 0 auto; max-width: 1200px;">
+            {% if check_permission(session,'content_index')%}
             <a href="{{ url_for('articles.index') }}" class="btn btn-outline-dark"><i style="transform: scale(0.75);"
                     class="fa fa-chevron-left me-2"></i>Volver a
                 artículos</a>
+            {% endif %}
             <div class="d-flex flex-row gap-2">
-                <a href="{{ url_for('articles.index', id=article.id) }}" class="btn btn-danger"><i
-                        class="fa fa-trash me-2"></i>Eliminar</a>
+                {% if check_permission(session,'content_destroy')%}
+                <form action="{{ url_for('articles.destroy', id=article.id) }}" method="POST" style="display: inline;"
+                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artículo?');">
+                    <button type="submit" title="Eliminar" role="button" class="btn btn-danger">
+                        <i style="transform: scale(0.8);" class="fa fa-trash me-2"></i>Eliminar</a>
+                    </button>
+                </form>
+                {% endif %}
+                {% if check_permission(session,'content_update') %}
                 <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-warning"><i
-                        class="fa fa-edit me-2"></i>Editar</a>
+                        style="transform: scale(0.9);" class="fa fa-edit me-2"></i>Editar</a>
                 {% if article.status == article_status.BORRADOR %}
-                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-success"><i
-                        class="fa fa-paper-plane me-2"></i>Publicar</a>
+                <form action="{{ url_for('articles.update_status', id=article.id, status=1) }}" method="POST"
+                    style="display: inline;">
+                    <button type="submit" title="Publicar" role="button" class="btn btn-success"><i
+                            style="transform: scale(0.9);" class="fa fa-paper-plane me-2"></i>Publicar</button>
+                </form>
                 {% elif article.status == article_status.PUBLICADO %}
-                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-secondary"><i
-                        class="fa fa-archive me-2"></i>Archivar</a>
+                <form action="{{ url_for('articles.update_status', id=article.id, status=2) }}" method="POST"
+                    style="display: inline;">
+                    <button type="submit" title="Archivar" role="button" class="btn btn-secondary"><i
+                            class="fa fa-archive me-2"></i>Archivar</a>
+                </form>
+                {% endif %}
                 {% endif %}
             </div>
         </div>
     </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Obtener los botones de descarga
-            const downloadButtons = document.querySelectorAll('[id^="download-btn-"]');
-            // Asignar evento de descarga a los botones
-            downloadButtons.forEach(button => {
-                button.addEventListener('click', function (event) {
-                    // Evitar que se abra el enlace
-                    event.preventDefault();
-                    const url = this.getAttribute('href');
-                    const filename = this.getAttribute('download');
-
-                    // Descargar el archivo
-                    fetch(url)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const link = document.createElement('a');
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = filename;
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                        })
-                        .catch(console.error);
-                });
-            });
-        });
-
-        // Función para cambiar de página en el formulario
-        function changePage(page) {
-            // Obtener las secciones del formulario
-            const sections = document.querySelectorAll('#tabs-container > section');
-
-            // Ocultar todas las secciones
-            sections.forEach(section => section.classList.add('visually-hidden'));
-
-            // Mostrar la sección correspondiente a la página seleccionada
-            sections[page].classList.remove('visually-hidden');
-
-            // Cambiar la clase 'active' en los botones de la barra de navegación
-            document.querySelectorAll('#form-tabs .nav-link').forEach((button, index) => {
-                if (index === page) {
-                    button.classList.add('active');
-                    button.attributes['aria-current'] = 'page';
-                } else {
-                    button.classList.remove('active');
-                    button.attributes['aria-current'] = '';
-                }
-            });
-        }
-    </script>
-    {% endblock %}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const markdownContent = document.querySelector('.markdown-content');
+        markdownContent.innerHTML = marked.parse(markdownContent.innerHTML.trim());
+    });
+</script>
+{% endblock %}

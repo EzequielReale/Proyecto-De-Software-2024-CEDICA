@@ -51,12 +51,14 @@
     <h2>📰 Crear artículo</h2>
     <p>Formulario para crear un artículo a mostrar en la aplicación pública</p>
     <form id="article-form" action="{{ url_for('articles.create') }}" method="POST">
+        <!-- Campo oculto para manejar el estado del artículo -->
+        <input type="hidden" id="status" name="status" value="0">
 
         <div class="d-flex flex-column gap-3 py-3">
             <section class="d-flex flex-column gap-3">
                 <div class="form-group">
-                    <label class="mb-1" for="name">Título</label>
-                    <input class="form-control" type="text" id="name" name="name"
+                    <label class="mb-1" for="title">Título</label>
+                    <input class="form-control" type="text" id="title" name="title"
                         placeholder="Ingrese el título del artículo" value="{{ form_data.title if form_data else '' }}"
                         required maxlength="255" pattern="[A-Za-z\s]+">
                 </div>
@@ -108,13 +110,13 @@
                 Volver
             </a>
             <div class="btn-group dropdown-menu-end">
-                <button type="button" class="btn btn-warning">Guardar como borrador</button>
+                <button type="button" class="btn btn-warning" onclick="setStatus(0)">Guardar como borrador</button>
                 <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split"
                     data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="visually-hidden">Toggle Dropdown</span>
+                    <span class="visually-hidden"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item btn btn-light" href="#">Publicar directamente</a>
+                    <li><a class="dropdown-item btn btn-light" href="#" onclick="setStatus(1)">Publicar directamente</a>
                     </li>
                 </ul>
             </div>
@@ -164,6 +166,12 @@
 
         // Mostrar la sección correspondiente a la página seleccionada
         articlePages[page].classList.remove('visually-hidden');
+    }
+
+    // Función para establecer el estado del artículo y enviar el formulario
+    function setStatus(status) {
+        document.getElementById('status').value = status;
+        document.getElementById('article-form').submit();
     }
 </script>
 {% endblock %}

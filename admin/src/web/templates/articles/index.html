@@ -61,7 +61,7 @@
     }
 
     .card:hover {
-        transform: scale(1.025);
+        transform: scale(1.02);
         background-color: rgba(255, 255, 255, 1) !important;
     }
 
@@ -116,7 +116,6 @@
             Nuevo
         </a>
         {% endif %}
-
     </div>
 </header>
 <div class="mt-4 d-flex flex-column w-100 justify-content-center align-items-center">
@@ -141,7 +140,7 @@
                     <p class="text-gray-600">{{ article.summary }}</p>
                     <div class="d-flex align-items-center flex-wrap justify-content-between gap-2"
                         style="font-size: 14px;">
-                        <div class="d-flex align-items-center gap-1">
+                        <div class="d-flex align-items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                                 fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-user">
@@ -150,7 +149,7 @@
                             </svg>
                             <span class="text-muted">{{ article.author.alias }}</span>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
+                        <div class="d-flex align-items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                                 fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-calendar-days">
@@ -168,7 +167,7 @@
                             <span class="text-muted">Creado: {{ article.created_at.strftime('%d/%m/%Y')
                                 }}</span>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
+                        <div class="d-flex align-items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24"
                                 fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-clock">
@@ -179,14 +178,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="m-0">
-                    <h5 class="fw-medium mb-2">Contenido:</h5>
-                    <p class="m-0 text-dark">
-                        {{ article.content[:150] }}{% if article.content|length > 150 %}...{% endif %}
-                    </p>
-                </div>
             </div>
             <div class="d-flex mt-1 justify-content-between w-100">
+                {% if check_permission(session,'content_show')%}
                 <a href="{{ url_for('articles.show', id=article.id) }}" class="btn btn-outline-custom gap-3">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none"
                         stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -198,7 +192,10 @@
                         <path d="M16 17H8" />
                     </svg> <span> Ver artículo completo</span>
                 </a>
-                <button class="btn btn-filled-custom">Editar</button>
+                {% endif %}
+                {% if check_permission(session,'content_update')%}
+                <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-filled-custom">Editar</a>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
@@ -210,8 +207,7 @@
     </div>
     <div id="pagination" class="justify-content-center align-items-center d-flex flex-row gap-2 p-2 pb-4 mt-3">
         {% if page > 1 %}
-        <a style="color: #0099CC;"
-            href="{{ url_for('articles.index', order_by=order_by, order=order, limit=limit, page=page-1, search=search, activity_id=activity_id) }}"><i
+        <a style="color: #0099CC;" href="{{ url_for('articles.index', limit=limit, page=page-1) }}"><i
                 class="fa fa-angle-double-left" aria-hidden="true"></i>
         </a>
         {% else %}
@@ -219,7 +215,7 @@
         {% endif %}
         <span>Página {{ page }}</span>
         {% if page < total_pages %} <a style="color: #0099CC;"
-            href="{{ url_for('articles.index', order_by=order_by, order=order, limit=limit, page=page+1, search=search, activity_id=activity_id) }}">
+            href="{{ url_for('articles.index', limit=limit, page=page+1) }}">
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
             </a>
             {% else %}
@@ -228,15 +224,5 @@
     </div>
 </div>
 <script>
-    function clickFilter() {
-        const filterButton = document.querySelector('#filter-button');
-        const searchContainer = document.querySelector('#search-container');
-
-        if (searchContainer.classList.contains('show')) {
-            filterButton.classList.remove('active');
-        } else {
-            filterButton.classList.add('active');
-        }
-    }
 </script>
 {% endblock %}

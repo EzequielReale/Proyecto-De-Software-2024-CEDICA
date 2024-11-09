@@ -146,6 +146,7 @@ def _seed_users():
             content_new,
             content_update,
             content_show,
+            content_destroy
         ],
     )
     system_admin = Role.role_new(
@@ -822,13 +823,27 @@ def _seed_pagos(jya_list, members):
 
 def _seed_articles(users):
     articles = []
+
     for i in range(29):
+        # Genera contenido con formato Markdown aleatorio
+        markdown_content = [
+            f"### {fake.sentence()}",
+            fake.sentence(),
+            fake.text(max_nb_chars=100),
+            f"* {fake.word()}\n* {fake.word()}\n* {fake.word()}",
+            f"**{fake.sentence()}**",
+            f"[Enlace a {fake.word()}]({fake.url()})"
+        ]
+        content = "\n".join(markdown_content)
+                
         article = content_admin.create_article(
-            title=fake.sentence(),
-            summary=fake.text(max_nb_chars=255),
-            content=fake.text() + " " + fake.text() + " " + fake.text() + " " + fake.text() + " " + fake.text(),
-            author_id=random.choice(users).id,
-            status=random.choice(list(ArticleStatus))
+            form_data={
+                'title': fake.sentence(),
+                'summary': fake.text(max_nb_chars=255),
+                'content': content,
+                'author_id': random.choice(users).id,
+                'status': random.choice(list(ArticleStatus))
+            }
         )
         articles.append(article)
 
