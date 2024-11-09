@@ -11,6 +11,10 @@ from sqlalchemy.types import String, Text
 
 # Métodos CRUD
 
+def list_users_google()-> list:
+    """ Devuelve una lista de usuarios parcialmente registrados con Google """
+    return User.query.filter(User.google_id.isnot(None), User.confirmed == False).all()
+
 def list_users()->list:
     """ Lista todos los usuarios guardados en la BD"""
     return User.query.all()
