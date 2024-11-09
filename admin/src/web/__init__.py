@@ -8,9 +8,14 @@ from src.web import blueprints
 from src.web import commands
 from src.web import routes
 from src.web.storage import storage
+from authlib.integrations.flask_client import OAuth
+
+# __init__.py
 
 
 session = Session()
+
+
 
 
 def create_app(env="development", static_folder="../../static"):
@@ -19,7 +24,20 @@ def create_app(env="development", static_folder="../../static"):
     database.init_app(app)
     session.init_app(app)
     bcrypt.init_app(app)
-  
+     #conf google
+    CONF_URL = 'https://accounts.google.com/.well-known/openid-configuration'
+    oauth = OAuth(app)
+    oauth.register(
+        name='google',
+        server_metadata_url=CONF_URL,
+        client_kwargs={
+            'scope': 'openid email profile'
+        }
+    )
+    app.oauth = oauth
+    
+
+   
     #registro funcion en jinja para restringir el front
     app.jinja_env.globals.update(is_authenticated = autenticacion)
     app.jinja_env.globals.update(check_permission = check_permission)
@@ -34,6 +52,8 @@ def create_app(env="development", static_folder="../../static"):
     commands.register(app)
 
     # Storage
-    storage.init_app(app)
+    #storage.init_app(app)
+
+  
 
     return app

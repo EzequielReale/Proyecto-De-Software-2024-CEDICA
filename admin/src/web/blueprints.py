@@ -6,6 +6,8 @@ from src.web.controllers.registro_pagos import bp as registro_pagos_bp
 from src.web.controllers.team import bp as team_bp
 from src.web.controllers.user import bp as user_bp
 from src.web.controllers.registro_pagos_jya import bp as registro_pagos_jya_bp
+#from src.web.controllers.auth_google import bp as auth_google
+
 from src.web.handlers import error
 
 
@@ -19,5 +21,8 @@ def register(app):
     app.register_blueprint(resources_bp)
     app.register_blueprint(jya_bp)
     app.register_blueprint(registro_pagos_jya_bp)
+   
+   # app.register_blueprint(auth_google)
+
 
     app.register_error_handler(404, error.not_found)
