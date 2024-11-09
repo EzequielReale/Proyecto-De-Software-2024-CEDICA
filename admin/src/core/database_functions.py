@@ -58,6 +58,8 @@ def list_all(model) -> list:
 def list_paginated(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
     """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
     query = filter(model, filters)
+    query = query.filter((model.confirmed == True) | (model.confirmed == None)) #excluyo a los usuarios no confirmados por admin
+
     query = order_by(model, query, sort_by, sort_direction) 
     pagination = query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.pages

@@ -9,7 +9,7 @@ from flask import session
 from src.core import people
 
 # Importación funciones de modelo User
-from src.core.user_role_permission.operations.user_operations import get_user_by_email, list_users_advance, user_exists
+from src.core.user_role_permission.operations.user_operations import get_user_by_email, list_users_advance, user_exists,list_users_google
 from src.core.user_role_permission.operations.user_operations import user_new, delete_user, user_unlink_member, user_update, user_update_password
 from src.core.user_role_permission.operations.user_operations import add_role_to_user, delete_role_from_user
 
@@ -45,7 +45,8 @@ def index():
     filters = {
         'email': request.args.get('email'),
         'isActive': request.args.get('status'),
-        'roles': request.args.get('role_id')
+        'roles': request.args.get('role_id'),
+        
     }
     sort_by = request.args.get('sort_by', 'email')
     sort_direction = request.args.get('sort_direction', 'asc')
@@ -159,6 +160,11 @@ def update(email: str):
     user = get_user_by_email(email)
     form = UpdateForm()
 
+    if request.method == 'GET':
+        form.email.data=user.email
+        form.alias.data=user.alias
+
+
     # Cargar los roles del usuario en el formulario
     form.roles_to_delete.choices = list(user.roles)
 
@@ -166,11 +172,13 @@ def update(email: str):
     form.roles_to_add.choices = list(set(list_roles()) - set(user.roles) - set([get_role_by_name('SystemAdmin')]))
 
     if form.validate_on_submit():
-
         alias = form.alias.data
         email = form.email.data
         roles_to_delete = form.roles_to_delete.data
         roles_to_add = form.roles_to_add.data
+
+        print(f"Formulario Alias despues del post: {form.alias.data}")
+        print(f"Formulario Emaildespues del post: {form.email.data}")
 
         # Convierto los roles del usuario a una lista de strings
         user_roles = [role.name for role in user.roles]
@@ -240,21 +248,38 @@ def update(email: str):
         
 
         # Actualiza los campos del usuario luego de todas las validaciones
-        for field, value in fields_to_change.items():
 
-            if field == 'email' or field == 'alias':
-                user_update(user.id, **{field: value})
-            elif field == 'roles_to_add':
-                for role in value:
-                    add_role_to_user(user.id, role)
-            elif field == 'roles_to_delete':
-                for role in value:
-                    delete_role_from_user(user.id, role)
-        
+        fields_to_change['confirmed'] = True #el administrador confirma el registro del usuario registrado por google
+        if 'alias' in fields_to_change:
+            user_update(user.id, alias=fields_to_change['alias'])
+
+        if 'email' in fields_to_change:
+            user_update(user.id, email=fields_to_change['email'])
+
+        if 'confirmed' in fields_to_change:
+            user.confirmed = fields_to_change['confirmed']
+
+        # Actualizar los roles (agregar o eliminar roles)
+        if 'roles_to_add' in fields_to_change:
+            for role in fields_to_change['roles_to_add']:
+                add_role_to_user(user.id, role)
+
+        if 'roles_to_delete' in fields_to_change:
+            for role in fields_to_change['roles_to_delete']:
+                delete_role_from_user(user.id, role)
         flash("Usuario actualizado exitosamente.", "success")
         return redirect("/user")
                 
     return render_template('user/update.html', user=user, form=form)
+
+
+
+@login_required
+@bp.route("/register", methods=['GET'])
+def user_register():
+    users = list_users_google()
+    return render_template('user/index_register.html',users= users)
+
 
 
 def validate_roles(roles, user_roles, action):

@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %} Registro de usuarios{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Alias
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Email
+            </th>
+
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Acciones
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+    {% if users %}
+        {% for user in users %}
+            <tr>
+                <td>{{ user.alias }}</td>
+
+                <td>{{ user.email }}</td>
+
+                <td>
+                    
+                    <!-- Icono de edición -->
+                    <a href="{{ url_for('user.update', email=user.email)}}" title="Editar" style="cursor:pointer;">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    
+                    <!-- Formulario de eliminación -->
+                    <form action="{{ url_for('user.delete', email=user.email) }}" method="POST" style="display: inline;"
+                        onsubmit="return confirm('¿Quieres eliminar el registro del usuario {{user.alias}} y todos sus datos?');">
+                        <button type="submit" title="Eliminar" role="button"
+                            style="border: none; background: none; color: #0099CC;">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+
+    {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="8">No hay usuarios</td>
+        </tr>
+
+    {% endif %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
