@@ -1,0 +1,177 @@
+{% extends "layout.html" %}
+
+{% block title %}Creación de artículos{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .form-group label {
+        font-weight: 500;
+    }
+
+    form a,
+    form a:hover {
+        color: #0077AA !important;
+        text-decoration: none !important;
+    }
+
+    .btn {
+        transition: 0.2s !important;
+    }
+
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    .btn-custom {
+        background-color: transparent !important;
+        border-color: transparent !important;
+        color: #666 !important;
+        transition: 0.2s;
+    }
+
+    .btn-custom.active {
+        color: #000 !important;
+        background-color: white !important;
+        box-shadow: 0 0 5px 0px rgba(25, 25, 25, 0.1) !important;
+    }
+
+    li .btn.btn-light {
+        color: #252525 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>📰 Crear artículo</h2>
+    <p>Formulario para crear un artículo a mostrar en la aplicación pública</p>
+    <form id="article-form" action="{{ url_for('articles.create') }}" method="POST">
+        <!-- Campo oculto para manejar el estado del artículo -->
+        <input type="hidden" id="status" name="status" value="0">
+
+        <div class="d-flex flex-column gap-3 py-3">
+            <section class="d-flex flex-column gap-3">
+                <div class="form-group">
+                    <label class="mb-1" for="title">Título</label>
+                    <input class="form-control" type="text" id="title" name="title"
+                        placeholder="Ingrese el título del artículo" value="{{ form_data.title if form_data else '' }}"
+                        required maxlength="255" pattern="[A-Za-z\s]+">
+                </div>
+
+                <div class="form-group">
+                    <label class="mb-1" for="summary">Copete</label>
+                    <input class="form-control" placeholder="Ingrese una breve descripción del artículo" type="text"
+                        id="summary" name="summary" value="{{ form_data.summary if form_data else '' }}" required>
+                </div>
+
+                <ul class="d-flex flex-row w-100 rounded-3 bg-light p-2 gap-2 mb-0 mt-3">
+                    <li role="button" onclick="changePage(0)" class="btn btn-custom active py-1 flex-grow-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-pen mb-1 me-1">
+                            <path
+                                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                        </svg>
+                        Editar
+                    </li>
+                    <li role="button" onclick="changePage(1)" class="btn btn-custom py-1 flex-grow-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-eye mb-1 me-1">
+                            <path
+                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        Previsualizar
+                    </li>
+                </ul>
+                <div class="form-group article-page">
+                    <textarea style="min-height: 200px; max-height: 500px;" class="form-control" id="content"
+                        placeholder="Ingrese el contenido del artículo" name="content"
+                        value="{{ form_data.content if form_data else '' }}" required></textarea>
+                    <div class="form-text">Este campo soporta texto en formato markdown. Más información acerca de este
+                        formato <a target="_blank" href="https://markdown.es/sintaxis-markdown/">aquí</a>.</div>
+                </div>
+                <div class="article-page visually-hidden">
+                    <div id="markdown-preview" style="min-height: 225px;" class="border p-3 rounded-3">
+                        Acá se mostrará una previsualización de su contenido 😉
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="d-flex flex-row align-items-center justify-content-between w-100 mt-4">
+            <a id="btn-back" class="btn border border-2" href="{{ url_for('articles.index') }}">
+                <i style="transform: scale(0.6);" class="fa fa-chevron-left me-1"></i>
+                Volver
+            </a>
+            <div class="btn-group dropdown-menu-end">
+                <button type="button" class="btn btn-warning" onclick="setStatus(0)">Guardar como borrador</button>
+                <button type="button" class="btn btn-warning dropdown-toggle dropdown-toggle-split"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="visually-hidden"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item btn btn-light" href="#" onclick="setStatus(1)">Publicar directamente</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const contentInput = document.getElementById('content');
+        const markdownContent = document.getElementById('markdown-preview');
+
+        // Función para actualizar la vista previa del contenido
+        function updatePreview() {
+            // Sanitizo el contenido del campo de texto para prevenir XSS
+            const clean = DOMPurify.sanitize(contentInput.value);
+
+            // Actualizar el contenido de la vista previa
+            markdownContent.innerHTML = marked.parse(clean) || 'Acá se mostrará una previsualización de su contenido 😉';
+        }
+
+        // Actualizar la vista previa al cargar la página
+        updatePreview();
+
+        // Actualizar la vista previa al escribir en el campo de contenido
+        contentInput.addEventListener('input', updatePreview);
+
+        // Cambiar de página en el formulario
+        const listItems = document.querySelectorAll('ul li');
+        const articlePages = document.querySelectorAll('.article-page');
+
+        // Agregar evento click a los elementos de la lista para cambiar de página
+        listItems.forEach(item => {
+            item.addEventListener('click', function () {
+                listItems.forEach(li => li.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+
+    // Función para cambiar de página en el formulario
+    function changePage(page) {
+        // Obtener las secciones del formulario
+        const articlePages = document.querySelectorAll('.article-page');
+
+        // Ocultar todas las secciones
+        articlePages.forEach(page => page.classList.add('visually-hidden'));
+
+        // Mostrar la sección correspondiente a la página seleccionada
+        articlePages[page].classList.remove('visually-hidden');
+    }
+
+    // Función para establecer el estado del artículo y enviar el formulario
+    function setStatus(status) {
+        document.getElementById('status').value = status;
+        document.getElementById('article-form').submit();
+    }
+</script>
+{% endblock %}
