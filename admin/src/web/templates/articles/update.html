@@ -51,16 +51,27 @@
     <h2>📰 Editar artículo</h2>
     <p>Formulario para editar un artículo</p>
     <form id="article-form" action="{{ url_for('articles.update', id=id) }}" method="POST">
-        <!-- Campo oculto para manejar el estado del artículo -->
-        <input type="hidden" id="status" name="status" value="0">
 
         <div class="d-flex flex-column gap-3 py-3">
             <section class="d-flex flex-column gap-3">
-                <div class="form-group">
-                    <label class="mb-1" for="title">Título</label>
-                    <input class="form-control" type="text" id="title" name="title"
-                        placeholder="Ingrese el título del artículo" value="{{ form_data.title if form_data else '' }}"
-                        required maxlength="255">
+                <div class="form-group d-flex flex-row gap-3">
+                    <div class="w-50">
+                        <label class="mb-1" for="title">Título</label>
+                        <input class="form-control" type="text" id="title" name="title"
+                            placeholder="Ingrese el título del artículo"
+                            value="{{ form_data.title if form_data else '' }}" required maxlength="255">
+                    </div>
+                    <div class="w-50">
+                        <label class="mb-1" for="status">Estado</label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="0" {% if form_data.status==article_status.BORRADOR %}selected{% endif %}>
+                                Borrador</option>
+                            <option value="1" {% if form_data.status==article_status.PUBLICADO %}selected{% endif %}>
+                                Publicado</option>
+                            <option value="2" {% if form_data.status==article_status.ARCHIVADO %}selected{% endif %}>
+                                Archivado</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -99,7 +110,8 @@
                         formato <a target="_blank" href="https://markdown.es/sintaxis-markdown/">aquí</a>.</div>
                 </div>
                 <div class="article-page visually-hidden">
-                    <div id="markdown-preview" style="min-height: 225px;" class="border p-3 rounded-3">
+                    <div id="markdown-preview" style="min-height: 225px; height: 100%; overflow: auto;"
+                        class="border p-3 rounded-3">
                         Acá se mostrará una previsualización de su contenido 😉
                     </div>
                 </div>
@@ -117,9 +129,17 @@
     </form>
 </div>
 <script>
+    // Función para sincronizar la altura de las páginas para un cambio de página más fluido
+    function syncHeight(articlePages) {
+        const height = articlePages[0].scrollHeight;
+        articlePages[1].style.height = `${height}px`;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const contentInput = document.getElementById('content');
         const markdownContent = document.getElementById('markdown-preview');
+        const articlePages = document.querySelectorAll('.article-page');
+
         contentInput.value = contentInput.value.trim();
 
         // Función para actualizar la vista previa del contenido
@@ -134,12 +154,14 @@
         // Actualizar la vista previa al cargar la página
         updatePreview();
 
+        // Sincronizar la altura de las páginas
+        syncHeight(articlePages);
+
         // Actualizar la vista previa al escribir en el campo de contenido
         contentInput.addEventListener('input', updatePreview);
 
         // Cambiar de página en el formulario
         const listItems = document.querySelectorAll('ul li');
-        const articlePages = document.querySelectorAll('.article-page');
 
         // Agregar evento click a los elementos de la lista para cambiar de página
         listItems.forEach(item => {
@@ -154,6 +176,7 @@
     function changePage(page) {
         // Obtener las secciones del formulario
         const articlePages = document.querySelectorAll('.article-page');
+        syncHeight(articlePages);
 
         // Ocultar todas las secciones
         articlePages.forEach(page => page.classList.add('visually-hidden'));

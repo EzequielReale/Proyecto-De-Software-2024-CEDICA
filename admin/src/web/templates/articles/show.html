@@ -48,6 +48,16 @@
         /* Asegura que el texto largo se ajuste al contenedor */
     }
 
+    #btn-back {
+        transition: 0.2s;
+        color: #222 !important;
+        border-color: #777 !important;
+    }
+
+    #btn-back:hover {
+        background-color: #ddd !important;
+    }
+
     footer {
         background-color: #f8f9fa !important;
         border-top: 1px solid #ddd !important;
@@ -67,8 +77,12 @@
             font-size: 0.9rem;
         }
 
-        #btn-back {
+        footer .button-text {
             display: none;
+        }
+
+        footer i {
+            margin-left: 0.5rem !important;
         }
     }
 </style>
@@ -161,7 +175,7 @@
         <div class="d-flex flex-row justify-content-between align-items-center px-3"
             style="margin: 0 auto; max-width: 1200px;">
             {% if check_permission(session,'content_index')%}
-            <a href="{{ url_for('articles.index') }}" class="btn btn-outline-dark"><i style="transform: scale(0.75);"
+            <a id="btn-back" href="{{ url_for('articles.index') }}" class="btn"><i style="transform: scale(0.75);"
                     class="fa fa-chevron-left me-2"></i>Volver a
                 artículos</a>
             {% endif %}
@@ -170,24 +184,28 @@
                 <form action="{{ url_for('articles.destroy', id=article.id) }}" method="POST" style="display: inline;"
                     onsubmit="return confirm('¿Estás seguro de que quieres eliminar este artículo?');">
                     <button type="submit" title="Eliminar" role="button" class="btn btn-danger">
-                        <i style="transform: scale(0.8);" class="fa fa-trash me-2"></i>Eliminar</a>
+                        <i style="transform: scale(0.8);" class="fa fa-trash me-2"></i><span
+                            class="button-text">Eliminar</span></a>
                     </button>
                 </form>
                 {% endif %}
                 {% if check_permission(session,'content_update') %}
                 <a href="{{ url_for('articles.update', id=article.id) }}" class="btn btn-warning"><i
-                        style="transform: scale(0.9);" class="fa fa-edit me-2"></i>Editar</a>
+                        style="transform: scale(0.9);" class="fa fa-edit me-2"></i><span
+                        class="button-text">Editar</span></a>
                 {% if article.status == article_status.BORRADOR %}
                 <form action="{{ url_for('articles.update_status', id=article.id, status=1) }}" method="POST"
                     style="display: inline;">
                     <button type="submit" title="Publicar" role="button" class="btn btn-success"><i
-                            style="transform: scale(0.9);" class="fa fa-paper-plane me-2"></i>Publicar</button>
+                            style="transform: scale(0.9);" class="fa fa-paper-plane me-2"></i><span
+                            class="button-text">Publicar</span></button>
                 </form>
                 {% elif article.status == article_status.PUBLICADO %}
                 <form action="{{ url_for('articles.update_status', id=article.id, status=2) }}" method="POST"
                     style="display: inline;">
                     <button type="submit" title="Archivar" role="button" class="btn btn-secondary"><i
-                            class="fa fa-archive me-2"></i>Archivar</a>
+                            class="fa fa-archive me-2"></i><span class="button-text">Archivar</span>
+                        </a>
                 </form>
                 {% endif %}
                 {% endif %}
