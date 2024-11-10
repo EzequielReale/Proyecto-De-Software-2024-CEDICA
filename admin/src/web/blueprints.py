@@ -7,6 +7,7 @@ from src.web.controllers.team import bp as team_bp
 from src.web.controllers.user import bp as user_bp
 from src.web.controllers.articles import bp as articles_bp
 from src.web.controllers.registro_pagos_jya import bp as registro_pagos_jya_bp
+
 from src.web.handlers import error
 
 
