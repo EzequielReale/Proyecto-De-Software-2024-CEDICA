@@ -92,6 +92,7 @@ def update(id: int)->str:
             'title': request.form.get('title'),
             'summary': request.form.get('summary'),
             'content': request.form.get('content'),
+            'status': request.form.get('status')
         }
 
         # Validar los datos del formulario
@@ -101,7 +102,16 @@ def update(id: int)->str:
         if errors:
             for error in errors:
                 flash(error, 'danger')
-            return render_template('articles/update.html', id=article.id, form_data=form_data)
+            return render_template('articles/update.html', id=article.id, form_data=form_data, article_status=ArticleStatus)
+
+        article_status = article.status
+
+        if form_data['status'] == "0":
+            article_status = ArticleStatus.BORRADOR
+        elif form_data['status'] == "1":
+            article_status = ArticleStatus.PUBLICADO
+        else:
+            article_status = ArticleStatus.ARCHIVADO 
 
         # Edición del artículo
         content.update_article(
@@ -109,14 +119,14 @@ def update(id: int)->str:
             title=form_data['title'],
             summary=form_data['summary'],
             content=form_data['content'],
-            status=article.status
+            status=article_status
         )
         
         flash(f"Artículo actualizado exitosamente", "success")
         return redirect(url_for('articles.index'))
     
         
-    return render_template('articles/update.html', id=article.id, form_data=article)
+    return render_template('articles/update.html', id=article.id, form_data=article, article_status=ArticleStatus)
 
 @bp.post("/<int:id>/update_status/<int:status>")
 @login_required
@@ -156,11 +166,6 @@ def destroy(id: int):
     article = content.delete_article(id)
     flash(f"Artículo {article.id} eliminado exitosamente", "success")
     return redirect(url_for('articles.index'))
-
-def _get_status(status: str):
-    """Obtiene el estado del artículo según el valor recibido"""
-    print(status);
-
 
 def validate_article_form(data):
     errors = []
