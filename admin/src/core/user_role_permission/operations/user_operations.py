@@ -121,7 +121,7 @@ def get_user_by_email(user_email)->User:
 
 def list_users_advance(filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->list:
     """Devuelve usuarios que coinciden con los filtros enviados como parámetro"""
-    return dbf.list_paginated(User, filters, page, per_page, sort_by, sort_direction)
+    return dbf.list_paginated_user(User, filters, page, per_page, sort_by, sort_direction)
 
 
 
