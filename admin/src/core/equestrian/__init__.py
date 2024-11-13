@@ -1,14 +1,17 @@
-from flask import current_app
+from flask import (
+    current_app,
+    json
+)
+import os
+from os import fstat
+from ulid import ULID
+from werkzeug.utils import secure_filename
 from src.core.database import db
 from src.core.equestrian.horse import Horse
 from src.core.equestrian.activity import Activity
-from src.core.people.member_rider import Member
 from src.core.equestrian.horse_document import HorseDocument
 from src.core.equestrian.horse_document_types import HorseDocumentType
-from werkzeug.utils import secure_filename
-from ulid import ULID
-from os import fstat
-import os
+from src.core.people.member_rider import Member
 
 UPLOAD_FOLDER = '/ecuestre_docs'
 ALLOWED_DOC_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg'}
@@ -37,11 +40,11 @@ def list_horses(order_by: str = 'name', order: str = 'asc', limit: int = 12, pag
 
 def get_drivers():
     """Obtiene todos los conductores"""
-    return Member.query.filter_by(job_id=3).all()
+    return Member.query.join(Member.job).filter_by(name=("Conductor" or "conductor")).all()
 
 def get_trainers():
     """Obtiene todos los entrenadores de caballos"""
-    return Member.query.filter_by(job_id=7).all()
+    return Member.query.join(Member.job).filter_by(name=("Entrenador de Caballos" or "Entrenador de caballos" or "entrenador de caballos")).all()
 
 def get_horse_by_id(horse_id:int)->Horse:
     """Devuelve un caballo por ID"""
@@ -80,7 +83,6 @@ def get_horse_documents(horse_id: int, document_type_id: int = None, search: str
         })
     return docs
 
-
 def horse_new(**kwargs)->Horse:
     """Crea un caballo, lo guarda en la BD y lo devuelve"""
     horse = Horse(**kwargs)
@@ -88,32 +90,91 @@ def horse_new(**kwargs)->Horse:
     db.session.commit()
     return horse
 
-def horse_update(horse_id: int, **kwargs) -> Horse:
+def horse_new_from_form(form_data)->Horse:
+    """Crea un caballo, lo guarda en la BD y lo devuelve"""    
+    # Obtener las actividades seleccionadas
+    selected_activities = form_data['selected_activities']
+    if selected_activities:
+        selected_activities = json.loads(selected_activities)
+    else:
+        selected_activities = []
+    
+    # Obtener los miembros asignados
+    assigned_members = form_data['assigned_members']
+    if assigned_members:
+        assigned_members = json.loads(assigned_members)
+    else:
+        assigned_members = []
+        
+    # Crear el caballo
+    horse = Horse(
+        name=form_data['name'],
+        birth_date=form_data['birth_date'],
+        entry_date=form_data['entry_date'],
+        gender="Macho" if form_data['gender'] == '0' else "Hembra",
+        donation=form_data['origin'] == '1',
+        race=form_data['race'],
+        coat=form_data['coat'],
+        assigned_location=form_data['assigned_location']
+    ) 
+    
+    # Verificar y agregar actividades
+    if selected_activities:
+        for activity_id in selected_activities:
+            activity = Activity.query.filter_by(id=activity_id).first()
+            if activity:
+                horse.activities.append(activity)
+            
+    # Verificar y agregar miembros
+    if assigned_members:
+        for member_id in assigned_members:
+            member = Member.query.filter_by(id=member_id).first()
+            if member:
+                horse.assigned_members.append(member)
+    
+    # Confirmar cambios en la base de datos
+    db.session.add(horse)
+    db.session.commit()
+    return horse
+
+def horse_update(horse_id: int, form_data) -> Horse:
     """Actualiza un caballo por ID y lo devuelve"""
     horse = get_horse_by_id(horse_id)
     
-    # Actualizar atributos del caballo
-    for attr, value in kwargs.items():
-        if attr not in ['activities', 'members']:
+    # Actualizar atributos del caballo, exceptuando activities y members que serán actualizados manualmente
+    for attr, value in form_data.items():
+        if attr not in ['selected_activities', 'assigned_members']:
             setattr(horse, attr, value)
     
     # Limpiar listas de actividades y miembros asignados
     horse.activities.clear()
     horse.assigned_members.clear()
     
+    # Obtener las actividades seleccionadas
+    selected_activities = form_data['selected_activities']
+    if selected_activities:
+        selected_activities = json.loads(selected_activities)
+    else:
+        selected_activities = []
+        
+    # Obtener los miembros asignados
+    assigned_members = form_data['assigned_members']
+    if assigned_members:
+        assigned_members = json.loads(assigned_members)
+    else:
+        assigned_members = []
+
     # Verificar y agregar actividades
-    if 'activities' in kwargs:
-        for activity_id in kwargs['activities']:
-            activity = Activity.query.filter_by(id=activity_id).first()
-            if activity:
-                horse.activities.append(activity)
+    for activity_id in selected_activities:
+        activity = Activity.query.filter_by(id=activity_id).first()
+        if activity:
+            horse.activities.append(activity)
     
     # Verificar y agregar miembros
-    if 'members' in kwargs:
-        for member_id in kwargs['members']:
-            member = Member.query.filter_by(id=member_id).first()
-            if member:
-                horse.assigned_members.append(member)
+    for member_id in assigned_members:
+        member = Member.query.filter_by(id=member_id).first()
+        if member:
+            horse.assigned_members.append(member)
     
     # Confirmar cambios en la base de datos
     db.session.commit()

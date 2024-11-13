@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}CEDICA - Ver miembro{% endblock %}
+{% block title %}CEDICA - Ver caballo{% endblock %}
 
 {% block head %}
 {{ super() }}
@@ -99,8 +99,8 @@
                 Eliminar
             </button>
         </form>
-       {% endif %}
-       {% if check_permission(session,'encuestre_update')%}
+        {% endif %}
+        {% if check_permission(session,'encuestre_update')%}
         <a class="btn btn-warning" href="{{ url_for('ecuestre.update', id=horse.id) }}">
             <i class="fas fa-edit me-1"></i>
             Editar
@@ -299,7 +299,6 @@
             </table>
 
             <div class="d-flex flex-row gap-2 justify-content-end mt-3 w-100">
-                
                 {% if check_permission(session,'encuestre_update')%}
                 <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
                     data-bs-target="#modal-attach-url">
@@ -450,7 +449,4 @@
         });
     }
 </script>
-{% endblock %}
-
-{% block footer %}
 {% endblock %}

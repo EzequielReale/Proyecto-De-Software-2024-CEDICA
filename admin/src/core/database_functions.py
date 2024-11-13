@@ -63,6 +63,16 @@ def list_paginated(model, filters: dict, page=1, per_page=25, sort_by=None, sort
     return pagination.items, pagination.pages
 
 
+def list_paginated_user(model, filters: dict, page=1, per_page=25, sort_by=None, sort_direction="asc") -> tuple:
+    """Devuelve elementos de un modelo que coinciden con los campos y valores especificados, paginados y ordenados."""
+    query = filter(model, filters)
+    query = query.filter((model.confirmed == True) | (model.confirmed == None)) #excluyo a los usuarios no confirmados por admin
+    query = order_by(model, query, sort_by, sort_direction) 
+    pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+    return pagination.items, pagination.pages
+
+
+
 def get_by_field(model, field: str, value, exclude_id=None) -> object:
     """Devuelve un elemento de un modelo por un campo específico y su valor"""
     query = model.query.filter_by(**{field: value})

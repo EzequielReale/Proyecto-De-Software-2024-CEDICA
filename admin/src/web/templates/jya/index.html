@@ -74,11 +74,11 @@
           style="color: inherit; text-decoration: none;">
           Nombre
           {% if sort_by == 'name' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -87,11 +87,11 @@
           style="color: inherit; text-decoration: none;">
           Apellido
           {% if sort_by == 'last_name' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -104,11 +104,11 @@
           style="color: inherit; text-decoration: none;">
           Fecha de Creación
           {% if sort_by == 'created_at' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -148,11 +148,11 @@
     </li>
     {% endif %}
     {% for p in range(1, total_pages + 1) %}
-    <li class="page-item {% if p == page %}active{% endif %}">
-      <a class="page-link" href="{{ url_for('jya.index', page=p, **filters) }}"
-        style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
-        p }}</a>
-    </li>
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('jya.index', page=p, **filters) }}"
+          style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+          p }}</a>
+      </li>
     {% endfor %}
     {% if page < total_pages %} <li class="page-item">
       <a class="page-link" href="{{ url_for('jya.index', page=page+1, **filters) }}" aria-label="Next"
@@ -160,7 +160,7 @@
         <span aria-hidden="true">&raquo;</span>
       </a>
       </li>
-      {% endif %}
+    {% endif %}
   </ul>
 </nav>
 

@@ -71,97 +71,97 @@
 
         <h5 class="border-bottom border-dark pb-2"></h5>
         {% if rider.school %}
-        <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Institución escolar a
-            la que concurre:</strong>
-        <strong style="margin-left: 20px;">Nombre:</strong> {{ rider.school.name }}<br>
-        <strong style="margin-left: 20px;">Dirección:</strong> {{ rider.school.address }}<br>
-        <strong style="margin-left: 20px;">Teléfono:</strong> {{ rider.school.phone }}<br>
-        <strong style="margin-left: 20px;">Nivel educativo:</strong> {{ rider.school.level }}<br>
-        <strong style="margin-left: 20px;">Año lectivo:</strong> {{ rider.school.year }}°<br>
-        <strong style="margin-left: 20px;">Observaciones:</strong> {{ rider.school.observations }}<br>
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Institución escolar a
+                la que concurre:</strong>
+            <strong style="margin-left: 20px;">Nombre:</strong> {{ rider.school.name }}<br>
+            <strong style="margin-left: 20px;">Dirección:</strong> {{ rider.school.address }}<br>
+            <strong style="margin-left: 20px;">Teléfono:</strong> {{ rider.school.phone }}<br>
+            <strong style="margin-left: 20px;">Nivel educativo:</strong> {{ rider.school.level }}<br>
+            <strong style="margin-left: 20px;">Año lectivo:</strong> {{ rider.school.year }}°<br>
+            <strong style="margin-left: 20px;">Observaciones:</strong> {{ rider.school.observations }}<br>
         {% endif %}
 
         {% if rider.job_proposal %}
-        <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Trabajo en
-            CEDICA:</strong>
-        <strong style="margin-left: 20px;">Propuesta de trabajo institucional:</strong> {{
-        rider.job_proposal.institutional_work_proposal }}<br>
-        <strong style="margin-left: 20px;">Condición:</strong> {{ rider.job_proposal.condition }}<br>
-        <strong style="margin-left: 20px;">Sede:</strong> {{ rider.job_proposal.headquarters }}<br>
-        <strong style="margin-left: 20px;">Días:</strong> {{ rider.job_proposal.days | join(', ') }}<br>
-        <strong style="margin-left: 20px;">Profesor:</strong> {{ rider.job_proposal.professor.name }} {{
-        rider.job_proposal.professor.last_name
-        }}<br>
-        <strong style="margin-left: 20px;">Conductor del caballo:</strong> {{ rider.job_proposal.member_horse_rider.name
-        }} {{
-        rider.job_proposal.member_horse_rider.last_name }}<br>
-        <strong style="margin-left: 20px;">Caballo:</strong> {{ rider.job_proposal.horse.name }}<br>
-        <strong style="margin-left: 20px;">Asistente:</strong> {{ rider.job_proposal.assistant.name }} {{
-        rider.job_proposal.assistant.last_name
-        }}<br>
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Trabajo en
+                CEDICA:</strong>
+            <strong style="margin-left: 20px;">Propuesta de trabajo institucional:</strong> {{
+            rider.job_proposal.institutional_work_proposal }}<br>
+            <strong style="margin-left: 20px;">Condición:</strong> {{ rider.job_proposal.condition }}<br>
+            <strong style="margin-left: 20px;">Sede:</strong> {{ rider.job_proposal.headquarters }}<br>
+            <strong style="margin-left: 20px;">Días:</strong> {{ rider.job_proposal.days | join(', ') }}<br>
+            <strong style="margin-left: 20px;">Profesor:</strong> {{ rider.job_proposal.professor.name }} {{
+            rider.job_proposal.professor.last_name
+            }}<br>
+            <strong style="margin-left: 20px;">Conductor del caballo:</strong> {{ rider.job_proposal.member_horse_rider.name
+            }} {{
+            rider.job_proposal.member_horse_rider.last_name }}<br>
+            <strong style="margin-left: 20px;">Caballo:</strong> {{ rider.job_proposal.horse.name }}<br>
+            <strong style="margin-left: 20px;">Asistente:</strong> {{ rider.job_proposal.assistant.name }} {{
+            rider.job_proposal.assistant.last_name
+            }}<br>
         {% endif %}
         <br>
 
         {% if check_permission(session,'jya_update')%}
-        <a href="{{ url_for('jya.update_school_job', id=rider.id) }}" class="btn btn-warning btn-icon">
-            <i class="fas fa-edit"></i> Editar Información escolar y laboral
-        </a>
+            <a href="{{ url_for('jya.update_school_job', id=rider.id) }}" class="btn btn-warning btn-icon">
+                <i class="fas fa-edit"></i> Editar Información escolar y laboral
+            </a>
         {% endif %}
         <h5 class="border-bottom border-dark pb-2"></h5>
 
         {% if rider.tutor_1_id or rider.tutor_2_id %}
-        <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos del
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Datos del
             tutor:</strong>
-        {% if rider.tutor_1_id %}
-        <strong style="margin-left: 20px;">Tutor 1:</strong><br>
-        <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_1.relationship }}<br>
-        <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_1.name }} {{
-        rider.tutor_1.last_name }}<br>
-        <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_1.dni }}<br>
-        <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_1.address }}<br>
-        <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_1.phone }}<br>
-        <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_1.email }}<br>
-        <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_1.education_level }}<br>
-        <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_1.job }}<br>
-        {% endif %}
-        {% if rider.tutor_2_id %}
-        <strong style="margin-left: 20px;">Tutor 2:</strong><br>
-        <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_2.relationship }}<br>
-        <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_2.name }} {{
-        rider.tutor_2.last_name }}<br>
-        <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_2.dni }}<br>
-        <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_2.address }}<br>
-        <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_2.phone }}<br>
-        <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_2.email }}<br>
-        <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_2.education_level }}<br>
-        <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_2.job }}<br>
-        {% endif %}
+            {% if rider.tutor_1_id %}
+                <strong style="margin-left: 20px;">Tutor 1:</strong><br>
+                <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_1.relationship }}<br>
+                <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_1.name }} {{
+                rider.tutor_1.last_name }}<br>
+                <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_1.dni }}<br>
+                <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_1.address }}<br>
+                <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_1.phone }}<br>
+                <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_1.email }}<br>
+                <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_1.education_level }}<br>
+                <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_1.job }}<br>
+            {% endif %}
+            {% if rider.tutor_2_id %}
+                <strong style="margin-left: 20px;">Tutor 2:</strong><br>
+                <strong style="margin-left: 40px;">Relación:</strong> {{ rider.tutor_2.relationship }}<br>
+                <strong style="margin-left: 40px;">Nombre completo:</strong> {{ rider.tutor_2.name }} {{
+                rider.tutor_2.last_name }}<br>
+                <strong style="margin-left: 40px;">DNI:</strong> {{ rider.tutor_2.dni }}<br>
+                <strong style="margin-left: 40px;">Dirección:</strong> {{ rider.tutor_2.address }}<br>
+                <strong style="margin-left: 40px;">Teléfono:</strong> {{ rider.tutor_2.phone }}<br>
+                <strong style="margin-left: 40px;">Email:</strong> {{ rider.tutor_2.email }}<br>
+                <strong style="margin-left: 40px;">Nivel educativo:</strong> {{ rider.tutor_2.education_level }}<br>
+                <strong style="margin-left: 40px;">Trabajo:</strong> {{ rider.tutor_2.job }}<br>
+            {% endif %}
         {% endif %}
         <br>
 
         {% if check_permission(session,'jya_update')%}
-        <a href="{{ url_for('jya.update_tutor', id=rider.id) }}" class="btn btn-warning btn-icon">
-            <i class="fas fa-edit"></i> Editar Información de los tutores
-        </a>
+            <a href="{{ url_for('jya.update_tutor', id=rider.id) }}" class="btn btn-warning btn-icon">
+                <i class="fas fa-edit"></i> Editar Información de los tutores
+            </a>
         {% endif %}
 
         <h5 class="border-bottom border-dark pb-2"></h5>
 
         {% if rider.members %}
-        <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Profesionales que lo
-            atienden:</strong>
-        {% for member in rider.members %}
-        <strong style="margin-left: 20px;">Profesional {{ loop.index }}:</strong><br>
-        <strong style="margin-left: 40px;">Nombre completo:</strong> {{ member.name }} {{ member.last_name }}<br>
-        <strong style="margin-left: 40px;">DNI:</strong> {{ member.dni }}<br>
-        {% endfor %}
+            <strong style="font-size: 1.2rem; color: #0056b3; margin-top: 10px; display: block;">Profesionales que lo
+                atienden:</strong>
+            {% for member in rider.members %}
+                <strong style="margin-left: 20px;">Profesional {{ loop.index }}:</strong><br>
+                <strong style="margin-left: 40px;">Nombre completo:</strong> {{ member.name }} {{ member.last_name }}<br>
+                <strong style="margin-left: 40px;">DNI:</strong> {{ member.dni }}<br>
+            {% endfor %}
         {% endif %}
         <br>
 
         {% if check_permission(session,'jya_update')%}
-        <a href="{{ url_for('jya.update_professional', id=rider.id) }}" class="btn btn-warning btn-icon">
-            <i class="fas fa-edit"></i> Editar profesionales que lo atienden
-        </a>
+            <a href="{{ url_for('jya.update_professional', id=rider.id) }}" class="btn btn-warning btn-icon">
+                <i class="fas fa-edit"></i> Editar profesionales que lo atienden
+            </a>
         {% endif %}
 
         </p>
@@ -172,14 +172,14 @@
 
 <div class="button-group">
     {% if check_permission(session,'jya_update')%}
-    <a href="{{ url_for('jya.add_link', id=rider.id) }}" class="btn btn-success btn-icon">
-        <i class="fas fa-link"></i> Agregar enlace
-    </a>
+        <a href="{{ url_for('jya.add_link', id=rider.id) }}" class="btn btn-success btn-icon">
+            <i class="fas fa-link"></i> Agregar enlace
+        </a>
     {% endif %}
     {% if check_permission(session,'jya_update')%}
-    <a href="{{ url_for('jya.add_document', id=rider.id) }}" class="btn btn-success btn-icon">
-        <i class="fas fa-file-alt"></i> Agregar documento
-    </a>
+        <a href="{{ url_for('jya.add_document', id=rider.id) }}" class="btn btn-success btn-icon">
+            <i class="fas fa-file-alt"></i> Agregar documento
+        </a>
     {% endif %}
 </div>
 
@@ -231,11 +231,11 @@
                             style="color: inherit; text-decoration: none;">
                             Título
                             {% if sort_by == 'document_name' %}
-                            {% if sort_direction == 'asc' %}
-                            &#9650;
-                            {% else %}
-                            &#9660;
-                            {% endif %}
+                                {% if sort_direction == 'asc' %}
+                                    &#9650;
+                                {% else %}
+                                    &#9660;
+                                {% endif %}
                             {% endif %}
                         </a>
                     </th>
@@ -245,11 +245,11 @@
                             style="color: inherit; text-decoration: none;">
                             Fecha de Creación
                             {% if sort_by == 'created_at' %}
-                            {% if sort_direction == 'asc' %}
-                            &#9650;
-                            {% else %}
-                            &#9660;
-                            {% endif %}
+                                {% if sort_direction == 'asc' %}
+                                    &#9650;
+                                {% else %}
+                                    &#9660;
+                                {% endif %}
                             {% endif %}
                         </a>
                     </th>
@@ -258,46 +258,46 @@
             </thead>
             <tbody>
                 {% if documents %}
-                {% for document in documents %}
-                <tr>
-                    <td>{{ document.name }} -
-                        {% if document.its_a_link %}
-                        <i class="fas fa-link"></i>
-                        {% else %}
-                        <i class="fas fa-file-alt"></i>
-                        {% endif %}
-                    </td>
+                    {% for document in documents %}
+                    <tr>
+                        <td>{{ document.name }} -
+                            {% if document.its_a_link %}
+                                <i class="fas fa-link"></i>
+                            {% else %}
+                                <i class="fas fa-file-alt"></i>
+                            {% endif %}
+                        </td>
 
-                    <td>{{ document.type }}</td>
-                    <td>{{ document.created_at.strftime('%d-%m-%Y') }}</td>
-                    <td>
-                        <a href="{{ document.url }}" target="_blank" class="btn btn-info btn-sm">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        {% if not document.its_a_link %}
-                        <a href="{{ url_for('jya.download_document', id=rider.id, document_id=document.id) }}"
-                            class="btn btn-primary btn-sm">
-                            <i class="fas fa-download"></i>
-                        </a>
-                        <a href="{{ url_for('jya.edit_document', id=rider.id, document_id=document.id) }}"
-                            class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% else %}
-                        <a href="{{ url_for('jya.edit_link', id=rider.id, document_id=document.id) }}"
-                            class="btn btn-warning btn-sm">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        {% endif %}
-                        <form action="{{ url_for('jya.destroy_document', id=rider.id, document_id=document.id) }}"
-                            method="POST" onsubmit="return confirmDeleteDocument();" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
+                        <td>{{ document.type }}</td>
+                        <td>{{ document.created_at.strftime('%d-%m-%Y') }}</td>
+                        <td>
+                            <a href="{{ document.url }}" target="_blank" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if not document.its_a_link %}
+                                <a href="{{ url_for('jya.download_document', id=rider.id, document_id=document.id) }}"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <a href="{{ url_for('jya.edit_document', id=rider.id, document_id=document.id) }}"
+                                    class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('jya.edit_link', id=rider.id, document_id=document.id) }}"
+                                    class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            {% endif %}
+                            <form action="{{ url_for('jya.destroy_document', id=rider.id, document_id=document.id) }}"
+                                method="POST" onsubmit="return confirmDeleteDocument();" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 {% else %}
                 <tr>
                     <td colspan="4">No hay documentos cargados</td>

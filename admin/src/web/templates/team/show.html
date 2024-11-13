@@ -63,21 +63,21 @@
             {% if documents %}
             <ul class="document-list">
                 {% for document in documents %}
-                <li class="document-item">
-                    <a href="{{ document.url }}" target="_blank" class="document-link">
-                        <i class="fas fa-file-alt"></i> {{ document.name }}
-                    </a>
-                    <form action="{{ url_for('team.destroy_document', id=member.id, document_id=document.id) }}"
-                        method="POST" onsubmit="return confirmDeleteDocument();" class="document-delete-form">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
-                </li>
+                    <li class="document-item">
+                        <a href="{{ document.url }}" target="_blank" class="document-link">
+                            <i class="fas fa-file-alt"></i> {{ document.name }}
+                        </a>
+                        <form action="{{ url_for('team.destroy_document', id=member.id, document_id=document.id) }}"
+                            method="POST" onsubmit="return confirmDeleteDocument();" class="document-delete-form">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </li>
                 {% endfor %}
             </ul>
             {% else %}
-            <p>No hay documentos cargados</p>
+                <p>No hay documentos cargados</p>
             {% endif %}
         </div>
     </div>

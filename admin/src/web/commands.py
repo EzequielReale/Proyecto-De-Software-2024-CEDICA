@@ -12,3 +12,6 @@ def register(app):
     @app.cli.command(name="seeds-db")
     def seeds_db():
         seeds.run()
+    
+
+    

@@ -88,11 +88,11 @@
           style="color: inherit; text-decoration: none;">
           Nombre
           {% if sort_by == 'name' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -101,11 +101,11 @@
           style="color: inherit; text-decoration: none;">
           Apellido
           {% if sort_by == 'last_name' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -118,11 +118,11 @@
           style="color: inherit; text-decoration: none;">
           Fecha de Creación
           {% if sort_by == 'created_at' %}
-          {% if sort_direction == 'asc' %}
-          &#9650;
-          {% else %}
-          &#9660;
-          {% endif %}
+            {% if sort_direction == 'asc' %}
+              &#9650;
+            {% else %}
+              &#9660;
+            {% endif %}
           {% endif %}
         </a>
       </th>
@@ -130,21 +130,21 @@
   </thead>
   <tbody>
     {% if members %}
-    {% for member in members %}
-    <tr onclick="window.location='{{ url_for('team.show', id=member.id) }}';" style="cursor:pointer;">
-      <td>{{ member.name }}</td>
-      <td>{{ member.last_name }}</td>
-      <td>{{ member.dni }}</td>
-      <td>{{ member.email }}</td>
-      <td>{{ member.phone }}</td>
-      <td>{{ member.job.name }}</td>
-      <td>{{ member.created_at.strftime('%d-%m-%Y') }}</td>
-    </tr>
-    {% endfor %}
+      {% for member in members %}
+      <tr onclick="window.location='{{ url_for('team.show', id=member.id) }}';" style="cursor:pointer;">
+        <td>{{ member.name }}</td>
+        <td>{{ member.last_name }}</td>
+        <td>{{ member.dni }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.phone }}</td>
+        <td>{{ member.job.name }}</td>
+        <td>{{ member.created_at.strftime('%d-%m-%Y') }}</td>
+      </tr>
+      {% endfor %}
     {% else %}
-    <tr>
-      <td colspan="8">No hay miembros en el equipo</td>
-    </tr>
+      <tr>
+        <td colspan="8">No hay miembros en el equipo</td>
+      </tr>
     {% endif %}
   </tbody>
 </table>
@@ -153,19 +153,19 @@
 <nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
   <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
     {% if page > 1 %}
-    <li class="page-item">
-      <a class="page-link" href="{{ url_for('team.index', page=page-1, **filters) }}" aria-label="Previous"
-        style="color: #0056b3;">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('team.index', page=page-1, **filters) }}" aria-label="Previous"
+          style="color: #0056b3;">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
     {% endif %}
     {% for p in range(1, total_pages + 1) %}
-    <li class="page-item {% if p == page %}active{% endif %}">
-      <a class="page-link" href="{{ url_for('team.index', page=p, **filters) }}"
-        style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
-        p }}</a>
-    </li>
+      <li class="page-item {% if p == page %}active{% endif %}">
+        <a class="page-link" href="{{ url_for('team.index', page=p, **filters) }}"
+          style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+          p }}</a>
+      </li>
     {% endfor %}
     {% if page < total_pages %} <li class="page-item">
       <a class="page-link" href="{{ url_for('team.index', page=page+1, **filters) }}" aria-label="Next"
@@ -173,7 +173,7 @@
         <span aria-hidden="true">&raquo;</span>
       </a>
       </li>
-      {% endif %}
+    {% endif %}
   </ul>
 </nav>
 

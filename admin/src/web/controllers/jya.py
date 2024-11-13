@@ -52,7 +52,7 @@ def index() -> str:
     return render_template(
         "jya/index.html",
         riders=riders,
-        members=db.filter(Member, {"job_id": 2, "active":True}),  # Terapeutas
+        members=people.list_members_by_job("terapeuta"),
         filters=filters,
         page=page,
         total_pages=total_pages,
@@ -129,15 +129,15 @@ def _get_data_from_db(required:dict) -> tuple:
         provinces_list = adressing.list_provinces()
 
     if required["professionals"] == True and required["job_proposal"] == False:
-        assigned_professionals_list = db.filter(Member, {"job_id": 2, "active":True}) # Terapeuta
+        assigned_professionals_list = people.list_members_by_job("terapeuta")
 
     if required["job_proposal"] == True:
         horse_list = db.list_all(Horse)
-        assigned_professionals_list = db.filter(Member, {"job_id": 2, "active":True})  # Terapeuta
-        professor_list = db.filter(Member, {"job_id": 9, "active":True})  # Profesor de equitación
+        assigned_professionals_list = people.list_members_by_job("terapeuta")
+        professor_list = people.list_members_by_job("profesor de equitación")
         professor_list = list(professor_list) + list(assigned_professionals_list)
-        assistant_list = db.filter(Member, {"job_id": 4, "active":True})  # Asistente de pista
-        horse_rider_list = db.filter(Member, {"job_id": 3, "active":True})  # Conductor
+        assistant_list = people.list_members_by_job("auxiliar de pista")
+        horse_rider_list = people.list_members_by_job("conductor")
 
     return (
         disability_types_list,

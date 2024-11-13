@@ -11,9 +11,13 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     isActive = db.Column(db.Boolean, default=True)
+    google_id = db.Column(db.String(120), unique=True, nullable=True)  #para saber si se registro con google
+    confirmed = db.Column(db.Boolean, nullable=True) #campo para saber si se confirmo el registro por el administrador
+
 
     roles = db.relationship('Role', secondary='user_roles', back_populates='users')
     member = db.relationship('Member', secondary='user_member', back_populates='user', uselist=False, lazy=True)
+    articles = db.relationship('Article', back_populates='author')
 
     created_at = db.Column(db.DateTime,default= datetime.now)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)

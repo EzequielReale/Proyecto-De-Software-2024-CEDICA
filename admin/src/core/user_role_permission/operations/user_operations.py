@@ -11,6 +11,10 @@ from sqlalchemy.types import String, Text
 
 # Métodos CRUD
 
+def list_users_google()-> list:
+    """ Devuelve una lista de usuarios parcialmente registrados con Google """
+    return User.query.filter(User.google_id.isnot(None), User.confirmed == False).all()
+
 def list_users()->list:
     """ Lista todos los usuarios guardados en la BD"""
     return User.query.all()
@@ -117,7 +121,7 @@ def get_user_by_email(user_email)->User:
 
 def list_users_advance(filters: dict, page=1, per_page=25, sort_by=None, sort_direction='asc')->list:
     """Devuelve usuarios que coinciden con los filtros enviados como parámetro"""
-    return dbf.list_paginated(User, filters, page, per_page, sort_by, sort_direction)
+    return dbf.list_paginated_user(User, filters, page, per_page, sort_by, sort_direction)
 
 
 
