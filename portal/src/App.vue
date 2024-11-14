@@ -21,17 +21,19 @@ onMounted(() => {
 })</script>
 
 <template>
-  <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-between">
-    <RouterLink to="/">
-      <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
-    </RouterLink>
-
-    <div class="wrapper">
-      <nav class="d-flex flex-row">
-        <RouterLink to="/about">Sobre nosotros</RouterLink>
-        <RouterLink to="/articles">Artículos</RouterLink>
-        <a class="nav-button" href="/#contact">Contactanos</a>
-      </nav>
+  <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
+    <div id="header-container">
+      <RouterLink to="/">
+        <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
+      </RouterLink>
+  
+      <div class="wrapper">
+        <nav class="d-flex flex-row">
+          <RouterLink to="#about">Sobre nosotros</RouterLink>
+          <RouterLink to="/articles">Artículos</RouterLink>
+          <a class="nav-button" href="/#contact">Contactanos</a>
+        </nav>
+      </div>
     </div>
   </header>
 
@@ -42,9 +44,11 @@ onMounted(() => {
 header {
   position: fixed;
   top: 50px;
-  max-width: 1200px;
-  width: 100%;
-  padding: 1.25rem 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 1300px;
+  width: 90%;
+  padding: 1.25rem 1.75rem;
   justify-self: center;
   background-color: rgba(245, 245, 245, 0.75);
   backdrop-filter: blur(10px);
@@ -52,8 +56,16 @@ header {
   animation: fadeIn 0.75s;
 }
 
+#header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+}
+
 main {
-  padding-top: 100px;
+  padding-top: 175px;
 }
 
 @keyframes fadeIn {
@@ -69,9 +81,9 @@ main {
 
 header.collapsed {
   top: 0;
+  width: 100%;
   max-width: 100%;
   border-radius: 0px !important;
-  padding: 1.75rem 20rem !important;
   box-shadow: none !important;
 }
 
