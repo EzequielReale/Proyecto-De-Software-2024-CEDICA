@@ -5,11 +5,11 @@
 </script>
 <template>
     <div id="contact">
-        <img src="../assets/Horse.png" alt="">
+        <img src="../assets/Horse.png" alt="Ilustración caballo">
         <div>
             <h1>Contactanos</h1>
             <p>Si tenés alguna duda, sugerencia o estás pensando en inscribirte en CEDICA, no dudes en contactarnos.</p>
-            <form id="demo-form" action="" class="d-flex flex-column gap-3">
+            <form action="POST" class="d-flex flex-column gap-3">
                 <div class="d-flex flex-row gap-3">
                     <input class="form-control" type="text" placeholder="Nombre">
                     <input class="form-control" type="email" placeholder="Correo">
