@@ -1,15 +1,22 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 
 const header = ref(null)
+const router = useRouter()
+
+const scrollToTop = () => {
+  if (router.currentRoute.value.path === '/') {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
 
 onMounted(() => {
   const handleScroll = () => {
     if (window.scrollY > 50) {
-      header.value.classList.add('collapsed')
+  header.value.classList.add('collapsed')
     } else {
-      header.value.classList.remove('collapsed')
+  header.value.classList.remove('collapsed')
     }
   }
 
@@ -18,18 +25,19 @@ onMounted(() => {
   onUnmounted(() => {
     document.removeEventListener('scroll', handleScroll)
   })
-})</script>
+})
+</script>
 
 <template>
-  <header id="header" ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
+  <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
     <div id="header-container">
-      <RouterLink to="/">
+      <RouterLink to="/" @click.native="scrollToTop">
         <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
       </RouterLink>
   
       <div class="wrapper">
         <nav class="d-flex flex-row">
-          <a href="/#main">Sobre nosotros</a>
+          <RouterLink to="/" @click.native="scrollToTop">Sobre nosotros</RouterLink>
           <RouterLink to="/articles">Artículos</RouterLink>
           <a class="nav-button" href="/#contact">Contactanos</a>
         </nav>
@@ -92,14 +100,6 @@ nav {
   font-size: 12px;
   text-align: center;
   align-items: center;
-}
-
-nav a.router-link-exact-active {
-  color: #2197a2;
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
 }
 
 nav a {
