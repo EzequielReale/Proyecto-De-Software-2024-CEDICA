@@ -21,7 +21,7 @@ onMounted(() => {
 })</script>
 
 <template>
-  <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
+  <header id="header" ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
     <div id="header-container">
       <RouterLink to="/">
         <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
@@ -29,7 +29,7 @@ onMounted(() => {
   
       <div class="wrapper">
         <nav class="d-flex flex-row">
-          <RouterLink to="#about">Sobre nosotros</RouterLink>
+          <a href="/#main">Sobre nosotros</a>
           <RouterLink to="/articles">Artículos</RouterLink>
           <a class="nav-button" href="/#contact">Contactanos</a>
         </nav>

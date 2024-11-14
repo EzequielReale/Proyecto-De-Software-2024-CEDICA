@@ -5,7 +5,7 @@ import Contact from '../components/Contact.vue'
 </script>
 
 <template>
-  <main>
+  <main id="main">
     <Home />
     <Articles />
     <Contact />
