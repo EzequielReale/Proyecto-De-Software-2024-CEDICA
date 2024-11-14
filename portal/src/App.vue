@@ -127,7 +127,10 @@ nav .nav-button:hover {
   background-color: #1c7c8c;
 }
 
-@media (min-width: 1024px) {
-
+@media (max-width: 768px) {
+  nav a:nth-child(1),
+  nav a:nth-child(2) {
+    display: none;
+  }
 }
 </style>
