@@ -38,7 +38,7 @@ onMounted(() => {
       <div class="wrapper">
         <nav class="d-flex flex-row">
           <RouterLink to="/" @click.native="scrollToTop">Sobre nosotros</RouterLink>
-          <RouterLink to="/articles">Artículos</RouterLink>
+          <a href="/#articles">Noticias y actividades</a>
           <a class="nav-button" href="/#contact">Contactanos</a>
         </nav>
       </div>
@@ -73,7 +73,7 @@ header {
 }
 
 main {
-  padding-top: 175px;
+  padding-top: 150px;
 }
 
 @keyframes fadeIn {
