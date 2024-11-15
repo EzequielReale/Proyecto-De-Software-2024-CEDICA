@@ -1,13 +1,9 @@
 <script setup>
-import Home from '../components/Home.vue'
-import Articles from '../components/Articles.vue'
-import Contact from '../components/Contact.vue'
+import TheWelcome from '../components/TheWelcome.vue'
 </script>
 
 <template>
-  <main id="main">
-    <Home />
-    <Articles />
-    <Contact />
+  <main>
+    <TheWelcome />
   </main>
 </template>
