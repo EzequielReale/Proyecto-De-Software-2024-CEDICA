@@ -14,16 +14,37 @@ const scrollToTop = () => {
 onMounted(() => {
   const handleScroll = () => {
     if (window.scrollY > 50) {
-  header.value.classList.add('collapsed')
+      header.value.classList.add('collapsed')
     } else {
-  header.value.classList.remove('collapsed')
+      header.value.classList.remove('collapsed')
     }
   }
-
   document.addEventListener('scroll', handleScroll)
+
+  const sections = document.querySelectorAll('section')
+
+  const observerOptions = {
+    threshold: 0.5
+  }
+
+  const observerCallback = (entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.getAttribute('id')
+      const navLink = document.querySelector(`nav a[href="/#${id}"]`)
+      if (entry.isIntersecting) {
+        navLink.classList.add('active')
+      } else {
+        navLink.classList.remove('active')
+      }
+    })
+  }
+
+  const observer = new IntersectionObserver(observerCallback, observerOptions)
+  sections.forEach(section => observer.observe(section))
 
   onUnmounted(() => {
     document.removeEventListener('scroll', handleScroll)
+    observer.disconnect()
   })
 })
 </script>
@@ -107,6 +128,14 @@ nav a {
   padding: 0 1rem;
   color: black;
   font-size: 1rem;
+}
+
+nav a.active:not(.nav-button) {
+  color: #2197a2 !important;
+}
+
+nav a.active.nav-button {
+  background-color: #2197a2 !important;
 }
 
 nav a:not(.nav-button):hover {

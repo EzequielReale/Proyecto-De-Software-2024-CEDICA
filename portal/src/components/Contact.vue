@@ -1,24 +1,27 @@
 <template>
-    <div id="contact">
-      <img src="../assets/Horse.png" alt="Ilustración caballo">
-      <div class="position-relative h-100 d-flex align-items-center justify-content-center" style="transform: skew(-15deg);">
-        <div class="position-absolute" style="transform: skew(15deg);">
-          <h1 class="fw-bolder">Contactanos</h1>
-          <p>Si tenés alguna duda, sugerencia o estás pensando en inscribirte en CEDICA, no dudes en contactarnos.</p>
-          <form @submit.prevent="onSubmit" class="d-flex flex-column gap-3">
-            <div class="d-flex flex-row gap-3">
-              <input class="form-control" type="text" placeholder="Nombre" v-model="name">
-              <input class="form-control" type="email" placeholder="Correo" v-model="email">
-            </div>
-            <textarea class="form-control" cols="20" rows="3" placeholder="Mensaje" v-model="message"></textarea>
-            <div class="d-flex flex-row justify-content-between align-items-center">
-              <div class="g-recaptcha" :data-sitekey="siteKey"></div>
-              <button class="btn btn-submit-custom">Enviar</button>
-            </div>
-          </form>
-        </div>
+  <section id="contact">
+    <img src="../assets/Horse.png" alt="Ilustración caballo" class="slide-in-left">
+    <div class="position-relative h-100 d-flex align-items-center justify-content-center slide-in-right">
+      <div class="position-absolute" style="transform: skew(15deg);">
+        <h1 class="fw-bolder">Contactanos</h1>
+        <p>Si tenés alguna duda, sugerencia o estás pensando en inscribirte en CEDICA, no dudes en contactarnos.</p>
+        <form @submit.prevent="onSubmit" class="d-flex flex-column gap-3">
+          <div class="d-flex flex-row gap-3">
+            <input class="form-control" type="text" placeholder="Nombre" required v-model="name">
+            <input class="form-control" type="email" placeholder="Correo" required v-model="email" >
+          </div>
+          <textarea class="form-control" cols="20" rows="4" placeholder="Mensaje" required v-model="message"></textarea>
+          <div class="d-flex flex-row gap-3 justify-content-between align-items-center">
+            <div class="g-recaptcha" :data-sitekey="siteKey"></div>
+            <button class="btn btn-submit-custom">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg>
+              Enviar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
+  </section>
 </template>
 <script setup>
 import { ref } from 'vue'
