@@ -1,10 +1,27 @@
 import io
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from flask import Blueprint, render_template, make_response
+from flask import (
+    Blueprint,
+    flash,
+    make_response,
+    render_template,
+    redirect,
+    request,
+    session,
+    url_for,
+)
 import matplotlib.pyplot as plt
 
-from src.core.statistics import get_job_count, get_age_ranges, get_incomes_less_outflows, get_incomes_by_range, get_outflows_by_range, get_members_with_most_earnings, get_riders_with_debt, save_report
+from src.core.statistics import (
+    get_job_count,
+    get_age_ranges,
+    get_incomes_less_outflows,
+    get_incomes_by_range,
+    get_outflows_by_range,
+    get_members_with_most_earnings,
+    get_riders_with_debt,
+)
 from src.web.handlers.autenticacion import check_permission, login_required
 from src.web.handlers.error import unauthorized
 
@@ -22,12 +39,16 @@ def index():
 @login_required
 def balance():
     """Genera un gráfico de barras con el balance mensual de los últimos 12 meses"""
+    if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index"):
+        return unauthorized
+
     month_labels, values = get_incomes_less_outflows()
 
     # Crear gráfico
     colors = ['lightgreen' if value >= 0 else 'red' for value in values]
     fig, ax = plt.subplots(figsize=(12, 6))
     bars = ax.bar(month_labels, values, color=colors)
+    ax.set_title('Balance mensual de CEDICA')
     ax.set_xlabel('Mes')
     ax.set_ylabel('Monto')
     ax.set_xticks(month_labels)
@@ -49,10 +70,14 @@ def balance():
 @login_required
 def job():
     """Genera un gráfico de barras horizontales con la cantidad de miembros del equipo en cada puesto laboral"""
+    if not check_permission(session, "team_index"):
+        return unauthorized
+
     labels, values = get_job_count()
 
     # Crear gráfico
     fig, ax = plt.subplots(figsize=(12, 6))
+    ax.set_title('Cantidad de miembros por puesto laboral')
     ax.barh(labels, values, color='orange')
     ax.set_xlabel('Cantidad de miembros')
     ax.set_ylabel('Puesto Laboral')
@@ -65,10 +90,14 @@ def job():
 @login_required
 def age():
     """Genera un gráfico de torta con el porcentaje de jinetes/amazonas en el rango de edad de 3 a 18 años, 19 a 35 años, 36 a 50 años, 51 a 65 años y más de 65 años"""
+    if not check_permission(session, "jya_index"):
+        return unauthorized
+    
     labels, values = get_age_ranges()
 
     # Crear gráfico
     fig, ax = plt.subplots(figsize=(7, 7))
+    ax.set_title('Rango de edades de los Jinetes/Amazonas')
     ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=140)
     fig.tight_layout()
 
@@ -85,8 +114,48 @@ def to_image(fig):
 
     return response
 
-@bp.get("/reports")
+
+@bp.get("/most_earnings")
 @login_required
-def reports():
-    """Genera los reportes de estadísticas"""
-    return save_report(get_members_with_most_earnings(), "members_with_most_earnings")
+def most_earnings():
+    """Genera los reportes de los miembros con más ingresos"""
+    if not check_permission(session, "reg_cobros_index"):
+        return unauthorized
+    
+    members = get_members_with_most_earnings()
+
+    return render_template('statistics/most_earnings.html', members=members)
+
+
+@bp.get("/debts")
+@login_required
+def debts():
+    """Genera los reportes de los jinetes/amazonas con deudas"""
+    if not check_permission(session, "reg_cobros_index"):
+        return unauthorized
+
+    riders = get_riders_with_debt()
+
+    return render_template('statistics/debts.html', riders=riders)
+
+
+@bp.get("/balance_report")
+@login_required
+def balance_report():
+    """Genera los reportes de los ingresos y egresos de CEDICA en el tiempo especificado"""
+    if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index"):
+        return unauthorized
+
+    filters = {
+        'start_date': request.args.get('start_date'),
+        'end_date': request.args.get('end_date', datetime.today().strftime('%d-%m-%Y')),
+    }
+
+    if not filters['start_date']:
+        flash('La fecha de inicio es requerida', 'error')
+        return redirect(url_for('statistics.index'))
+
+    incomes = get_incomes_by_range(filters['start_date'], filters['end_date'])
+    outflows = get_outflows_by_range(filters['start_date'], filters['end_date'])
+
+    return render_template('statistics/balance_report.html', incomes=incomes, outflows=outflows, filters=filters)

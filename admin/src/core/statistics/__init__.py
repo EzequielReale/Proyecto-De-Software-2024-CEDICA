@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 import os
 import pandas as pd
 
-from flask import send_file, after_this_request
+from flask import current_app, send_file, after_this_request
+from minio.error import S3Error
 
 from src.core.database import db
 from src.core.professions import Job
@@ -10,7 +11,6 @@ from src.core.people import has_debt
 from src.core.people.member_rider import Member, Rider
 from src.core.registro_pagos import Pago
 from src.core.registro_pagos_jya import PagoJineteAmazona
-from fpdf import FPDF
 
 
 def get_job_count()->tuple[list[str], list[int]]:
@@ -172,20 +172,3 @@ def get_members_with_most_earnings()->list[dict]:
 
     return result
 
-
-def make_report(data: list[dict], report_name: str):
-    """Genera un reporte con las estadísticas de CEDICA en formato Excel"""
-    df = pd.DataFrame(data)
-        
-    if not os.path.exists('reports'):
-        os.makedirs('reports')
-            
-    file_path = f'reports/{report_name}.xlsx'
-    df.to_excel(file_path, index=False)
-
-    return file_path
-
-
-def save_report(data: list[dict], report_name: str):
-    """Guarda el reporte solicitado en Minio"""
-    pass

@@ -9,12 +9,12 @@ from minio.error import S3Error
 
 from src.core import adressing, database_functions as db_fun, professions, registro_pagos_jya
 from src.core.database import db
-from src.core.people.member_rider import Member, Rider, UserMember
-from src.core.professions import Job  # Adjust the import path as necessary
+from src.core.people.member_rider import Member, Rider
+from src.core.professions import Job
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
-from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm, SchoolJobRiderForm
+from src.web.forms.rider_update_form import PartialRiderForm, TutorRiderForm, SchoolJobRiderForm
 
 
 """Funciones de documentos"""
