@@ -62,6 +62,7 @@ header {
   backdrop-filter: blur(10px);
   transition: all 0.3s;
   animation: fadeIn 0.75s;
+  z-index: 1000;
 }
 
 #header-container {
@@ -125,6 +126,16 @@ nav .nav-button {
 
 nav .nav-button:hover {
   background-color: #1c7c8c;
+}
+
+@media (max-width: 1024px) {
+  header {
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+  }
 }
 
 @media (max-width: 768px) {
