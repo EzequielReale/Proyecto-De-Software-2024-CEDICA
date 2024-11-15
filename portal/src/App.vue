@@ -36,8 +36,8 @@ onMounted(() => {
       </RouterLink>
   
       <div class="wrapper">
-        <nav class="d-flex flex-row">
-          <RouterLink to="/" @click.native="scrollToTop">Sobre nosotros</RouterLink>
+        <nav class="d-flex flex-row" style="user-select: none;">
+          <a href="/#about">Sobre nosotros</a>
           <a href="/#articles">Noticias y actividades</a>
           <a class="nav-button" href="/#contact">Contactanos</a>
         </nav>
