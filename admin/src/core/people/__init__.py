@@ -217,6 +217,7 @@ def _create_tutors(form:RiderForm) -> Tutor:
     
     return tutor_1, tutor_2
 
+
 def has_debt(rider_id: int) -> bool:
     """Devuelve True si el jinete tiene deudas, False en caso contrario"""
     rider = get_rider_by_field("id", rider_id)
