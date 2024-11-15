@@ -62,6 +62,7 @@ header {
   backdrop-filter: blur(10px);
   transition: all 0.3s;
   animation: fadeIn 0.75s;
+  z-index: 1000;
 }
 
 #header-container {
