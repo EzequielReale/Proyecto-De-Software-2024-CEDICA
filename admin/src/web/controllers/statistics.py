@@ -51,7 +51,7 @@ def balance():
     ax.set_title('Balance mensual de CEDICA')
     ax.set_xlabel('Mes')
     ax.set_ylabel('Monto')
-    ax.set_xticks(month_labels)
+    ax.set_xticks(range(len(month_labels)))
     ax.set_xticklabels(month_labels, rotation=45, ha="right", fontsize=10)
     ax.axhline(0, color='black', linewidth=0.8) # Línea horizontal en 0
 
@@ -145,17 +145,18 @@ def balance_report():
     """Genera los reportes de los ingresos y egresos de CEDICA en el tiempo especificado"""
     if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index"):
         return unauthorized
-
+    
+    incomes = []
+    outflows = []
     filters = {
         'start_date': request.args.get('start_date'),
-        'end_date': request.args.get('end_date', datetime.today().strftime('%d-%m-%Y')),
+        'end_date': request.args.get('end_date') or datetime.today().strftime('%Y-%m-%d'),
     }
 
     if not filters['start_date']:
-        flash('La fecha de inicio es requerida', 'error')
-        return redirect(url_for('statistics.index'))
-
-    incomes = get_incomes_by_range(filters['start_date'], filters['end_date'])
-    outflows = get_outflows_by_range(filters['start_date'], filters['end_date'])
+        flash('Ingrese una fecha de inicio (obligatorio) y de fin (opcional)', 'error')
+    else:
+        incomes = get_incomes_by_range(filters['start_date'], filters['end_date'])
+        outflows = get_outflows_by_range(filters['start_date'], filters['end_date'])
 
     return render_template('statistics/balance_report.html', incomes=incomes, outflows=outflows, filters=filters)

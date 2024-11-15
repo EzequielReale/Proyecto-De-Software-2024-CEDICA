@@ -1,9 +1,5 @@
 from datetime import datetime, timedelta
-import os
-import pandas as pd
-
-from flask import current_app, send_file, after_this_request
-from minio.error import S3Error
+from dateutil.relativedelta import relativedelta
 
 from src.core.database import db
 from src.core.professions import Job
@@ -54,9 +50,8 @@ def get_incomes_less_outflows()->tuple[list[str], list[int]]:
     today = datetime.today()
     start_date = today.replace(day=1) - timedelta(days=365)
 
-    # Crea una lista de los últimos 12 meses
-    months = [(start_date + timedelta(days=30 * i)).strftime('%Y-%m') for i in range(13)]
-    month_labels = [(start_date + timedelta(days=30 * i)).strftime('%B %Y') for i in range(13)]
+    months = [(start_date + relativedelta(months=i)).strftime('%Y-%m') for i in range(12)]
+    month_labels = [(start_date + relativedelta(months=i)).strftime('%B %Y') for i in range(12)]
 
     # Traduce los nombres de los meses al español
     month_translation = {
@@ -101,10 +96,15 @@ def get_riders_with_debt()->list[dict]:
             'Nombre': rider.name + ' ' + rider.last_name,
             'DNI': rider.dni,
             'Edad': today.year - rider.birth_date.year,
+            'Contacto': rider.phone,
             'Cantidad_de_pagos_pendientes': db.session.query(db.func.count(PagoJineteAmazona.id)).filter(
                 PagoJineteAmazona.jinete_amazona_id == rider.id,
                 PagoJineteAmazona.en_deuda == True
-            ).scalar()
+            ).scalar(),
+            'Monto_total_de_deuda': "$" + str(db.session.query(db.func.sum(PagoJineteAmazona.monto)).filter(
+                PagoJineteAmazona.jinete_amazona_id == rider.id,
+                PagoJineteAmazona.en_deuda == True
+            ).scalar())
         }
         for rider in riders_with_debt
     ]
