@@ -1,6 +1,6 @@
 <template>
     <div id="about" class="d-flex flex-column justify-content-center align-items-center" style="height: 80vh; width: 100%;">
-        <img src="../assets/logos/Logo CEDICA.png" width="25%" alt="">
+        <img src="../assets/logos/Logo.png" width="25%" alt="">
         <div class="mt-3">
             Acá iría el home/about
         </div>

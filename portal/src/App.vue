@@ -32,7 +32,7 @@ onMounted(() => {
   <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
     <div id="header-container">
       <RouterLink to="/" @click.native="scrollToTop">
-        <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
+        <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo.png" height="35" />
       </RouterLink>
   
       <div class="wrapper">
