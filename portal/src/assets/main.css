@@ -8,3 +8,21 @@ a {
   text-decoration: none;
   transition: 0.4s;
 }
+
+.Toastify__toast-container {
+  padding: 0px !important;
+}
+
+.Toastify__toast {
+  border-radius: 5px !important;
+  font-family: "Quicksand", sans-serif !important;
+}
+
+.Toastify__toast-icon {
+  margin-right: 3px;
+  margin-left: 3px;
+}
+
+.Toastify__close-button {
+  transform: translateY(-3px);
+}

@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %} JyA en deuda{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<h1 style="color: #007bff; margin-bottom: 20px;">Reporte de jinetes y amazonas en deuda</h1>
+<p style="margin-bottom: 20px;">Este reporte muestra un detalle de los jinetes y amazonas que poseen pagos pendientes</p>
+
+<a href="{{ url_for('statistics.index') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
+    <i class="fas fa-arrow-left"></i> Volver a la página de estadísticas
+</a>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Nombre
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                DNI
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Edad
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Contacto
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Cantidad de pagos pendientes
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Monto total adeudado
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if riders %}
+            {% for rider in riders %}
+                <tr>
+                    <td>{{ rider.Nombre }}</td>
+                    <td>{{ rider.DNI }}</td>
+                    <td>{{ rider.Edad }}</td>
+                    <td>{{ rider.Contacto }}</td>
+                    <td>{{ rider.Cantidad_de_pagos_pendientes }}</td>
+                    <td>{{ rider.Monto_total_de_deuda }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">No hay resultados</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
