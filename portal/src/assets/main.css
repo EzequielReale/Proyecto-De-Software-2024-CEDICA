@@ -8,10 +8,3 @@ a {
   text-decoration: none;
   transition: 0.4s;
 }
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-}

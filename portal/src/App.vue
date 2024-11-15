@@ -128,6 +128,16 @@ nav .nav-button:hover {
   background-color: #1c7c8c;
 }
 
+@media (max-width: 1024px) {
+  header {
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   nav a:nth-child(1),
   nav a:nth-child(2) {
