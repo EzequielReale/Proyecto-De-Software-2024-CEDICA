@@ -1,10 +1,10 @@
 <template>
-    <div id="about" class="d-flex flex-row justify-content-center align-items-center gap-4">
+    <section id="about" class="d-flex flex-row justify-content-center align-items-center gap-4">
         <div class="d-flex flex-column justify-content-center align-items-center gap-4 text-white">
             <h1 class="">Sobre nosotros</h1>
             <p>Acá iría el about</p>
         </div>
-    </div>
+    </section>
 </template>
 <style scoped>
     #about {
