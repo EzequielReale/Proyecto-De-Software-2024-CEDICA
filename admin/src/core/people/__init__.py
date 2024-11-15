@@ -260,7 +260,6 @@ def update_rider_tutor(rider_id: int, form: TutorRiderForm) -> Rider:
             db_fun.delete(Tutor, rider.tutor_1.id) # si lo quiere eliminar (y existe) lo elimino
 
     if form.has_tutor_1.data == "True" and form.has_tutor_2.data == "True":
-        print("entro")
         if rider.tutor_2 is not None:
             db_fun.update(Tutor, rider.tutor_2.id, **tutor2_data)
         else:

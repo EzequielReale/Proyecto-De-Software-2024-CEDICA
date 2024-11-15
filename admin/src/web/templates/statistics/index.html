@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Estadísticas
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Balance mensual</h1>
+        <img src="{{ url_for('statistics.balance') }}" alt="Gráfico de balance ingreso/egreso">
+    </div>
+    <div>
+        <h1>Cantidad de miembros del equipo por puesto laboral</h1>
+        <img src="{{ url_for('statistics.job') }}" alt="Gráfico de miembros/puestos de trabajo">
+    </div>
+    <div>
+        <h1>Rangos de edades de los jinetes y amazonas</h1>
+        <img src="{{ url_for('statistics.age') }}" alt="Gráfico de rango de edades entre los jya">
+    </div>
+{% endblock %}
