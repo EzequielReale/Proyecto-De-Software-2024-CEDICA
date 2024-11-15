@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block title %} Mayores ganancias{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<h1 style="color: #007bff; margin-bottom: 20px;">Reporte de mayores ganancias</h1>
+<p style="margin-bottom: 20px;">Este reporte muestra los miembros del equipo que más ingresos han generado, de mayor a menor</p>
+
+<a href="{{ url_for('statistics.index') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
+    <i class="fas fa-arrow-left"></i> Volver a estadísticas
+</a>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Nombre
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                DNI
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Total recaudado
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                Cantidad de pagos
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if members %}
+            {% for member in members %}
+                <tr>
+                    <td>{{ member.Nombre }}</td>
+                    <td>{{ member.DNI }}</td>
+                    <td>{{ member.Total_recaudado }}</td>
+                    <td>{{ member.Cantidad_de_pagos }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">No hay resultados</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

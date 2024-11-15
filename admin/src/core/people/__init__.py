@@ -9,12 +9,12 @@ from minio.error import S3Error
 
 from src.core import adressing, database_functions as db_fun, professions, registro_pagos_jya
 from src.core.database import db
-from src.core.people.member_rider import Member, Rider, UserMember
-from src.core.professions import Job  # Adjust the import path as necessary
+from src.core.people.member_rider import Member, Rider
+from src.core.professions import Job
 from src.core.people.person_document import PersonDocument as Document
 from src.core.people.tutor import Tutor
 from src.web.forms.rider_form import RiderForm
-from src.web.forms.rider_update_form import PartialRiderForm,TutorRiderForm, SchoolJobRiderForm
+from src.web.forms.rider_update_form import PartialRiderForm, TutorRiderForm, SchoolJobRiderForm
 
 
 """Funciones de documentos"""
@@ -217,6 +217,7 @@ def _create_tutors(form:RiderForm) -> Tutor:
     
     return tutor_1, tutor_2
 
+
 def has_debt(rider_id: int) -> bool:
     """Devuelve True si el jinete tiene deudas, False en caso contrario"""
     rider = get_rider_by_field("id", rider_id)
@@ -260,7 +261,6 @@ def update_rider_tutor(rider_id: int, form: TutorRiderForm) -> Rider:
             db_fun.delete(Tutor, rider.tutor_1.id) # si lo quiere eliminar (y existe) lo elimino
 
     if form.has_tutor_1.data == "True" and form.has_tutor_2.data == "True":
-        print("entro")
         if rider.tutor_2 is not None:
             db_fun.update(Tutor, rider.tutor_2.id, **tutor2_data)
         else:
