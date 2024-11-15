@@ -6,8 +6,6 @@ from src.core.user_role_permission.operations.user_operations import get_user_by
 from src.web.handlers.error import unauthorized
 
 def autenticacion(session):
-    print("entre a autenticacion")
-    print (session.get("user"))
     return session.get("user") is not None
 
 

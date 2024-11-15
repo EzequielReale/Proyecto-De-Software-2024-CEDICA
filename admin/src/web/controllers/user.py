@@ -140,7 +140,6 @@ def delete(email: str):
             flash("No es posible eliminar usuarios con rol SystemAdmin", "danger")
             return redirect("/user")
         
-        print('Se eliminara el usuario')
         delete_user(email)
         flash("Usuario eliminado exitosamente.", "success")
         return redirect("/user")
@@ -176,9 +175,6 @@ def update(email: str):
         email = form.email.data
         roles_to_delete = form.roles_to_delete.data
         roles_to_add = form.roles_to_add.data
-
-        print(f"Formulario Alias despues del post: {form.alias.data}")
-        print(f"Formulario Emaildespues del post: {form.email.data}")
 
         # Convierto los roles del usuario a una lista de strings
         user_roles = [role.name for role in user.roles]

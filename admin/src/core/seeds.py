@@ -22,8 +22,8 @@ from datetime import datetime
 
 fake = Faker()
 
-fecha_inicio = datetime(2020, 1, 1, 0, 0, 0)
-fecha_fin = datetime(2023, 12, 31, 23, 59, 59)
+fecha_inicio = datetime(2023, 1, 1, 0, 0, 0)
+fecha_fin = datetime(2024, 12, 31, 23, 59, 59)
 
 def generar_fecha_y_hora_aleatoria(inicio: datetime, fin: datetime) -> datetime:
     """Recibe dos fechas y devuelve una fecha y hora aleatoria entre ambas."""
@@ -731,7 +731,7 @@ def _seed_jya(members, localities, horses):
             health_insurance="GALENO",
             health_insurance_number=f"287654321{i}",
             locality=localities[random.randint(0, len(localities)-1)],
-            birth_date=fake.date_between(start_date="-40y", end_date="-8y"),
+            birth_date=fake.date_between(start_date="-100y", end_date="-4y"),
             grant_percentage=random.randint(1, 100),
             disability_id=random.randint(1, 18),
             family_allowance=random.choice([
