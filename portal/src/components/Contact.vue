@@ -165,7 +165,7 @@
   #contact > img {
     width: 35%;
     max-width: 626px;
-    min-width: 400px;
+    min-width: 450px;
   }
 
   #contact > div {
