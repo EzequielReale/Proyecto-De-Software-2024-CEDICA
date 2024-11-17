@@ -32,6 +32,9 @@ bp = Blueprint('statistics', __name__, url_prefix='/statistics')
 @login_required
 def index():
     """Renderiza la página de estadísticas"""
+    if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index") or not check_permission(session, "team_index") or not check_permission(session, "jya_index"):
+        return unauthorized()
+    
     return render_template('statistics/index.html')
 
 
@@ -40,7 +43,7 @@ def index():
 def balance():
     """Genera un gráfico de barras con el balance mensual de los últimos 12 meses"""
     if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index"):
-        return unauthorized
+        return unauthorized()
 
     month_labels, values = get_incomes_less_outflows()
 
@@ -71,7 +74,7 @@ def balance():
 def job():
     """Genera un gráfico de barras horizontales con la cantidad de miembros del equipo en cada puesto laboral"""
     if not check_permission(session, "team_index"):
-        return unauthorized
+        return unauthorized()
 
     labels, values = get_job_count()
 
@@ -91,7 +94,7 @@ def job():
 def age():
     """Genera un gráfico de torta con el porcentaje de jinetes/amazonas en el rango de edad de 3 a 18 años, 19 a 35 años, 36 a 50 años, 51 a 65 años y más de 65 años"""
     if not check_permission(session, "jya_index"):
-        return unauthorized
+        return unauthorized()
     
     labels, values = get_age_ranges()
 
@@ -120,7 +123,7 @@ def to_image(fig):
 def most_earnings():
     """Genera los reportes de los miembros con más ingresos"""
     if not check_permission(session, "reg_cobros_index"):
-        return unauthorized
+        return unauthorized()
     
     members = get_members_with_most_earnings()
 
@@ -132,7 +135,7 @@ def most_earnings():
 def debts():
     """Genera los reportes de los jinetes/amazonas con deudas"""
     if not check_permission(session, "reg_cobros_index"):
-        return unauthorized
+        return unauthorized()
 
     riders = get_riders_with_debt()
 
@@ -144,7 +147,7 @@ def debts():
 def balance_report():
     """Genera los reportes de los ingresos y egresos de CEDICA en el tiempo especificado"""
     if not check_permission(session, "reg_pagos_index") or not check_permission(session, "reg_cobros_index"):
-        return unauthorized
+        return unauthorized()
     
     incomes = []
     outflows = []
