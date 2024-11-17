@@ -1,0 +1,254 @@
+{% extends "layout.html" %}
+
+{% block title %}Contacto - Administración de mensajes{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    /* Saco el subrayado de los enlaces */
+    a,
+    a:hover {
+        text-decoration: none !important;
+    }
+
+    /* Estilos para los botones de las distintas acciones */
+    .action-icons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-icons i {
+        transition: 0.3s;
+        color: #0099CC;
+    }
+
+    .action-icons i:hover {
+        color: #0077AA;
+        fill: #0077AA;
+    }
+
+    /* Estilos para el botón de regreso */
+    .btn-back {
+        transition: 0.2s !important;
+        color: #222 !important;
+    }
+
+    .btn-back:hover {
+        background-color: #ddd !important;
+    }
+
+    /* Estilos para los íconos de paginación */
+    #pagination i {
+        margin-top: 3px;
+        transform: scale(0.8);
+    }
+
+    #pagination>a {
+        padding-top: 3px;
+    }
+
+    /* Estilos para columnas ordenables */
+    th>a {
+        color: #0077AA;
+        text-decoration: none;
+    }
+
+    th>a>i {
+        margin-left: 2px;
+        transform: scale(0.7);
+    }
+
+    /* Acomodar filtros en fila */
+    .form-filter-container {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    } 
+
+    @media screen and (max-width: 768px) {
+
+        /* Acomodar botones en columnas */
+        #main-buttons {
+            flex-direction: column !important;
+        }
+
+        .form-filter-container {
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
+        /* Ocultar columnas en pantallas pequeñas */
+        tr>td:nth-child(4),
+        tr>td:nth-child(5),
+        tr>td:nth-child(6),
+        tr>td:nth-child(7),
+        tr>th:nth-child(4),
+        tr>th:nth-child(5),
+        tr>th:nth-child(6),
+        tr>th:nth-child(7) {
+            display: none;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+
+        /* Ocultar última columna en pantallas muy pequeñas */
+        tr>td:nth-child(8),
+        tr>th:nth-child(8) {
+            display: none;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<h1 style="color: #007bff; margin-bottom: 20px;">Contacto - Administración de mensajes</h1>
+
+
+<h4 style="color: #007bff; margin-bottom: 20px;">Filtrado por Estado</h1>
+
+<form action="{{ url_for('internal_messages.index') }}" method="GET" class="form-inline mb-3"
+  style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+  
+    <select class="form-select select2" id="state" name="state" style="width: 100%;">
+        <option value="">
+            Todos
+        </option>
+        {% if message_status %}
+            {% for status in message_status %}
+                <option value="{{ status.name }}">{{ status.value }}</option>
+            {% endfor %}
+        {% endif %}
+    </select>
+
+  <button type="submit" class="btn btn-primary" style="background-color: #007bff; border-color: #007bff;"><i
+      class="fas fa-search"></i> Buscar
+  </button>
+
+  <a href="{{ url_for('internal_messages.index') }}" class="btn btn-secondary"
+    style="background-color: #6c757d; border-color: #6c757d;"><i class="fas fa-eraser"></i> Limpiar filtros
+  </a>
+
+</form>
+
+<table class="table table-striped">
+
+    <thead>
+        <tr>
+            <th style="background-color: #0056b3; color: #ffffff;">Nombre</th>
+            <th style="background-color: #0056b3; color: #ffffff;">Email</th>
+            <th style="background-color: #0056b3; color: #ffffff;">Estado</th>
+            <th style="background-color: #0056b3; color: #ffffff;">Mensaje</th>
+            <th style="background-color: #0056b3; color: #ffffff;">
+                <a href="{{ url_for('internal_messages.index', sort_by='created_at', sort_direction='asc' if sort_by != 'created_at' or sort_direction == 'desc' else 'desc', **filters) }}"
+                style="color: inherit; text-decoration: none;">
+                Fecha de Recepción
+                {% if sort_by == 'created_at' %}
+                    {% if sort_direction == 'asc' %}
+                        &#9650;
+                    {% else %}
+                        &#9660;
+                    {% endif %}
+                {% endif %}
+                </a>
+            </th>
+            <th style="background-color: #0056b3; color: #ffffff;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if messages %}
+        {% for message in messages %}
+            <tr>
+                <td>{{ message.name }}</td>
+                <td>{{ message.email }}</td>
+                <td>
+                    {% if message.state == message_status.RESPONDIDO %}
+                        <span class="text-success">{{ message.state.value }}</span>
+                    {% elif message.state == message_status.NO_RESPONDIDO %}
+                        <span class="text-danger">{{ message.state.value }}</span>
+                    {% elif message.state == message_status.EN_ANALISIS %}
+                        <span class="text-warning">{{ message.state.value }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ message.body_message }}</td>
+                <td>{{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+
+                <td>
+                    <div class="action-icons">
+                        {% if check_permission(session,'message_show')%}
+                            <!-- Icono de vista detallada -->
+                            <a href="{{ url_for('internal_messages.show', id=message.id) }}" title="Ver detalles">
+                                <i class="fas fa-file-text"></i>
+                            </a>
+                        {% endif %}
+
+                        {% if check_permission(session,'message_destroy')%}
+                            <!-- Formulario de eliminación -->
+                            <form action="{{ url_for('internal_messages.delete' , id=message.id) }}"
+                            method="POST" style="display: inline;"
+                            onsubmit="return confirm('¿Esta seguro que desea eliminar el mensaje?');">
+                                <button type="submit" title="Eliminar" role="button"
+                                    style="border: none; background: none; color: #0099CC;">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+
+                    </div>
+                </td>
+
+            </tr>
+        {% endfor %}
+
+        {% else %}
+            <tr>
+                <td colspan="6">No hay jinetes o amazonas</td>
+            </tr>
+        {% endif %}
+
+    </tbody>
+</table>
+
+
+
+
+
+<!-- Paginación -->
+<nav aria-label="Page navigation" style="justify-content: center; margin-top: 20px;">
+    <ul class="pagination" style="background-color: #f8f9fa; border-radius: 5px; padding: 10px;">
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('internal_messages.index', page=page-1, **filters) }}" aria-label="Previous"
+                style="color: #0056b3;">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+        {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('internal_messages.index', page=p, **filters) }}"
+                style="color: #0056b3; {% if p == page %} font-weight: bold; background-color: #007bff; color: white; {% endif %}">{{
+                p }}</a>
+        </li>
+        {% endfor %}
+        {% if page < total_pages %} <li class="page-item">
+            <a class="page-link" href="{{ url_for('internal_messages.index', page=page+1, **filters) }}" aria-label="Next"
+                style="color: #0056b3;">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+            {% endif %}
+    </ul>
+</nav>
+
+<!-- Fin de paginación -->
+
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

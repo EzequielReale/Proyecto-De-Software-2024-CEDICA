@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+
+{% block title %}Administración de mensajes - Ver mensaje{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        margin-top: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        color: #0056b3;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .btn-icon {
+        margin-left: 10px;
+    }
+
+    .btn {
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+</style>
+
+<script>
+    function toggleCommentForm() {
+        var form = document.getElementById('commentForm');
+        var button = document.getElementById('addCommentButton');
+        if (form.style.display === 'none') {
+            form.style.display = 'block';
+            button.style.display = 'none';
+        } else {
+            form.style.display = 'none';
+            button.style.display = 'block';
+        }
+    }
+</script>
+{% endblock %}
+
+
+{% block content %}
+    <h1 style="color: #007bff; margin-bottom: 20px;">Detalle de mensaje</h1>
+    <p class="lead mb-4">Información detallada del mensaje</p>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title mb-4"><i class="fas fa-user"></i> Mensaje de {{ message.name }}</h5>
+            <p class="card-text">
+                <strong><i class="fas fa-envelope"></i> Email:</strong> {{ message.email }}<br>
+                <strong><i class="fas fa-info-circle"></i> Estado:</strong> 
+                    {% if message.state == message_status.RESPONDIDO %}
+                        <span class="text-success">{{ message.state.value }}</span>
+                    {% elif message.state == message_status.NO_RESPONDIDO %}
+                        <span class="text-danger">{{ message.state.value }}</span>
+                    {% elif message.state == message_status.EN_ANALISIS %}
+                        <span class="text-warning">{{ message.state.value }}</span>
+                    {% endif %}<br>
+                <strong><i class="fas fa-calendar-alt"></i> Fecha de Recepción:</strong> {{ message.created_at.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+            </p>
+        </div>
+        <div class="card-footer" style="background-color: #f8f9fa;">
+            <strong><i class="fas fa-comment"></i> Mensaje:</strong> {{ message.body_message }}
+        </div>
+    </div>
+    
+    <br>
+
+    {% if check_permission(session,'message_update')%}
+        <!-- Formulario de actualización de estado -->
+         <div class="button-group">
+            <form action="{{ url_for('internal_messages.update', id=message.id) }}" method="POST" style="display: inline-block; text-align: right;">
+                <div class="form-group">
+                    <br>
+                    <select id="stateSelect" name="state" class="form-select form-select-sm d-inline-block w-auto" required>
+                        {% if message_status %}
+                            {% for status in message_status %}
+                                <option value="{{ status.name }}">{{ status.value }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <button type="submit" title="Actualizar estado" role="button" class="btn btn-success mt-2">
+                    Actualizar estado del mensaje
+                </button>
+            </form>
+        </div>
+    {% endif %}
+
+    <br>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-comments"></i> Comentario</h5>
+            <p class="card-text">
+                {% if message.comment %}
+                    {{ message.comment }}
+                {% else %}
+                    No hay comentario
+                {% endif %}
+            </p>
+        </div>
+    </div> 
+
+    <div class="button-group mt-3">
+
+        {% if message.comment %}
+            <div>
+                <a id="addCommentButton" href="javascript:void(0);" class="btn btn-primary btn-warning btn-icon" onclick="toggleCommentForm()">
+                    <i class="fas fa-edit m-2"></i> Editar comentario
+                </a>
+                <div id="commentForm" style="display:none;">
+                    <form action="{{ url_for('internal_messages.add_comment', id=message.id) }}" method="post">
+                        <div class="form-group mb-3">
+                            <textarea class="form-control" name="comment" maxlength="399" placeholder="Escribe tu comentario aquí..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleCommentForm()">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                
+                <form action="{{ url_for('internal_messages.destroy_comment' , id=message.id) }}"
+                method="POST" style="display: inline;"
+                onsubmit="return confirm('¿Esta seguro que desea eliminar el comentario?');">
+                    <button class="btn btn-danger btn-icon" type="submit" title="Eliminar" role="button">
+                        <i class="fas fa-trash m-2"></i> Borrar comentario
+                    </button>
+                </form>
+            </div>
+
+            {% else %}
+                <a id="addCommentButton" href="javascript:void(0);" class="btn btn-success btn-icon" onclick="toggleCommentForm()">
+                    <i class="fas fa-plus m-2"></i> Agregar comentario
+                </a>
+                <div id="commentForm" style="display:none; margin-top: 10px;">
+                    <form action="{{ url_for('internal_messages.add_comment', id=message.id) }}" method="post">
+                        <div class="form-group mb-3">
+                            <textarea class="form-control" name="comment" maxlength="399" placeholder="Escribe tu comentario aquí..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleCommentForm()">Cancelar</button>
+                    </form>
+                </div>
+            {% endif %}
+    </div>
+    
+    <div class="button-group">
+        <a href="{{ url_for('internal_messages.index') }}" class="btn btn-primary btn-icon">
+            <i class="fas fa-arrow-left m-2"></i> Volver al listado de mensajes
+        </a>
+    </div>
+{% endblock %}
+{% block footer %}
+{% endblock %}
