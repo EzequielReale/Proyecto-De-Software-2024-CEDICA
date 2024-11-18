@@ -52,7 +52,7 @@ def create_app(env="development", static_folder="../../static"):
     commands.register(app)
 
     # Storage
-    storage.init_app(app)
+    #storage.init_app(app)
 
   
 
