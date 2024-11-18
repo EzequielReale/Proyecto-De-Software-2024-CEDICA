@@ -22,7 +22,7 @@ class ProductionConfig(Config):
     MINIO_SECRET_KEY = environ.get("MINIO_SECRET_KEY")
     MINIO_SECURE = True
     GOOGLE_CLIENT_ID =environ.get("GOOGLE_CLIENT_ID")
-    GOOGLE_SECRET_KEY = environ.get("GOOGLE_SECRET_KEY")
+    GOOGLE_CLIENT_SECRET = environ.get("GOOGLE_CLIENT_SECRET")
 
 
 class DevelopmentConfig(Config):
@@ -44,8 +44,8 @@ class DevelopmentConfig(Config):
     MINIO_SECRET_KEY = environ.get("DEV_MINIO_SECRET_KEY")
     MINIO_SECURE = False
     #google
-    GOOGLE_CLIENT_ID =environ.get("DEV_GOOGLE_CLIENT_ID")
-    GOOGLE_SECRET_KEY = environ.get("DEV_GOOGLE_SECRET_KEY")
+    GOOGLE_CLIENT_ID =environ.get("GOOGLE_CLIENT_ID")
+    GOOGLE_CLIENT_SECRET = environ.get("GOOGLE_CLIENT_SECRET")
 
 
 
