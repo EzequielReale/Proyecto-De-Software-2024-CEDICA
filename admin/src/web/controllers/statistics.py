@@ -6,10 +6,8 @@ from flask import (
     flash,
     make_response,
     render_template,
-    redirect,
     request,
     session,
-    url_for,
 )
 import matplotlib.pyplot as plt
 
