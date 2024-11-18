@@ -244,6 +244,13 @@
                             href="{{ url_for('articles.index') }}">Contenido público</a>
                     </li>
                     {% endif %}
+
+                    {% if check_permission(session,'message_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint.startswith('messages.') %}active{% endif %}"
+                            href="{{ url_for('internal_messages.index') }}">Contacto</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
 
                     <!-- Botones de perfil y cerrar sesión para mobile -->

@@ -10,14 +10,18 @@ from src.core import (
     professions,
     registro_pagos,
     registro_pagos_jya,
-    content_admin
+    content_admin,
 )
+
 from src.core.user_role_permission.operations import permission_operations as Permission
 from src.core.user_role_permission.operations import role_operations as Role
 from src.core.user_role_permission.operations import user_operations as User
 from src.core.content_admin.article_status_enum import ArticleStatus
 from datetime import datetime
+from src.core import database_functions as db
 
+from src.core.messages.message import Message
+from src.core.messages.message_status_enum import MessageStatus
 
 
 fake = Faker()
@@ -87,6 +91,13 @@ def _seed_users():
     content_update = Permission.permiso_new(name="content_update")
     content_show = Permission.permiso_new(name="content_show")
 
+    # Seed para Permisos modulo de Contacto
+    message_index = Permission.permiso_new(name="message_index")
+    message_new = Permission.permiso_new(name="message_new")
+    message_destroy = Permission.permiso_new(name="message_destroy")
+    message_update = Permission.permiso_new(name="message_update")
+    message_show = Permission.permiso_new(name="message_show")
+
     # Seed de Roles
     tecnica = Role.role_new(
         name="Tecnica",
@@ -146,7 +157,12 @@ def _seed_users():
             content_new,
             content_update,
             content_show,
-            content_destroy
+            content_destroy,
+            message_index,
+            message_new,
+            message_destroy,
+            message_update,
+            message_show,
         ],
     )
     system_admin = Role.role_new(
@@ -849,6 +865,24 @@ def _seed_articles(users):
 
     return articles
 
+
+def _seed_messages():
+    new_messages = []
+    for i in range(30):
+        message = db.new(Message,
+        name = fake.first_name(),
+        email = fake.email(),
+        body_message = fake.sentence(),
+        state = random.choice(list(MessageStatus)),
+        comment = random.choice([fake.sentence(), ""]),
+        )
+        new_messages.append(message)
+
+    return new_messages
+
+           
+    
+
 def run():
     user_list = _seed_users()
     print("Usuarios creados con exito")
@@ -870,5 +904,7 @@ def run():
     print("Pagos creados con exito")
     articles = _seed_articles(user_list)
     print("Articulos creados con exito")
+    new_messages = _seed_messages()
+    print("Mensajes creados con exito")
     print()
     print("Seeds ejecutadas con exito")

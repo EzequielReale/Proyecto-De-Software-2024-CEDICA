@@ -9,9 +9,20 @@ a {
   transition: 0.4s;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+.Toastify__toast-container {
+  padding: 0px !important;
+}
+
+.Toastify__toast {
+  border-radius: 5px !important;
+  font-family: "Quicksand", sans-serif !important;
+}
+
+.Toastify__toast-icon {
+  margin-right: 3px;
+  margin-left: 3px;
+}
+
+.Toastify__close-button {
+  transform: translateY(-3px);
 }

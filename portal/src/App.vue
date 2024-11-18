@@ -14,16 +14,37 @@ const scrollToTop = () => {
 onMounted(() => {
   const handleScroll = () => {
     if (window.scrollY > 50) {
-  header.value.classList.add('collapsed')
+      header.value.classList.add('collapsed')
     } else {
-  header.value.classList.remove('collapsed')
+      header.value.classList.remove('collapsed')
     }
   }
-
   document.addEventListener('scroll', handleScroll)
+
+  const sections = document.querySelectorAll('section')
+
+  const observerOptions = {
+    threshold: 0.5
+  }
+
+  const observerCallback = (entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.getAttribute('id')
+      const navLink = document.querySelector(`nav a[href="/#${id}"]`)
+      if (entry.isIntersecting) {
+        navLink.classList.add('active')
+      } else {
+        navLink.classList.remove('active')
+      }
+    })
+  }
+
+  const observer = new IntersectionObserver(observerCallback, observerOptions)
+  sections.forEach(section => observer.observe(section))
 
   onUnmounted(() => {
     document.removeEventListener('scroll', handleScroll)
+    observer.disconnect()
   })
 })
 </script>
@@ -32,12 +53,12 @@ onMounted(() => {
   <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
     <div id="header-container">
       <RouterLink to="/" @click.native="scrollToTop">
-        <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo CEDICA.png" height="35" />
+        <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo.png" height="35" />
       </RouterLink>
   
       <div class="wrapper">
-        <nav class="d-flex flex-row">
-          <RouterLink to="/" @click.native="scrollToTop">Sobre nosotros</RouterLink>
+        <nav class="d-flex flex-row" style="user-select: none;">
+          <a href="/#about">Sobre nosotros</a>
           <a href="/#articles">Noticias y actividades</a>
           <a class="nav-button" href="/#contact">Contactanos</a>
         </nav>
@@ -62,6 +83,7 @@ header {
   backdrop-filter: blur(10px);
   transition: all 0.3s;
   animation: fadeIn 0.75s;
+  z-index: 1000;
 }
 
 #header-container {
@@ -108,6 +130,14 @@ nav a {
   font-size: 1rem;
 }
 
+nav a.active:not(.nav-button) {
+  color: #2197a2 !important;
+}
+
+nav a.active.nav-button {
+  background-color: #2197a2 !important;
+}
+
 nav a:not(.nav-button):hover {
   color: #2197a2;
 }
@@ -125,6 +155,16 @@ nav .nav-button {
 
 nav .nav-button:hover {
   background-color: #1c7c8c;
+}
+
+@media (max-width: 1024px) {
+  header {
+    top: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+  }
 }
 
 @media (max-width: 768px) {
