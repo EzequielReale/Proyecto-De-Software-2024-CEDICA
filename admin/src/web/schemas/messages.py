@@ -1,12 +1,19 @@
-from marshmallow import Schema, fields, validate, ValidationError
+from marshmallow import Schema, fields, validate
+from marshmallow_enum import EnumField
+from src.core.messages.message_status_enum import MessageStatus
 
 class MessageSchema(Schema):
-    title = fields.Str(required=True, validate=validate.Length(min=1))
-    email = fields.Email(required=True, validate=validate.Length(min=1))
-    description = fields.Str(required=True, validate=validate.Length(min=1))
-    status = fields.Str(required=False, validate=validate.OneOf(['created', 'closed']))
-    created_at = fields.DateTime(required=False)  # Validación de formato de fecha
-    closed_at = fields.DateTime(required=False)   # Validación de formato de fecha
+    id = fields.Int(dump_only=True)
+    title = fields.Str(required=True, validate=validate.Length(max=100))
+    email = fields.Email(required=True, validate=validate.Length(max=100))
+    description = fields.Str(required=True, validate=validate.Length(max=400))
+    status = EnumField(MessageStatus, by_value=True, required=False,missing='CREATED')
+    comment = fields.Str(validate=validate.Length(max=400),allow_none=True)
+    created_at = fields.DateTime()
+    closed_at = fields.DateTime(allow_none=True)
 
-# Crear una instancia del esquema para validar múltiples mensajes si es necesario
+
+    class Meta:
+        ordered = True
+
 message_schema = MessageSchema()
