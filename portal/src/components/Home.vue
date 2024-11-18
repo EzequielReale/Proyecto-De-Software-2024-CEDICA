@@ -1,10 +1,10 @@
 <template>
-    <div id="home" class="d-flex flex-column justify-content-center align-items-center" style="height: 80vh; width: 100%;">
+    <section id="home" class="d-flex flex-column justify-content-center align-items-center" style="height: 80vh; width: 100%;">
         <img src="../assets/logos/Logo.png" width="25%" alt="">
         <div class="mt-3">
             Acá iría el home
         </div>
-    </div>
+    </section>
 </template>
 <style scoped>
     #home {

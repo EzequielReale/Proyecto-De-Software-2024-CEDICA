@@ -10,20 +10,24 @@ from src.core import (
     professions,
     registro_pagos,
     registro_pagos_jya,
-    content_admin
+    content_admin,
 )
+
 from src.core.user_role_permission.operations import permission_operations as Permission
 from src.core.user_role_permission.operations import role_operations as Role
 from src.core.user_role_permission.operations import user_operations as User
 from src.core.content_admin.article_status_enum import ArticleStatus
 from datetime import datetime
+from src.core import database_functions as db
 
+from src.core.messages.message import Message
+from src.core.messages.message_status_enum import MessageStatus
 
 
 fake = Faker()
 
-fecha_inicio = datetime(2020, 1, 1, 0, 0, 0)
-fecha_fin = datetime(2023, 12, 31, 23, 59, 59)
+fecha_inicio = datetime(2023, 1, 1, 0, 0, 0)
+fecha_fin = datetime(2024, 12, 31, 23, 59, 59)
 
 def generar_fecha_y_hora_aleatoria(inicio: datetime, fin: datetime) -> datetime:
     """Recibe dos fechas y devuelve una fecha y hora aleatoria entre ambas."""
@@ -87,6 +91,13 @@ def _seed_users():
     content_update = Permission.permiso_new(name="content_update")
     content_show = Permission.permiso_new(name="content_show")
 
+    # Seed para Permisos modulo de Contacto
+    message_index = Permission.permiso_new(name="message_index")
+    message_new = Permission.permiso_new(name="message_new")
+    message_destroy = Permission.permiso_new(name="message_destroy")
+    message_update = Permission.permiso_new(name="message_update")
+    message_show = Permission.permiso_new(name="message_show")
+
     # Seed de Roles
     tecnica = Role.role_new(
         name="Tecnica",
@@ -146,7 +157,12 @@ def _seed_users():
             content_new,
             content_update,
             content_show,
-            content_destroy
+            content_destroy,
+            message_index,
+            message_new,
+            message_destroy,
+            message_update,
+            message_show,
         ],
     )
     system_admin = Role.role_new(
@@ -731,7 +747,7 @@ def _seed_jya(members, localities, horses):
             health_insurance="GALENO",
             health_insurance_number=f"287654321{i}",
             locality=localities[random.randint(0, len(localities)-1)],
-            birth_date=fake.date_between(start_date="-40y", end_date="-8y"),
+            birth_date=fake.date_between(start_date="-100y", end_date="-4y"),
             grant_percentage=random.randint(1, 100),
             disability_id=random.randint(1, 18),
             family_allowance=random.choice([
@@ -849,6 +865,24 @@ def _seed_articles(users):
 
     return articles
 
+
+def _seed_messages():
+    new_messages = []
+    for i in range(30):
+        message = db.new(Message,
+        name = fake.first_name(),
+        email = fake.email(),
+        body_message = fake.sentence(),
+        state = random.choice(list(MessageStatus)),
+        comment = random.choice([fake.sentence(), ""]),
+        )
+        new_messages.append(message)
+
+    return new_messages
+
+           
+    
+
 def run():
     user_list = _seed_users()
     print("Usuarios creados con exito")
@@ -870,5 +904,7 @@ def run():
     print("Pagos creados con exito")
     articles = _seed_articles(user_list)
     print("Articulos creados con exito")
+    new_messages = _seed_messages()
+    print("Mensajes creados con exito")
     print()
     print("Seeds ejecutadas con exito")

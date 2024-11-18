@@ -232,10 +232,23 @@
                             href="{{ url_for('registro_pagos_jya.index') }}">Registro de cobros</a>
                     </li>
                     {% endif %}
+                    {% if check_permission(session,'reg_cobros_index') or check_permission(session,'reg_pagos_index') or check_permission(session,'team_index') or check_permission(session,'jya_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint.startswith('statistics.') %}active{% endif %}"
+                            href="{{ url_for('statistics.index') }}">Estadísticas</a>
+                    </li>
+                    {% endif %}
                     {% if check_permission(session,'content_index')%}
                     <li class="nav-item">
                         <a class="nav-link {% if request.endpoint.startswith('articles.') %}active{% endif %}"
                             href="{{ url_for('articles.index') }}">Contenido público</a>
+                    </li>
+                    {% endif %}
+
+                    {% if check_permission(session,'message_index')%}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint.startswith('messages.') %}active{% endif %}"
+                            href="{{ url_for('internal_messages.index') }}">Contacto</a>
                     </li>
                     {% endif %}
                     {% endif %}

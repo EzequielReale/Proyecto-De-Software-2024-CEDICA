@@ -7,8 +7,15 @@ from src.web.controllers.team import bp as team_bp
 from src.web.controllers.user import bp as user_bp
 from src.web.controllers.articles import bp as articles_bp
 from src.web.controllers.registro_pagos_jya import bp as registro_pagos_jya_bp
+from src.web.controllers.messages import bp as internal_messages_bp
 
+from src.web.controllers.statistics import bp as statistics_bp
 from src.web.handlers import error
+
+#api
+from src.web.api.article import bp as api_article
+from src.web.api.messages import bp as api_message
+
 
 
 def register(app):
@@ -21,5 +28,11 @@ def register(app):
     app.register_blueprint(jya_bp)
     app.register_blueprint(registro_pagos_jya_bp)
     app.register_blueprint(articles_bp)
+    app.register_blueprint(internal_messages_bp)
+    app.register_blueprint(statistics_bp)
+    #api
+    app.register_blueprint(api_article)
+    app.register_blueprint(api_message)
+
 
     app.register_error_handler(404, error.not_found)

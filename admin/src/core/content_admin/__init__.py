@@ -2,6 +2,9 @@ from src.core.content_admin.article import Article
 from src.core.content_admin.article_status_enum import ArticleStatus
 from src.core.database import db
 from datetime import datetime
+from dateutil import parser
+
+
 
 def list_articles(limit: int = 10, page: int = 1):
     """Devuelve todos los artículos de la BD con paginación"""
@@ -55,3 +58,16 @@ def delete_article(article_id: int):
     db.session.delete(article)
     db.session.commit()
     return article
+
+
+def get_filtered_articles(author, published_from, published_to):
+    query = Article.query
+    if author:
+        query = query.join(Article.author).filter(User.alias.ilike(f"%{author}%"))
+    if published_from:
+        published_from =  parser.parse(published_from) #paso a datetime para hacer la consulta
+        query = query.filter(Article.published_at >= published_from)
+    if published_to:
+        published_to = parser.parse(published_to)
+        query = query.filter(Article.published_at <= published_to)
+    return query

@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_session import Session
+from flask_cors import CORS
 from src.core.bcrypt import bcrypt
 from src.core import database
 from src.core.config import config
@@ -10,12 +11,8 @@ from src.web import routes
 from src.web.storage import storage
 from authlib.integrations.flask_client import OAuth
 
-# __init__.py
-
 
 session = Session()
-
-
 
 
 def create_app(env="development", static_folder="../../static"):
@@ -36,11 +33,12 @@ def create_app(env="development", static_folder="../../static"):
     )
     app.oauth = oauth
     
-
-   
     #registro funcion en jinja para restringir el front
     app.jinja_env.globals.update(is_authenticated = autenticacion)
     app.jinja_env.globals.update(check_permission = check_permission)
+
+    # CORS
+    CORS(app)
 
     # Rutas
     routes.register(app)
@@ -53,7 +51,5 @@ def create_app(env="development", static_folder="../../static"):
 
     # Storage
     storage.init_app(app)
-
-  
 
     return app
