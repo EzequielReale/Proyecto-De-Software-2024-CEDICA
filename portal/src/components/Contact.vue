@@ -273,20 +273,7 @@ div.visible {
   }
 
   #contact > img {
-<<<<<<< Updated upstream
-    width: 35%;
-    max-width: 626px;
-    min-width: 450px;
-  }
-
-  #contact > div {
-    background-color: rgba(255, 255, 255, 0.65);
-    border-radius: 10px;
-    flex-grow: 0.75;
-    min-width: 700px;
-=======
     display: none;
->>>>>>> Stashed changes
   }
 
   #contact > div > div {
