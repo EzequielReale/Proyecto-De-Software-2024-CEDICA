@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from src.core.database import db
@@ -44,32 +44,66 @@ def get_age_ranges()->tuple[list[str], list[int]]:
     return labels, values
 
 
-def get_incomes_less_outflows()->tuple[list[str], list[int]]:
+def get_incomes_less_outflows() -> tuple[list[str], list[int]]:
     """Obtiene los ingresos - egresos de CEDICA en los últimos 12 meses"""
-    # Obtiene la fecha actual y la fecha de inicio de los últimos 12 meses
+    # Obtiene el primer día del mes actual
     today = datetime.today()
-    start_date = today.replace(day=1) - timedelta(days=365)
+    current_month_start = today.replace(day=1)
+    
+    # Obtiene el primer día del mes hace 12 meses
+    start_date = (current_month_start - relativedelta(months=11))
+    
+    # Genera los meses
+    months = []
+    month_labels = []
+    for i in range(12):
+        month_date = start_date + relativedelta(months=i)
+        months.append(month_date.strftime('%Y-%m'))
+        month_labels.append(month_date.strftime('%B %Y'))
 
-    months = [(start_date + relativedelta(months=i)).strftime('%Y-%m') for i in range(12)]
-    month_labels = [(start_date + relativedelta(months=i)).strftime('%B %Y') for i in range(12)]
-
-    # Traduce los nombres de los meses al español
+    # Traduce los nombres de los meses
     month_translation = {
         'January': 'Enero', 'February': 'Febrero', 'March': 'Marzo', 'April': 'Abril',
         'May': 'Mayo', 'June': 'Junio', 'July': 'Julio', 'August': 'Agosto',
-        'September': 'Septiembre', 'October': 'Octubre', 'November': 'Noviembre', 'December': 'Diciembre'
+        'September': 'Septiembre', 'October': 'Octubre', 'November': 'Noviembre', 
+        'December': 'Diciembre'
     }
-    month_labels = [month_translation[label.split()[0]] + ' ' + label.split()[1] for label in month_labels]
+    month_labels = [
+        month_translation[label.split()[0]] + ' ' + label.split()[1] 
+        for label in month_labels
+    ]
 
-    # Inicializar diccionarios para ingresos y egresos
+    # Consultas con rangos de fecha exactos
+    income_records = (
+        db.session.query(
+            PagoJineteAmazona.monto, 
+            PagoJineteAmazona.fecha_pago
+        )
+        .filter(
+            PagoJineteAmazona.fecha_pago >= start_date,
+            PagoJineteAmazona.fecha_pago < current_month_start + relativedelta(months=1),
+            PagoJineteAmazona.en_deuda == False
+        )
+        .all()
+    )
+
+    outflow_records = (
+        db.session.query(
+            Pago.monto, 
+            Pago.fecha_pago
+        )
+        .filter(
+            Pago.fecha_pago >= start_date,
+            Pago.fecha_pago < current_month_start + relativedelta(months=1)
+        )
+        .all()
+    )
+
+    # Inicializar diccionarios con valores en 0
     monthly_income = {month: 0 for month in months}
     monthly_outflow = {month: 0 for month in months}
 
-    # Consultar ingresos y egresos mensuales
-    income_records = db.session.query(PagoJineteAmazona.monto, PagoJineteAmazona.fecha_pago).filter(PagoJineteAmazona.fecha_pago >= start_date).all()
-    outflow_records = db.session.query(Pago.monto, Pago.fecha_pago).filter(Pago.fecha_pago >= start_date).all()
-
-    # Sumar ingresos y egresos a los diccionarios y calcular el balance mensual
+    # Agregar los montos por mes
     for record in income_records:
         month = record.fecha_pago.strftime('%Y-%m')
         if month in monthly_income:
@@ -80,7 +114,12 @@ def get_incomes_less_outflows()->tuple[list[str], list[int]]:
         if month in monthly_outflow:
             monthly_outflow[month] += record.monto
 
-    values = [monthly_income[month] - monthly_outflow[month] for month in months]
+    # Calcular la diferencia mes a mes
+    values = []
+    for month in months:
+        income = monthly_income[month]
+        outflow = monthly_outflow[month]
+        values.append(income - outflow)
 
     return month_labels, values
 

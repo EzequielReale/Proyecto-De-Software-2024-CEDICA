@@ -111,54 +111,64 @@
 <p style="margin-bottom: 20px;">Aquí encontrarás una serie de reportes y gráficos que te ayudarán a visualizar información relevante sobre el sistema</p>
 
 <div class="stats-container">
-    <div class="action-buttons">
-        <a href="{{ url_for('statistics.most_earnings') }}" class="action-button">
-            <i class="fas fa-chart-line"></i>
-            <span>Reporte de mayores ganancias</span>
-        </a>
-        <a href="{{ url_for('statistics.balance_report') }}" class="action-button">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <span>Reporte detallado de ingresos/egresos</span>
-        </a>
-        <a href="{{ url_for('statistics.debts') }}" class="action-button">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>Reporte de deudas de jinetes/amazonas</span>
-        </a>
-    </div>
+    {% if check_permission(session,'reg_pagos_index') and check_permission(session,'reg_cobros_index')%}
+        <div class="action-buttons">
+            <a href="{{ url_for('statistics.most_earnings') }}" class="action-button">
+                <i class="fas fa-chart-line"></i>
+                <span>Reporte de mayores ganancias</span>
+            </a>
+            
+            <a href="{{ url_for('statistics.balance_report') }}" class="action-button">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <span>Reporte detallado de ingresos/egresos</span>
+            </a>
+            <a href="{{ url_for('statistics.debts') }}" class="action-button">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Reporte de deudas de jinetes/amazonas</span>
+            </a>
+        </div>
+    {% endif %}
+
 
     <div class="stats-grid">
-        <div class="stats-card">
-            <div class="stats-card-header">
-                <h5 class="stats-card-title">Balance mensual</h5>
+        {% if check_permission(session,'reg_pagos_index') and check_permission(session,'reg_cobros_index')%}
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <h5 class="stats-card-title">Balance mensual</h5>
+                </div>
+                <div class="stats-card-body">
+                    <a href="{{ url_for('statistics.balance') }}">
+                        <img src="{{ url_for('statistics.balance') }}" alt="Gráfico de balance ingreso/egreso">
+                    </a>
+                </div>
             </div>
-            <div class="stats-card-body">
-                <a href="{{ url_for('statistics.balance') }}">
-                    <img src="{{ url_for('statistics.balance') }}" alt="Gráfico de balance ingreso/egreso">
-                </a>
-            </div>
-        </div>
+        {% endif %}
 
-        <div class="stats-card">
-            <div class="stats-card-header">
-                <h5 class="stats-card-title">Miembros del equipo por puesto laboral</h5>
+        {% if check_permission(session,'team_index')%}
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <h5 class="stats-card-title">Miembros del equipo por puesto laboral</h5>
+                </div>
+                <div class="stats-card-body">
+                    <a href="{{ url_for('statistics.job') }}">
+                        <img src="{{ url_for('statistics.job') }}" alt="Gráfico de miembros/puestos de trabajo">
+                    </a>
+                </div>
             </div>
-            <div class="stats-card-body">
-                <a href="{{ url_for('statistics.job') }}">
-                    <img src="{{ url_for('statistics.job') }}" alt="Gráfico de miembros/puestos de trabajo">
-                </a>
-            </div>
-        </div>
+        {% endif %}
 
-        <div class="stats-card">
-            <div class="stats-card-header">
-                <h5 class="stats-card-title">Rangos de edades de jinetes y amazonas</h5>
+        {% if check_permission(session,'jya_index')%}
+            <div class="stats-card">
+                <div class="stats-card-header">
+                    <h5 class="stats-card-title">Rangos de edades de jinetes y amazonas</h5>
+                </div>
+                <div class="stats-card-body">
+                    <a href="{{ url_for('statistics.age') }}">
+                        <img src="{{ url_for('statistics.age') }}" alt="Gráfico de rango de edades entre los jya">
+                    </a>
+                </div>
             </div>
-            <div class="stats-card-body">
-                <a href="{{ url_for('statistics.age') }}">
-                    <img src="{{ url_for('statistics.age') }}" alt="Gráfico de rango de edades entre los jya">
-                </a>
-            </div>
-        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
