@@ -97,6 +97,9 @@ def _seed_users():
     message_destroy = Permission.permiso_new(name="message_destroy")
     message_update = Permission.permiso_new(name="message_update")
     message_show = Permission.permiso_new(name="message_show")
+    
+    comment_add = Permission.permiso_new(name="comment_add")
+    comment_destroy = Permission.permiso_new(name="comment_destroy")
 
     # Seed de Roles
     tecnica = Role.role_new(
@@ -163,6 +166,8 @@ def _seed_users():
             message_destroy,
             message_update,
             message_show,
+            comment_add,
+            comment_destroy,
         ],
     )
     system_admin = Role.role_new(
@@ -869,12 +874,21 @@ def _seed_articles(users):
 def _seed_messages():
     new_messages = []
     for i in range(30):
+        
+        state = random.choice(list(MessageStatus))
+
+        if (state is MessageStatus.RESPONDIDO):
+            closed_at = datetime.now()
+        else : 
+            closed_at = None
+
         message = db.new(Message,
         name = fake.first_name(),
         email = fake.email(),
         body_message = fake.sentence(),
-        state = random.choice(list(MessageStatus)),
         comment = random.choice([fake.sentence(), ""]),
+        state = state,
+        closed_at = closed_at,
         )
         new_messages.append(message)
 
