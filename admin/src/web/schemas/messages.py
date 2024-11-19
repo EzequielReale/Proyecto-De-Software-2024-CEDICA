@@ -9,7 +9,7 @@ class MessageSchema(Schema):
     title = fields.Str(required=True, validate=validate.Length(max=100))
     email = fields.Email(required=True, validate=validate.Length(max=100))
     description = fields.Str(required=True, validate=validate.Length(max=400))
-    status = EnumField(MessageStatus, by_value=True, required=False,missing=MessageStatus.CREATED.value)
+    status = EnumField(MessageStatus, by_value=True, required=False,missing=MessageStatus.NO_RESPONDIDO.value)
     comment = fields.Str(validate=validate.Length(max=400),allow_none=True)
     created_at = fields.DateTime(format='%Y-%m-%dT%H:%M:%SZ')
     closed_at = fields.DateTime(allow_none=True,format='%Y-%m-%dT%H:%M:%SZ')
