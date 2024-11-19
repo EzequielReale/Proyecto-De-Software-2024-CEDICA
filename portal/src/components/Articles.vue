@@ -1,5 +1,7 @@
 <template>
     <section id="articles">
+        <h1 class="fw-bolder" style="text-align: center;">Noticias y Actividades</h1>
+        <br>
         <div v-if="articles.length === 0" class="loading">Cargando artículos...</div>
         <div v-else class="articles-container">
             <div class="articles-grid">
@@ -107,6 +109,13 @@ onMounted(() => {
 #articles {
     padding: 2rem;
     min-height: 100vh;
+}
+
+.articles-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 2rem;
 }
 
 .articles-container {
