@@ -18,13 +18,11 @@ def register(app):
     @app.route("/redauth")
     def red_auth():
         redirect_uri = url_for('auth', _external=True)
-        print(redirect_uri)  # https://127.0.0.1:5000/login/callback
         return app.oauth.google.authorize_redirect(redirect_uri)
     
     @app.route("/redlogin")
     def red_login():
         redirect_uri = url_for('login_google', _external=True)
-        print(redirect_uri)  
         return app.oauth.google.authorize_redirect(redirect_uri)
 
     
@@ -37,7 +35,6 @@ def register(app):
         
         email = userinfo['email']
         first_name = userinfo['given_name']
-        last_name = userinfo['family_name']
         google_id = userinfo['sub']  # id de Google
         
         user = get_user_by_email(email)
@@ -45,7 +42,6 @@ def register(app):
         if user is None:
             user = user_new(
                 alias=first_name,
-                #lastname=last_name, no existe en el modelo
                 google_id=google_id,
                 email=email,
                 password="default_password",
@@ -61,11 +57,10 @@ def register(app):
         
     @app.route('/logingoogle/callback')
     def login_google():
-        # Obtener el token de Google
         token = app.oauth.google.authorize_access_token()
-        userinfo = token['userinfo']  # Información del usuario obtenida de Google
+        userinfo = token['userinfo']  
         email = userinfo['email']
-        google_id = userinfo['sub']  # El ID único de Google para el usuario
+        google_id = userinfo['sub'] 
 
         user = get_user_by_email(email)
         if user:

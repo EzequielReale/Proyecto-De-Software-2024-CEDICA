@@ -52,4 +52,6 @@ def create_app(env="development", static_folder="../../static"):
     # Storage
     storage.init_app(app)
 
+  
+
     return app
