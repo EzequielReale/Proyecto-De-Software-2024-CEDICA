@@ -3,11 +3,39 @@
         <div v-if="articles.length === 0" class="loading">Cargando artículos...</div>
         <div v-else class="articles-container">
             <div class="articles-grid">
-                <div v-for="article in getArticles" :key="article.updated_at" class="article">
+                <div v-for="article in getArticles" :key="article.updated_at" class="article"
+                    :class="{ 'article-expanded': expandedArticle === article.title }">
                     <h2>{{ article.title }}</h2>
-                    <p>{{ article.summary }}</p>
-                    <p>Publicado: {{ formatDate(article.published_at) }}</p>
-                    <a :href="articleLink(article)">Ver nota completa</a>
+                    <template v-if="expandedArticle === article.title">
+                        <div class="article-metadata">
+                            <div class="article-author">
+                                <span class="metadata-label">Autor:</span>
+                                {{ article.author }}
+                            </div>
+                            <div class="article-date">
+                                <span class="metadata-label">Publicado:</span>
+                                {{ formatDate(article.published_at) }}
+                            </div>
+                        </div>
+                        <div class="article-summary">
+                            {{ article.summary }}
+                        </div>
+                        <div class="article-content" v-html="renderMarkdown(article.content)"></div>
+                        <button @click="collapseArticle" class="action-button collapse-button">
+                            <span class="button-icon">▼</span>
+                            Cerrar nota
+                        </button>
+                    </template>
+                    <template v-else>
+                        <p class="article-preview-summary">{{ article.summary }}</p>
+                        <div class="article-preview-footer">
+                            <p class="article-preview-date">{{ formatDate(article.published_at) }}</p>
+                            <button @click="expandArticle(article.title)" class="action-button expand-button">
+                                <span class="button-icon">▶</span>
+                                Ver nota completa
+                            </button>
+                        </div>
+                    </template>
                 </div>
             </div>
             <div class="load-more-container">
@@ -20,13 +48,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, normalizeClass } from 'vue';
 import axios from 'axios';
+import { marked } from 'marked';
 
 const articles = ref([]);
 const page = ref(1);
 const perPage = 9;
 const total = ref(0);
+const expandedArticle = ref(null);
 
 const fetchArticles = async () => {
     try {
@@ -47,12 +77,21 @@ const formatDate = (date) => {
     return new Date(date).toLocaleDateString();
 };
 
-const articleLink = (article) => {
-    //return `https://admin-grupo04.proyecto2024.linti.unlp.edu.ar/articles/${article.title.replace(/\s+/g, '-').toLowerCase()}`;
+const expandArticle = (articleTitle) => {
+    expandedArticle.value = articleTitle;
+};
+
+const collapseArticle = () => {
+    expandedArticle.value = null;
+};
+
+const renderMarkdown = (content) => {
+    const normalizedContent = content.replace(/(\S)\s\*/g, '$1\n\n*'); // Esto agrega saltos de línea antes de cada lista
+    return marked(normalizedContent); // Esto convierte el contenido en HTML con Markdown
 };
 
 const getArticles = computed(() => {
-    return articles.value
+    return articles.value;
 });
 
 const hasMore = computed(() => {
@@ -68,7 +107,6 @@ onMounted(() => {
 #articles {
     padding: 2rem;
     min-height: 100vh;
-    background-color: #f5f5f5;
 }
 
 .articles-container {
@@ -89,38 +127,116 @@ onMounted(() => {
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
+    transition: all 0.3s ease;
     min-height: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    position: relative;
 }
 
 .article:hover {
     transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.article-expanded {
+    grid-column: 1 / -1;
+    min-height: auto;
+    transform: none !important;
 }
 
 .article h2 {
     color: #333;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 0.5rem;
 }
 
-.article p {
+.article-metadata {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.metadata-label {
+    font-weight: 600;
+    color: #26a69a;
+    margin-right: 0.5rem;
+}
+
+.article-summary {
+    background-color: #f8f8f8;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.article-content {
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.article-preview-summary {
     color: #666;
     line-height: 1.5;
     margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.article a {
-    color: #26a69a;
-    text-decoration: none;
-    font-weight: 500;
+.article-preview-footer {
     margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.article a:hover {
-    text-decoration: underline;
+.article-preview-date {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.expand-button {
+    background-color: #26a69a;
+    color: white;
+}
+
+.expand-button:hover {
+    background-color: #2bbbad;
+}
+
+.collapse-button {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.collapse-button:hover {
+    background-color: #d0d0d0;
+}
+
+.button-icon {
+    font-size: 0.8rem;
 }
 
 .load-more-container {
@@ -134,28 +250,37 @@ onMounted(() => {
     background-color: #26a69a;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
+    transition: all 0.2s ease;
 }
 
 .load-more-button:hover {
     background-color: #2bbbad;
+    transform: translateY(-2px);
 }
 
 .loading {
     text-align: center;
     padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
 }
 
 @media (max-width: 768px) {
     #articles {
         padding: 1rem;
     }
-    
+
     .articles-grid {
         gap: 15px;
+    }
+
+    .article-metadata {
+        flex-direction: column;
+        gap: 0.5rem;
     }
 }
 </style>
