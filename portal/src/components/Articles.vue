@@ -44,12 +44,11 @@ const loadMore = () => {
 };
 
 const formatDate = (date) => {
-    if (!date) return 'No publicada';
     return new Date(date).toLocaleDateString();
 };
 
 const articleLink = (article) => {
-    return `https://admin-grupo04.proyecto2024.linti.unlp.edu.ar/articles/${article.title.replace(/\s+/g, '-').toLowerCase()}`;
+    //return `https://admin-grupo04.proyecto2024.linti.unlp.edu.ar/articles/${article.title.replace(/\s+/g, '-').toLowerCase()}`;
 };
 
 const getArticles = computed(() => {
