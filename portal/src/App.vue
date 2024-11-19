@@ -24,11 +24,11 @@ onMounted(() => {
   const sections = document.querySelectorAll('section')
 
   const observerOptions = {
-    threshold: 0.5
+    threshold: 0.5,
   }
 
   const observerCallback = (entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       const id = entry.target.getAttribute('id')
       const navLink = document.querySelector(`nav a[href="/#${id}"]`)
       if (entry.isIntersecting) {
@@ -40,7 +40,7 @@ onMounted(() => {
   }
 
   const observer = new IntersectionObserver(observerCallback, observerOptions)
-  sections.forEach(section => observer.observe(section))
+  sections.forEach((section) => observer.observe(section))
 
   onUnmounted(() => {
     document.removeEventListener('scroll', handleScroll)
@@ -50,14 +50,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <header ref="header" class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center">
+  <header
+    ref="header"
+    class="rounded-4 shadow-sm d-flex flex-row justify-content-center align-items-center"
+  >
     <div id="header-container">
       <RouterLink to="/" @click.native="scrollToTop">
         <img alt="CEDICA logo" class="logo" src="@/assets/logos/Imagotipo.png" height="35" />
       </RouterLink>
-  
+
       <div class="wrapper">
-        <nav class="d-flex flex-row" style="user-select: none;">
+        <nav class="d-flex flex-row" style="user-select: none">
           <a href="/#about">Sobre nosotros</a>
           <a href="/#articles">Noticias y actividades</a>
           <a class="nav-button" href="/#contact">Contactanos</a>
