@@ -64,6 +64,41 @@
         flex-direction: row;
         gap: 10px;
     }
+
+    @media screen and (max-width: 768px) {
+
+        /* Ocultar columnas en pantallas pequeñas */
+        tr>td:nth-child(2),
+        tr>th:nth-child(2) {
+            display: none;
+        }
+        
+        tr>td:nth-child(4),
+        tr>th:nth-child(4) {
+            display: none;
+        }
+
+        tr>td:nth-child(5),
+        tr>th:nth-child(5) {
+            display: none;
+        }
+
+        /* Hacer todas las columnas un poco más angostas */
+        table {
+            width: 100%;
+            table-layout: fixed;
+        }
+
+
+
+
+    }
+
+    @media screen and (max-width: 600px) {
+
+        
+
+    }
     
 </style>
 
