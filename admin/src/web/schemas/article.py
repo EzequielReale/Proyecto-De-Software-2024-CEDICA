@@ -8,9 +8,10 @@ class ArticleSchema(Schema):
     published_at = fields.DateTime(required=True,dump_only=True,format='%Y-%m-%dT%H:%M:%SZ')
     updated_at = fields.DateTime(required=True,dump_only=True,format='%Y-%m-%dT%H:%M:%SZ')
     author = fields.Method("get_author_alias",dump_only=True)
+    status = fields.Method("get_status",required=True,dump_only=True)
+
     def get_author_alias(self, obj):
         return obj.author.alias if obj.author else None
-    status = fields.Method("get_status",required=True,dump_only=True)
     def get_status(self,obj):
         return obj.status.name if obj.status else None
     
@@ -27,8 +28,8 @@ class ArticleFilterSchema(Schema):
     author = fields.Str(required=False) 
     published_from = fields.DateTime(required=False) 
     published_to = fields.DateTime(required=False) 
-    page = fields.Integer(required=False, validate=validate.Range(min=1)) 
-    per_page = fields.Integer(required=False, validate=validate.Range(min=1, max=100)) 
+    page = fields.Integer(required=False, validate=validate.Range(min=1),missing=1) 
+    per_page = fields.Integer(required=False, validate=validate.Range(min=1, max=100),missing=10) 
 
 
 article_schema = ArticleSchema() 
