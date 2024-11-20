@@ -1,6 +1,6 @@
 <template>
     <section id="home" class="d-flex flex-column justify-content-center align-items-center" style="height: 80vh; width: 100%;">
-      <img src="../assets/logos/Logo.png" width="25%" alt="Logo">
+      <img src="../assets/logos/Logo.png" width="60%" style="min-width: 350px; max-width: 500px;" alt="Logo">
 
       <div class="mt-5 text-center">
         Centro de Equitación para Personas con Discapacidad y Carenciados
@@ -10,7 +10,7 @@
 
         <!-- Dirección -->
         <div class="d-flex align-items-center gap-2">
-          
+
           <p class="mb-0 text-center">
             Calle 44 y 115 (1900) La Plata, La Plata, B 1900, Argentina
           </p>
@@ -18,7 +18,7 @@
 
         <!-- Teléfono -->
         <div class="d-flex align-items-center gap-2">
-          
+
           <p class="mb-0 text-center">+54 9 11 6763 0247</p>
         </div>
 
@@ -26,7 +26,7 @@
 
     </section>
   </template>
-  
+
   <style scoped>
   #home {
     margin: 0 !important;
@@ -37,7 +37,7 @@
     text-align: center;
     font-size: 1rem;
   }
-  
+
   #home::after {
     content: '';
     background-image: url('../assets/bg-images/baner-dec-right.png');
@@ -51,7 +51,7 @@
     z-index: -1;
     opacity: 1;
   }
-  
+
   #home::before {
     content: '';
     background-image: url('../assets/bg-images/baner-dec-left.png');
@@ -65,7 +65,7 @@
     z-index: -1;
     opacity: 1;
   }
-  
+
   .contact-info p {
     margin: 0;
   }
