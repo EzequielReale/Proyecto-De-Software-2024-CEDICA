@@ -18,6 +18,7 @@ class Message(db.Model):
 
     created_at = db.Column(db.DateTime,default= datetime.now)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate=datetime.now)
+    closed_at = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f'{self.nombre}, {self.email}, {self.cuepo_mensaje}, {self.estado}, {self.comentario}'
+        return f'{self.name}, {self.email}, {self.body_message}, {self.state}, {self.comment}'

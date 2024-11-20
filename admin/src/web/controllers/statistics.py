@@ -59,8 +59,8 @@ def balance():
     # Añadir labels en las barras para los valores
     for bar in bars:
         yval = bar.get_height()
-        color = 'white' if yval < 0 else 'black'
-        ax.text(bar.get_x() + bar.get_width() / 2, yval, f'${yval}', ha='center', va='bottom' if yval < 0 else 'top', color=color)
+        #color = 'white' if yval < 0 else 'black'
+        ax.text(bar.get_x() + bar.get_width() / 2, yval, f'${yval}', ha='center', va='top' if yval < 0 else 'bottom', color='black')
 
     fig.tight_layout()
 
