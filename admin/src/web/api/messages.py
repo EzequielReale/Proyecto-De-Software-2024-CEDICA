@@ -29,7 +29,7 @@ def create_message():
         email=data['email'],
         body_message=data['description'],
         state=status_enum,
-        created_at=data.get('created_at', datetime.utcnow().isoformat() + 'Z'),
+        created_at=data.get('created_at', datetime.now().isoformat() + 'Z'),
         closed_at=data.get('closed_at', None),
         comment=data.get('comment', None)
     )
