@@ -4,6 +4,17 @@
 
 {% block head %}
 {{ super() }}
+
+<style>
+    @media screen and (max-width: 768px) {
+  
+      /* Ocultar columnas en pantallas pequeñas */
+      tr>td:nth-child(2),
+      tr>th:nth-child(2){
+        display: none;
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -27,7 +38,7 @@
                 Total recaudado
             </th>
             <th style="background-color: #0056b3; color: #ffffff;">
-                Cantidad de pagos
+                Cantidad de cobros  
             </th>
         </tr>
     </thead>

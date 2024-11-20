@@ -4,6 +4,19 @@
 
 {% block head %}
 {{ super() }}
+
+<style>
+    @media screen and (max-width: 768px) {
+  
+      /* Ocultar columnas en pantallas pequeñas */
+      tr>td:nth-child(2),
+      tr>td:nth-child(3),
+      tr>th:nth-child(2),
+      tr>th:nth-child(3) {
+        display: none;
+      }
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
