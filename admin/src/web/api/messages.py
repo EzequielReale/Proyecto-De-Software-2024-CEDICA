@@ -20,14 +20,15 @@ def create_message():
 
         return jsonify({"error": "Parámetros inválidos o faltantes en la solicitud."}), 400
 
-    if (not _message_has_valid_length(data['description'])):
-        return jsonify({"error": "El mensaje no puede superar los 400 caracteres"}), 400
+
+    status_value = data.get('status', 'No respondido')
+    status_enum = MessageStatus(status_value)
 
     new_message = Message(
         name=data['title'],
         email=data['email'],
         body_message=data['description'],
-        state=MessageStatus.NO_RESPONDIDO,
+        state=status_enum,
         created_at=data.get('created_at', datetime.utcnow().isoformat() + 'Z'),
         closed_at=data.get('closed_at', None),
         comment=data.get('comment', None)
@@ -37,10 +38,3 @@ def create_message():
 
     result = message_response.dump(new_message)
     return jsonify(result), 201
-
-
-def _message_has_valid_length(body_message):
-    """Valida que el cuerpo del mensaje no supere los 400 caracteres"""
-    if len(body_message) > 399:
-        return False
-    return True
