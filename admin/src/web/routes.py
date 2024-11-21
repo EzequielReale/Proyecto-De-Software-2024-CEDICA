@@ -1,13 +1,10 @@
-from flask import render_template
-
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import flash, redirect, render_template, session, url_for
 
 from src.core.user_role_permission.operations.user_operations import (
-    find_user,
-    get_roles_from_user,
     get_user_by_email,
     user_new,
 )
+from src.web.handlers.autenticacion import generate_random_hash
 
 
 def register(app):
@@ -35,7 +32,7 @@ def register(app):
         
         email = userinfo['email']
         first_name = userinfo['given_name']
-        google_id = userinfo['sub']  # id de Google
+        google_id = userinfo['sub'] 
         
         user = get_user_by_email(email)
         
@@ -44,9 +41,9 @@ def register(app):
                 alias=first_name,
                 google_id=google_id,
                 email=email,
-                password="default_password",
+                password= generate_random_hash() ,
                 confirmed=False,
-            )        
+            )   
         else:
             flash("Ya existe un usuario con ese email","error")
             return redirect(url_for("auth.login"))
@@ -60,7 +57,6 @@ def register(app):
         token = app.oauth.google.authorize_access_token()
         userinfo = token['userinfo']  
         email = userinfo['email']
-        google_id = userinfo['sub'] 
 
         user = get_user_by_email(email)
         if user:
