@@ -162,8 +162,8 @@ def get_incomes_by_range(start_date:datetime, end_date:datetime)->list[PagoJinet
         {
             'Monto': "$" + str(income.monto),
             'Fecha': income.fecha_pago.strftime('%d/%m/%Y'),
-            'Jinete_amazona': income.jinete_amazona.name + ' ' + income.jinete_amazona.last_name + ' ' + income.jinete_amazona.dni,
-            'Receptor': income.receptor.name + ' ' + income.receptor.last_name + ' ' + income.receptor.dni
+            'Jinete_amazona': income.jinete_amazona.name + ' ' + income.jinete_amazona.last_name + ' (DNI: ' + income.jinete_amazona.dni + ')',
+            'Receptor': income.receptor.name + ' ' + income.receptor.last_name + ' (DNI: ' + income.receptor.dni + ')'
         }
         for income in incomes
     ]

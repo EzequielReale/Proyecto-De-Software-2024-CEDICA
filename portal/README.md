@@ -1,35 +1,41 @@
-# portal
+# CEDICA - Portal Público
 
-This template should help get you started developing with Vue 3 in Vite.
+## Introducción
 
-## Recommended IDE Setup
+Bienvenido al proyecto **CEDICA - Portal Público**. Este portal tiene como objetivo principal mostrar información al público general, como noticias, actividades y eventos, y también enviar mensajes con dudas o sugerencias al staff. La aplicación consume una API gestionada por **CEDICA - Administración**.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Este documento describe cómo instalar las dependencias, iniciar la aplicación y detalla algunos requisitos esenciales.
 
-## Customize configuration
+## Requisitos Previos
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+1. **Node** (versión 22.7.0).
+2. **NPM** o **Yarn** como gestor de paquetes.
+3. API de **CEDICA - Administración** en funcionamiento.
 
-## Project Setup
+## Configuración del Proyecto
 
-```sh
+### Instalación de Dependencias
+Instala las dependencias necesarias con:
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Pasos para Iniciar la Aplicación
 
-```sh
+### En Producción
+Ejecuta el pipeline `deploy-frontend` en la rama `main`.
+
+### En Desarrollo
+
+Ejecuta el siguiente comando para iniciar el servidor en modo desarrollo con hot-reload:
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+El portal estará disponible en `http://localhost:5173`.
 
-```sh
-npm run build
-```
+## Consideraciones Importantes
 
-### Lint with [ESLint](https://eslint.org/)
+**Dependencia de la API**: Este portal requiere que la API de administración esté funcionando y tenga datos cargados en la tabla `articles`. De lo contrario, el portal no mostrará noticias ni actividades.
 
-```sh
-npm run lint
-```
+¡Gracias por utilizar el proyecto **CEDICA - Portal Público**!
