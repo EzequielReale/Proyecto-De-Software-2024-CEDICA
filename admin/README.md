@@ -1,53 +1,21 @@
 # CEDICA - Administración
 
 ## Introducción
-Bienvenido al proyecto "CEDICA - Administración". Este documento proporciona los pasos necesarios para montar la base de datos en producción, levantar la aplicación y detalla algunos problemas conocidos.
+Bienvenido al proyecto "CEDICA - Administración". Este documento proporciona los pasos necesarios para montar la base de datos en producción y levantar la aplicación.
 
-## Orden para montar la Base de Datos en producción
+## Montar la Base de Datos
 
-### Creación de Tablas
-1. **Tablas Auxiliares**:
-    - `provinces`
-    - `activities`
-    - `localities` (después de `provinces`)
-    - `disability_types`
-    - `disability_diagnoses` (después de `disability_types`)
-    - etc.
-
-2. **Tablas Complementarias**:
-    - `persons`
-    - `permissions`
-    - `roles`
-    - `tutors`
-    - etc.
-
-3. **Tablas Relevantes**:
-    - `members`
-    - `riders`
-    - `horses`
-    - `person_documents`
-    - `horse_documents`
-    - etc.
-
-4. **Tablas de Relaciones**:
-    - `rider_member`
-    - `role_permissions`
-    - `user_roles`
-    - etc.
-
-### Inserción de Datos
-Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mismo orden:
-
-1. Tablas Auxiliares
-2. Tablas Complementarias
-3. Tablas Relevantes
-4. Tablas de Relaciones
+### Creación de tablas e inserción de datos de prueba
+1. Logueate en la aplicación.
+2. Escribe el dominio del sitio seguido de el path /resources/seeds.
+3. Espera a que se complete el script.
 
 ## Pasos para Levantar la Aplicación
 
 ### En Producción
-1. Configura la Base de Datos como se te ha enseñado.
-2. Ejecuta el pipeline en la rama `main`.
+1. Configura las variables de entorno necesarias en Vault (para la BD, MinIO y Google).
+2. Ejecuta el pipeline `deploy-backend` en la rama `main`.
+3. Crea las tablas como se ha visto en la sección anterior.
 
 ### En Desarrollo
 1. Configura las variables de entorno para la base de datos PostgreSQL y MinIO en el archivo `.env`. Ambas están definidas en `src/core/config.py`.
@@ -63,6 +31,8 @@ Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mis
     ```bash
     flask reset-db && flask seeds-db
     ```
+    o simplemente ejecuta el script como en producción
+
 5. Levanta la aplicación:
     ```bash
     flask run
@@ -72,6 +42,8 @@ Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mis
     ```bash
     flask run --debug
     ```
+
+    La aplicación estará disponible en `http://localhost:5000`
 
 ## Credenciales importantes
 1. **Administrador**:
@@ -84,17 +56,9 @@ Una vez creadas las tablas, ejecuta los `INSERT INTO` correspondientes en el mis
     - **Email**: `giuliana@gmail.com`
     - **Contraseña**: `123`
 
-3. **Eze**:
+3. **Eze (Todos los permisos)**:
     - **Roles**: `Tecnica` `Ecuestre` `Voluntariado` `Administracion` `SystemAdmin`
     - **Email**: `eze@gmail.com`
     - **Contraseña**: `123`
-
-## Known issues
-- **Frontend**: Al ser Nicolás nuestro único desarrollador frontend, es posible que algunas partes de este, no hechas por él, puedan estar mejor diseñadas o mantener mejor el estado. Hemos intentado hacer lo mejor posible con los conocimientos que tenemos.
-- **Integraciones Pendientes**: Algunas integraciones se harán después de la entrega para evitar errores inesperados en producción. Por ejemplo:
-    - Integrar el campo `institutional_work_proposal` (que actualmente es un enum) como una referencia a `activities`.
-    - Consolidar los documentos de la persona y del caballo en un solo modelo `documents`.
-    - A mitad del desarrollo, se agregó un módulo de funciones genéricas para la base de datos, pero probablemente no hayamos llegado a refactorizar todo el código como nos hubiera gustado.
-- **Patrones de Diseño**: Para el filtrado, podrían haberse usado patrones de diseño que simplifiquen el código. Sin embargo, decidimos dejarlo como está ya que el código actual funciona, es relativamente eficiente y está comentado, aunque sea largo.
 
 ¡Gracias por utilizar el proyecto CEDICA - Administración!

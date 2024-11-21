@@ -101,6 +101,9 @@ def _seed_users():
     comment_add = Permission.permiso_new(name="comment_add")
     comment_destroy = Permission.permiso_new(name="comment_destroy")
 
+    # Permiso para ejecutar scripts de seeds
+    seed = Permission.permiso_new(name="seed") 
+
     # Seed de Roles
     tecnica = Role.role_new(
         name="Tecnica",
@@ -180,6 +183,7 @@ def _seed_users():
             user_show,
             user_block,
             user_update_password,
+            seed,
         ],
     )
     editor = Role.role_new(
@@ -237,7 +241,7 @@ def _seed_users():
             alias=fake.user_name(),
             password=fake.password(),
             isActive=True,
-            roles=[random.choice([tecnica, ecuestre, voluntario, administracion, system_admin])],
+            roles=[random.choice([tecnica, ecuestre, voluntario, administracion])],
         )
         user_list.append(user)
 
@@ -691,7 +695,7 @@ def _seed_equestrian(members):
 
 def _seed_members(localities):
     members = []
-    for i in range(40):
+    for i in range(30):
         member = people.member_new(
             name=fake.first_name(),
             last_name=fake.last_name(),
@@ -718,7 +722,7 @@ def _seed_members(localities):
 
 def _seed_jya(members, localities, horses):
     jya_list = []
-    for i in range(30):
+    for i in range(80):
         tutor1 = people.tutor_new(
             relationship="Padre",
             name=fake.first_name(),
@@ -808,7 +812,7 @@ def _seed_cobros(jya_list, members):
     medio_pago_tarjeta_debito = registro_pagos_jya.medio_de_pago_new(tipo="Tarjeta de Débito")
 
     cobros = []
-    for i in range(30):
+    for i in range(1000):
         cobro = registro_pagos_jya.pago_jya_new(
             jinete_amazona=random.choice([jya for jya in jya_list]),
             medio_de_pago=random.choice([medio_pago_efectivo, medio_pago_tarjeta_credito, medio_pago_tarjeta_debito]),
@@ -829,7 +833,7 @@ def _seed_pagos(jya_list, members):
     tipo3 = registro_pagos.tipo_new(tipo="Varios")
 
     pagos = []
-    for i in range(30):
+    for i in range(1000):
         tipo_pago = random.choice([tipo1, tipo2, tipo3])
         pago = registro_pagos.administracion_create(
             monto=2000 + i,
@@ -845,7 +849,7 @@ def _seed_pagos(jya_list, members):
 def _seed_articles(users):
     articles = []
 
-    for i in range(29):
+    for i in range(30):
         # Genera contenido con formato Markdown aleatorio
         markdown_content = [
             f"### {fake.sentence()}",
