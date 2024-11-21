@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Trabajos más frecuentes
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+<h1 style="color: #007bff; margin-bottom: 20px;">Cantidad de empleados por puesto laboral</h1>
+<p style="margin-bottom: 20px;">Este gráfico muestra, en forma de barras horizontales, la cantidad de empleados por puesto laboral de la institución.</p>
+<p style="margin-bottom: 20px;">Puede ser útil para saber si faltan personas en determinada función.</p>
+
+<a href="{{ url_for('statistics.index') }}" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 20px;">
+    <i class="fas fa-arrow-left"></i> Volver a la página de estadísticas
+</a>
+
+<div style="text-align: center;">
+    <img src="{{ url_for('statistics.job') }}" alt="Gráfico de trabajos" class="img-fluid"> 
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
