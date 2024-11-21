@@ -1,10 +1,9 @@
 import traceback
 
-from flask import Blueprint, jsonify, flash, redirect, url_for
-
+from flask import Blueprint, jsonify, flash, redirect, url_for, session
 from src.core import adressing, database, disabilities, seeds as seed_db
-from src.web.handlers.autenticacion import login_required
-
+from src.web.handlers.autenticacion import check_permission, login_required
+from src.web.handlers.error import unauthorized
 
 bp = Blueprint("resources", __name__, url_prefix ="/resources") 
 
@@ -29,6 +28,9 @@ def get_disabilities(type_id):
 @login_required
 def seeds():
     """ Ejecuta los seeds para crear registros en la BD"""
+    if(not check_permission(session, 'seed')):
+        return unauthorized()
+
     try:
         database.reset()
         seed_db.run()
