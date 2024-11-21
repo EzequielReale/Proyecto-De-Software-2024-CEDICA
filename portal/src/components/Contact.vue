@@ -280,4 +280,10 @@ div.visible {
     padding: 7rem;
   }
 }
+
+@media (max-width: 768px) {
+  #contact > div > div {
+    padding: calc(325px - 30vw);
+  }
+}
 </style>
