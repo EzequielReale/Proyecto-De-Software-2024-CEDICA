@@ -722,7 +722,7 @@ def _seed_members(localities):
 
 def _seed_jya(members, localities, horses):
     jya_list = []
-    for i in range(80):
+    for i in range(60):
         tutor1 = people.tutor_new(
             relationship="Padre",
             name=fake.first_name(),
@@ -812,7 +812,7 @@ def _seed_cobros(jya_list, members):
     medio_pago_tarjeta_debito = registro_pagos_jya.medio_de_pago_new(tipo="Tarjeta de Débito")
 
     cobros = []
-    for i in range(1000):
+    for i in range(200):
         cobro = registro_pagos_jya.pago_jya_new(
             jinete_amazona=random.choice([jya for jya in jya_list]),
             medio_de_pago=random.choice([medio_pago_efectivo, medio_pago_tarjeta_credito, medio_pago_tarjeta_debito]),
@@ -833,7 +833,7 @@ def _seed_pagos(jya_list, members):
     tipo3 = registro_pagos.tipo_new(tipo="Varios")
 
     pagos = []
-    for i in range(1000):
+    for i in range(200):
         tipo_pago = random.choice([tipo1, tipo2, tipo3])
         pago = registro_pagos.administracion_create(
             monto=2000 + i,

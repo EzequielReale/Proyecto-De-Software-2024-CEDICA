@@ -23,7 +23,7 @@ Bienvenido al repositorio del proyecto para **CEDICA**. Este repositorio alberga
 
 2. Sigue las instrucciones específicas para cada proyecto en sus respectivos directorios:
    - **Administración**: [Instrucciones detalladas](./admin/README.md)
-   - **Portal Público**: [Instrucciones detalladas](./public-portal/README.md)
+   - **Portal Público**: [Instrucciones detalladas](./portal/README.md)
 
 ---
 
