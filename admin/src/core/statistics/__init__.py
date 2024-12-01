@@ -60,16 +60,8 @@ def get_age_ranges() -> tuple[list[str], list[int]]:
     return labels, values
 
 
-def get_incomes_less_outflows() -> tuple[list[str], list[int]]:
-    """Obtiene los ingresos - egresos de CEDICA en los últimos 12 meses"""
-    # Obtiene el primer día del mes actual
-    today = datetime.today()
-    current_month_start = today.replace(day=1)
-    
-    # Obtiene el primer día del mes hace 12 meses
-    start_date = (current_month_start - relativedelta(months=11))
-    
-    # Genera los meses
+def get_months(start_date:datetime) -> list[str]:
+    """Recibe fecha de inicio y retorna los meses (como fecha y como string con sus nombres traducidos)"""
     months = []
     month_labels = []
     for i in range(12):
@@ -89,53 +81,57 @@ def get_incomes_less_outflows() -> tuple[list[str], list[int]]:
         for label in month_labels
     ]
 
+    return months, month_labels
+
+
+def get_incomes_less_outflows() -> tuple[list[str], list[int]]:
+    """Obtiene los ingresos - egresos de CEDICA en los últimos 12 meses"""
+    # Obtiene el primer día del mes actual
+    current_month_start = datetime.today().replace(day=1)
+    
+    # Obtiene el primer día del mes hace 12 meses
+    start_date = (current_month_start - relativedelta(months=11))
+
+    # Genera los meses
+    months, month_labels = get_months(start_date)
+
     # Consultas con rangos de fecha exactos
     income_records = (
         db.session.query(
-            PagoJineteAmazona.monto, 
-            PagoJineteAmazona.fecha_pago
+            db.func.to_char(PagoJineteAmazona.fecha_pago, 'YYYY-MM').label('month'),
+            db.func.sum(PagoJineteAmazona.monto).label('total_income')
         )
         .filter(
             PagoJineteAmazona.fecha_pago >= start_date,
             PagoJineteAmazona.fecha_pago < current_month_start + relativedelta(months=1),
             PagoJineteAmazona.en_deuda == False
         )
+        .group_by('month')
         .all()
     )
 
     outflow_records = (
         db.session.query(
-            Pago.monto, 
-            Pago.fecha_pago
+            db.func.to_char(Pago.fecha_pago, 'YYYY-MM').label('month'),
+            db.func.sum(Pago.monto).label('total_outflow')
         )
         .filter(
             Pago.fecha_pago >= start_date,
             Pago.fecha_pago < current_month_start + relativedelta(months=1)
         )
+        .group_by('month')
         .all()
     )
 
-    # Inicializar diccionarios con valores en 0
-    monthly_income = {month: 0 for month in months}
-    monthly_outflow = {month: 0 for month in months}
+    # Convierte los resultados a diccionarios
+    monthly_income = {record.month: record.total_income for record in income_records}
+    monthly_outflow = {record.month: record.total_outflow for record in outflow_records}
 
-    # Agregar los montos por mes
-    for record in income_records:
-        month = record.fecha_pago.strftime('%Y-%m')
-        if month in monthly_income:
-            monthly_income[month] += record.monto
-
-    for record in outflow_records:
-        month = record.fecha_pago.strftime('%Y-%m')
-        if month in monthly_outflow:
-            monthly_outflow[month] += record.monto
-
-    # Calcular la diferencia mes a mes
-    values = []
-    for month in months:
-        income = monthly_income[month]
-        outflow = monthly_outflow[month]
-        values.append(income - outflow)
+    # Hace la resta mes a mes
+    values = [
+        monthly_income.get(month, 0) - monthly_outflow.get(month, 0)
+        for month in months
+    ]
 
     return month_labels, values
 
@@ -179,7 +175,7 @@ def get_incomes_by_range(start_date:datetime, end_date:datetime)->list[PagoJinet
     incomes = PagoJineteAmazona.query.filter(
         PagoJineteAmazona.fecha_pago.between(start_date, end_date),
         PagoJineteAmazona.en_deuda == False
-    ).all()
+    ).order_by(PagoJineteAmazona.fecha_pago.asc()).all()
     
     result = [
         {
@@ -196,7 +192,7 @@ def get_incomes_by_range(start_date:datetime, end_date:datetime)->list[PagoJinet
 
 def get_outflows_by_range(start_date:datetime, end_date:datetime)->list[dict]:
     """Obtiene los egresos de CEDICA en un rango de fechas"""
-    outflows = Pago.query.filter(Pago.fecha_pago.between(start_date, end_date)).all()
+    outflows = Pago.query.filter(Pago.fecha_pago.between(start_date, end_date)).order_by(Pago.fecha_pago.asc()).all()
     result = [
         {
             'Monto': "$" + str(outflow.monto),
