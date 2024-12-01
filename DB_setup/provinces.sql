@@ -1,9 +1,4 @@
-DROP TABLE IF EXISTS provinces;
-
-CREATE TABLE IF NOT EXISTS provinces(
-    id SERIAL PRIMARY KEY,
-    name character varying(64) NOT NULL
-);
+TRUNCATE TABLE provinces;
 
 INSERT INTO provinces (id, name) VALUES
 (1, 'Buenos Aires'),

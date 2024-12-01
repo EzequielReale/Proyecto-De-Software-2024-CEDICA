@@ -1,14 +1,4 @@
-DROP TABLE IF EXISTS localities;
-
-CREATE TABLE IF NOT EXISTS localities
-(
-    id SERIAL PRIMARY KEY,
-    name character varying(64) NOT NULL,
-    province_id integer NOT NULL,
-    FOREIGN KEY (province_id) REFERENCES provinces (id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-);
+TRUNCATE TABLE localities;
 
 INSERT INTO localities (id, province_id, name) VALUES
 (1, 1, '25 de Mayo'),
