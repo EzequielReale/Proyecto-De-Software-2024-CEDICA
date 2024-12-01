@@ -11,33 +11,49 @@ from src.core.registro_pagos_jya import PagoJineteAmazona
 
 def get_job_count()->tuple[list[str], list[int]]:
     """Obtiene la cantidad de miembros por puesto laboral y retorna los labels y valores"""
-    job_count = db.session.query(Job, db.func.count(Member.job_id).label('count')).join(Member, Job.id == Member.job_id).group_by(Job.id).all()
-    
+    job_count = (
+        db.session.query(Job, db.func.count(Member.job_id).label("count"))
+        .join(Member, Job.id == Member.job_id)
+        .group_by(Job.id)
+        .all()
+    )
+
     labels = [item.Job.name for item in job_count]
     values = [item.count for item in job_count]
 
     return labels, values
 
 
-def get_age_ranges()->tuple[list[str], list[int]]:
+def get_age_ranges() -> tuple[list[str], list[int]]:
     """Obtiene la cantidad de jinetes/amazonas en el rango de edad de 3 a 18 años, 19 a 35 años, 36 a 50 años, 51 a 65 años y más de 65 años"""
     today = datetime.today()
     age_ranges = {
         '3-18': 0, '19-35': 0, '36-50': 0, '51-65': 0, '65+': 0
     }
-    for rider in Rider.query.all():
-        age = today.year - rider.birth_date.year
-        if age <= 18:
-            age_ranges['3-18'] += 1
-        elif age <= 35:
-            age_ranges['19-35'] += 1
-        elif age <= 50:
-            age_ranges['36-50'] += 1
-        elif age <= 65:
-            age_ranges['51-65'] += 1
-        else:
-            age_ranges['65+'] += 1
-    
+
+    age_ranges['3-18'] = db.session.query(db.func.count(Rider.id)).filter(
+        (today.year - db.extract('year', Rider.birth_date)) <= 18
+    ).scalar()
+
+    age_ranges['19-35'] = db.session.query(db.func.count(Rider.id)).filter(
+        (today.year - db.extract('year', Rider.birth_date)) > 18,
+        (today.year - db.extract('year', Rider.birth_date)) <= 35
+    ).scalar()
+
+    age_ranges['36-50'] = db.session.query(db.func.count(Rider.id)).filter(
+        (today.year - db.extract('year', Rider.birth_date)) > 35,
+        (today.year - db.extract('year', Rider.birth_date)) <= 50
+    ).scalar()
+
+    age_ranges['51-65'] = db.session.query(db.func.count(Rider.id)).filter(
+        (today.year - db.extract('year', Rider.birth_date)) > 50,
+        (today.year - db.extract('year', Rider.birth_date)) <= 65
+    ).scalar()
+
+    age_ranges['65+'] = db.session.query(db.func.count(Rider.id)).filter(
+        (today.year - db.extract('year', Rider.birth_date)) > 65
+    ).scalar()
+
     labels = list(age_ranges.keys())
     values = list(age_ranges.values())
 
@@ -210,4 +226,3 @@ def get_members_with_most_earnings()->list[dict]:
     ]
 
     return result
-
