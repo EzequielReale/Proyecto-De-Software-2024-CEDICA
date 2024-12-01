@@ -3,7 +3,6 @@ from dateutil.relativedelta import relativedelta
 
 from src.core.database import db
 from src.core.professions import Job
-from src.core.people import has_debt
 from src.core.people.member_rider import Member, Rider
 from src.core.registro_pagos import Pago
 from src.core.registro_pagos_jya import PagoJineteAmazona
