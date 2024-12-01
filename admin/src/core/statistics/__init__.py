@@ -140,26 +140,33 @@ def get_incomes_less_outflows() -> tuple[list[str], list[int]]:
     return month_labels, values
 
 
-def get_riders_with_debt()->list[dict]:
+def get_riders_with_debt() -> list[dict]:
     """Obtiene a los jinetes y amazonas que tienen deuda"""
     today = datetime.today()
-    riders = Rider.query.all()
-    riders_with_debt = [rider for rider in riders if has_debt(rider.id)]
-        
+    
+    riders_with_debt = db.session.query(
+        Rider.id,
+        Rider.name,
+        Rider.last_name,
+        Rider.dni,
+        Rider.birth_date,
+        Rider.phone,
+        db.func.count(PagoJineteAmazona.id).label('cantidad_de_pagos_pendientes'),
+        db.func.sum(PagoJineteAmazona.monto).label('monto_total_de_deuda')
+    ).join(PagoJineteAmazona, Rider.id == PagoJineteAmazona.jinete_amazona_id)\
+     .filter(PagoJineteAmazona.en_deuda == True)\
+     .group_by(Rider.id, Rider.name, Rider.last_name, Rider.dni, Rider.birth_date, Rider.phone)\
+     .order_by(Rider.last_name, Rider.name)\
+     .all()
+    
     result = [
         {
-            'Nombre': rider.name + ' ' + rider.last_name,
+            'Nombre': rider.last_name + ' ' + rider.name,
             'DNI': rider.dni,
             'Edad': today.year - rider.birth_date.year,
             'Contacto': rider.phone,
-            'Cantidad_de_pagos_pendientes': db.session.query(db.func.count(PagoJineteAmazona.id)).filter(
-                PagoJineteAmazona.jinete_amazona_id == rider.id,
-                PagoJineteAmazona.en_deuda == True
-            ).scalar(),
-            'Monto_total_de_deuda': "$" + str(db.session.query(db.func.sum(PagoJineteAmazona.monto)).filter(
-                PagoJineteAmazona.jinete_amazona_id == rider.id,
-                PagoJineteAmazona.en_deuda == True
-            ).scalar())
+            'Cantidad_de_pagos_pendientes': rider.cantidad_de_pagos_pendientes,
+            'Monto_total_de_deuda': "$" + str(rider.monto_total_de_deuda)
         }
         for rider in riders_with_debt
     ]
