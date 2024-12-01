@@ -9,7 +9,7 @@ class Article(db.Model):
     title = db.Column(db.String(255), nullable=False)
     summary = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     status = db.Column(SQLAlchemyEnum(ArticleStatus), nullable=False, default=ArticleStatus.BORRADOR)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
