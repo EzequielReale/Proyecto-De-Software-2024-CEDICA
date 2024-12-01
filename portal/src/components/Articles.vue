@@ -15,7 +15,7 @@
             <div class="article-metadata">
               <div class="article-author">
                 <span class="metadata-label">Autor:</span>
-                {{ article.author }}
+                {{ article.author ? article.author : '-' }}
               </div>
               <div class="article-date">
                 <span class="metadata-label">Publicado:</span>

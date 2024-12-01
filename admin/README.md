@@ -6,9 +6,17 @@ Bienvenido al proyecto "CEDICA - Administración". Este documento proporciona lo
 ## Montar la Base de Datos
 
 ### Creación de tablas e inserción de datos de prueba
-1. Logueate en la aplicación.
-2. Escribe el dominio del sitio seguido de el path /resources/seeds.
-3. Espera a que se complete el script.
+1. Usa los scripts de DB_setup para crear y cargar las siguientes tablas en este orden:
+    1. `permissions`
+    2. `roles`
+    3. `role_permissions`
+    4. `user`
+2. Inicia sesión en la aplicación con las siguientes credenciales:
+    - **Usuario**: `admin@admin.com`
+    - **Contraseña**: `admin`
+3. Escribe el dominio del sitio seguido de el path /resources/seeds.
+4. Espera a que se complete el script.
+5. Opcionalmente puedes truncar las tablas `provinces` y `localities` y cargar las que se encuentran en DB_setup, que contienen más ciudades.
 
 ## Pasos para Levantar la Aplicación
 
