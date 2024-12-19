@@ -17,8 +17,8 @@ Bienvenido al repositorio del proyecto para **CEDICA**. Este repositorio alberga
 
 1. Clona el repositorio:
     ```bash
-    git clone https://gitlab.catedras.linti.unlp.edu.ar/proyecto2024/proyectos/grupo04/code.git
-    cd CODE
+    git clone https://github.com/EzequielReale/Proyecto-De-Software-2024-CEDICA.git CEDICA
+    cd CEDICA
     ```
 
 2. Sigue las instrucciones específicas para cada proyecto en sus respectivos directorios:
